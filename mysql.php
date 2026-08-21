@@ -10,6 +10,61 @@
 
 declare(strict_types=1);
 
+// =============================================================================
+// HOSTING / PANEL CONFIGURATION
+// Bu bölüm farklı sunuculara taşırken değiştirilecek ana ayarların tamamını içerir.
+// =============================================================================
+
+// Panel yönetici kullanıcı adının şifresidir.
+$default_pass = 'site_panel_şifre';
+
+$config = [
+    // MySQL sunucu adresidir. Ne yaptığınızı bilmiyorsanız değiştirmeyin. Varsayılan değer: localhost.
+    'db_host'            => getenv('VEDO_DB_HOST') ?: 'localhost',
+    // MySQL kullanıcı adıdır. 
+    'db_user'            => getenv('VEDO_DB_USER') ?: 'db_kullanıcı_adı',
+    // MySQL şifresidir.
+    'db_pass'            => getenv('VEDO_DB_PASSWORD') ?: 'db_şifre',
+    // Yedekleme ve restore işlemlerinde kullanılacak veritabanı adıdır.
+    'db_name'            => getenv('VEDO_DB_NAME') ?: 'db_adı',
+    // Panel yönetici kullanıcı adıdır.
+    'auth_user'          => getenv('VEDO_ADMIN_USER') ?: 'site_panel_kullanıcı_adı',
+    // Panel yönetici şifresidir.
+    'auth_pass'          => getenv('VEDO_ADMIN_PASSWORD') ?: $default_pass,
+    // Saklanacak maksimum .sql.gz yedek sayısıdır. Ne yaptığınızı bilmiyorsanız değiştirmeyin. Varsayılan değer: 30.
+    'max_backups'        => 30,
+    // Otomatik Cron yedekleme isteklerinde kullanılan güvenlik anahtarıdır. Mevcut Cron adresiniz çalışıyorsa değiştirmeyin.
+    // Bu ayarın mevcut mantığını değiştirmeyin; eski Cron adresinin çalışmaya devam etmesi için korunmuştur.
+    'cron_token'         => getenv('VEDO_CRON_TOKEN') ?: 'sql_backup_' . substr(md5('sql_backup_salt'), 0, 10),
+    // Tek INSERT komutunda yazılabilecek maksimum satır sayısıdır. Ne yaptığınızı bilmiyorsanız değiştirmeyin. Varsayılan değer: 500.
+    'max_insert_rows'    => 500,
+    // PDO bağlantılarının kalıcı tutulup tutulmayacağını belirler. Ne yaptığınızı bilmiyorsanız değiştirmeyin. Varsayılan değer: false.
+    'use_persistent_pdo' => false,
+    // Aynı kullanıcı için izin verilen başarısız giriş denemesi sayısıdır. Ne yaptığınızı bilmiyorsanız değiştirmeyin. Varsayılan değer: 5.
+    'max_login_attempts' => 5,
+    // Aynı IP adresi için izin verilen başarısız giriş denemesi sayısıdır. Ne yaptığınızı bilmiyorsanız değiştirmeyin. Varsayılan değer: 20.
+    'max_ip_attempts'    => 20,
+    // Aynı kullanıcı hesabı için toplam başarısız deneme sınırıdır. Ne yaptığınızı bilmiyorsanız değiştirmeyin. Varsayılan değer: 10.
+    'max_user_attempts'  => 10,
+    // Başarısız giriş sayacının geçerli olduğu süredir. Ne yaptığınızı bilmiyorsanız değiştirmeyin. Varsayılan değer: 900 saniye.
+    'rate_limit_window'  => 900,
+    // Güvenlik nedeniyle kilitlenen hesabın bekleme süresidir. Ne yaptığınızı bilmiyorsanız değiştirmeyin. Varsayılan değer: 900 saniye.
+    'lockout_time'       => 900,
+    // Backup / restore ortak işlem kilidinin zaman aşımıdır. Ne yaptığınızı bilmiyorsanız değiştirmeyin. Varsayılan değer: 60 saniye.
+    'lock_timeout'       => 60,
+    // Ana log büyüdüğünde tutulacak eski log dosyası sayısıdır. Ne yaptığınızı bilmiyorsanız değiştirmeyin. Varsayılan değer: 5.
+    'log_rotate_count'   => 5,
+    // Panelin genel yazı tipidir. Görsel ayarları değiştirmek istemiyorsanız elleme. Varsayılan değer: Tahoma, Arial, sans-serif.
+    'ui_font'            => 'Tahoma, Arial, sans-serif',
+    // Kayıtlı tema tercihi olmayan kullanıcılar için varsayılan temadır. Emin değilseniz değiştirmeyin. Varsayılan değer: dark.
+    'ui_default_theme'   => 'dark',
+    // Restore sonrası veritabanı bütünlük doğrulamasını açar veya kapatır. Ne yaptığınızı bilmiyorsanız değiştirmeyin. Varsayılan değer: true.
+    'verify_after_restore' => true,
+    // Restore sonrası ANALYZE TABLE çalıştırılıp çalıştırılmayacağını belirler. Ne yaptığınızı bilmiyorsanız değiştirmeyin. Varsayılan değer: false.
+    'analyze_after_restore' => false
+];
+
+
 if (version_compare(PHP_VERSION, '8.0.0', '<')) {
     if (php_sapi_name() === 'cli') {
         fwrite(STDERR, "ERROR: Minimum PHP 8.0.0 gereklidir. Mevcut: " . PHP_VERSION . "\n");
@@ -109,6 +164,9 @@ class Logger {
 
         $message = preg_replace('/(password|pass|token|secret|csrf|session_id)=["\']?[^"\'&\s]+["\']?/i', '$1=***REDACTED***', $message);
 
+        // Log satırlarının formatını bozan kontrol karakterlerini temizle.
+        $message = preg_replace('/[\x00-\x1F\x7F]+/u', ' ', $message) ?? $message;
+
         if (self::$available && is_file(self::$logFile) && filesize(self::$logFile) > VEDO_MAX_LOG_SIZE) {
             $rotLockFile = self::$logDir . '/rotation.lock';
             $rotFp = @fopen($rotLockFile, 'c+');
@@ -164,53 +222,6 @@ if (php_sapi_name() !== 'cli') {
     header("Cross-Origin-Opener-Policy: same-origin");
     header("Cross-Origin-Resource-Policy: same-origin");
 }
-
-$default_pass = 'siteye_giriş_şifreniz';
-
-$config = [
-    // MySQL sunucusunun adresini belirtir. Ortam değişkeni tanımlıysa onu kullanır.
-    'db_host'            => getenv('VEDO_DB_HOST') ?: 'localhost',
-    // MySQL bağlantısında kullanılacak veritabanı kullanıcı adını belirtir.
-    'db_user'            => getenv('VEDO_DB_USER') ?: 'mysql_kullanıcı_adınız',
-    // MySQL bağlantısında kullanılacak veritabanı şifresini belirtir.
-    'db_pass'            => getenv('VEDO_DB_PASSWORD') ?: 'mysql_şifreniz',
-    // Yedeklenecek ve restore işlemlerinde kullanılacak veritabanının adını belirtir.
-    'db_name'            => getenv('VEDO_DB_NAME') ?: 'mysql_db_adı',
-    // Panel yönetici girişinde kullanılacak kullanıcı adını belirtir.
-    'auth_user'          => getenv('VEDO_ADMIN_USER') ?: 'siteye_giriş_kullanıcı_adınız',
-    // Panel yönetici girişinde kullanılacak şifreyi belirtir.
-    'auth_pass'          => getenv('VEDO_ADMIN_PASSWORD') ?: $default_pass,
-    // Yedek klasöründe en fazla kaç adet SQL yedeği tutulacağını belirtir.
-    'max_backups'        => 30,
-    // Otomatik cron yedekleme isteklerini doğrulamak için kullanılan güvenlik anahtarını belirtir.
-    'cron_token'         => getenv('VEDO_CRON_TOKEN') ?: 'sql_backup_' . substr(md5('sql_backup_salt'), 0, 10),
-    // Backup sırasında tek bir INSERT komutuna en fazla kaç satır yazılacağını belirler.
-    'max_insert_rows'    => 500,
-    // PDO bağlantısının kalıcı olarak açık tutulup tutulmayacağını belirler.
-    'use_persistent_pdo' => false,
-    // Aynı kullanıcı için izin verilen başarısız giriş denemesi sayısını belirler.
-    'max_login_attempts' => 5,
-    // Aynı IP adresinden izin verilen başarısız giriş denemesi sayısını belirler.
-    'max_ip_attempts'    => 20,
-    // Aynı kullanıcı hesabı için izin verilen başarısız deneme sayısını belirler.
-    'max_user_attempts'  => 10,
-    // Başarısız giriş denemelerinin sayıldığı zaman aralığını saniye olarak belirler.
-    'rate_limit_window'  => 900,
-    // Güvenlik nedeniyle kilitlenen hesabın ne kadar süre kilitli kalacağını saniye olarak belirler.
-    'lockout_time'       => 900,
-    // Backup veya restore sırasında kullanılan ortak işlem kilidinin zaman aşımını saniye olarak belirler.
-    'lock_timeout'       => 60,
-    // Güncel log dosyası büyüdüğünde kaç eski log dosyasının saklanacağını belirler.
-    'log_rotate_count'   => 5,
-    // Panelin genel yazı tipini belirler.
-    'ui_font' => 'Tahoma, Arial, sans-serif',
-    // Kullanıcının kayıtlı bir tema tercihi yoksa açılacak varsayılan temayı belirler: 'dark' veya 'light'.
-    'ui_default_theme' => 'light',
-    // Restore tamamlandıktan sonra veritabanı bütünlük kontrolünün yapılıp yapılmayacağını belirler.
-    'verify_after_restore' => true,
-    // Restore tamamlandıktan sonra tablolar için ANALYZE TABLE işleminin yapılıp yapılmayacağını belirler.
-    'analyze_after_restore' => false
-];
 
 $backup_dir = __DIR__ . '/mysqlyedek';
 
@@ -1840,11 +1851,22 @@ function verify_database_integrity_after_restore(PDO $pdo, string $db_name, bool
 function clear_database_for_restore(PDO $pdo, string $db_name): array {
     $dropped = [];
     $failed = [];
+    $counts = [
+        'tables' => 0,
+        'views' => 0,
+        'triggers' => 0,
+        'procedures' => 0,
+        'functions' => 0,
+        'routines' => 0,
+        'events' => 0,
+        'total' => 0,
+    ];
 
     try {
         $pdo->exec('SET FOREIGN_KEY_CHECKS=0');
 
-        $stmt = $pdo->prepare("SELECT TABLE_NAME, TABLE_TYPE FROM information_schema.TABLES WHERE TABLE_SCHEMA = ? ORDER BY TABLE_TYPE, TABLE_NAME");
+        // VIEW'ları tabloların önünde sil. Ardından gerçek tabloları kaldır.
+        $stmt = $pdo->prepare("SELECT TABLE_NAME, TABLE_TYPE FROM information_schema.TABLES WHERE TABLE_SCHEMA = ? ORDER BY CASE WHEN TABLE_TYPE = 'VIEW' THEN 0 ELSE 1 END, TABLE_NAME");
         $stmt->execute([$db_name]);
         $objects = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -1853,62 +1875,110 @@ function clear_database_for_restore(PDO $pdo, string $db_name): array {
             $name = (string)($object['TABLE_NAME'] ?? '');
             $type = strtoupper((string)($object['TABLE_TYPE'] ?? ''));
             if ($name === '' || !preg_match('/^[A-Za-z0-9_$]+$/', $name)) {
-                $failed[] = ['object'=>$name, 'type'=>$type, 'reason'=>'Geçersiz nesne adı'];
+                $failed[] = ['object' => $name, 'type' => $type, 'reason' => 'Geçersiz nesne adı'];
                 continue;
             }
+
             $q = '`' . str_replace('`', '``', $name) . '`';
             try {
                 $pdo->exec($type === 'VIEW' ? "DROP VIEW IF EXISTS {$q}" : "DROP TABLE IF EXISTS {$q}");
-                $dropped[] = ['object'=>$name, 'type'=>$type];
+                $dropped[] = ['object' => $name, 'type' => $type];
+                if ($type === 'VIEW') {
+                    $counts['views']++;
+                } else {
+                    $counts['tables']++;
+                }
             } catch (Throwable $e) {
-                $failed[] = ['object'=>$name, 'type'=>$type, 'reason'=>$e->getMessage()];
+                $failed[] = ['object' => $name, 'type' => $type, 'reason' => $e->getMessage()];
             }
         }
 
-        $queries = [
-            ['sql' => "SELECT TRIGGER_NAME FROM information_schema.TRIGGERS WHERE TRIGGER_SCHEMA = ?", 'type' => 'TRIGGER', 'drop' => 'DROP TRIGGER IF EXISTS `%s`'],
-            ['sql' => "SELECT ROUTINE_NAME, ROUTINE_TYPE FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = ?", 'type' => 'ROUTINE', 'drop' => null],
-            ['sql' => "SELECT EVENT_NAME FROM information_schema.EVENTS WHERE EVENT_SCHEMA = ?", 'type' => 'EVENT', 'drop' => 'DROP EVENT IF EXISTS `%s`'],
-        ];
+        // Trigger'lar tablolar silinse bile ayrıca kaldırılır.
+        try {
+            $stmt = $pdo->prepare("SELECT TRIGGER_NAME FROM information_schema.TRIGGERS WHERE TRIGGER_SCHEMA = ?");
+            $stmt->execute([$db_name]);
+            $triggers = $stmt->fetchAll(PDO::FETCH_COLUMN);
+            $stmt->closeCursor();
 
-        // Triggers
-        $stmt = $pdo->prepare($queries[0]['sql']);
-        $stmt->execute([$db_name]);
-        $triggers = $stmt->fetchAll(PDO::FETCH_COLUMN);
-        $stmt->closeCursor();
-        foreach ($triggers as $name) {
-            $name=(string)$name;
-            if ($name!=='' && preg_match('/^[A-Za-z0-9_$]+$/',$name)) {
-                try { $pdo->exec(sprintf($queries[0]['drop'],$name)); $dropped[]=['object'=>$name,'type'=>'TRIGGER']; }
-                catch(Throwable $e){ $failed[]=['object'=>$name,'type'=>'TRIGGER','reason'=>$e->getMessage()]; }
+            foreach ($triggers as $name) {
+                $name = (string)$name;
+                if ($name === '' || !preg_match('/^[A-Za-z0-9_$]+$/', $name)) {
+                    $failed[] = ['object' => $name, 'type' => 'TRIGGER', 'reason' => 'Geçersiz trigger adı'];
+                    continue;
+                }
+                $q = '`' . str_replace('`', '``', $name) . '`';
+                try {
+                    $pdo->exec("DROP TRIGGER IF EXISTS {$q}");
+                    $dropped[] = ['object' => $name, 'type' => 'TRIGGER'];
+                    $counts['triggers']++;
+                } catch (Throwable $e) {
+                    $failed[] = ['object' => $name, 'type' => 'TRIGGER', 'reason' => $e->getMessage()];
+                }
             }
+        } catch (Throwable $e) {
+            $failed[] = ['object' => '*', 'type' => 'TRIGGER', 'reason' => $e->getMessage()];
         }
 
-        // Procedures / functions
-        $stmt = $pdo->prepare($queries[1]['sql']);
-        $stmt->execute([$db_name]);
-        $routines = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-        foreach ($routines as $r) {
-            $name=(string)($r['ROUTINE_NAME']??''); $type=strtoupper((string)($r['ROUTINE_TYPE']??''));
-            if ($name!=='' && preg_match('/^[A-Za-z0-9_$]+$/',$name)) {
-                $q='`'.str_replace('`','``',$name).'`';
-                try { $pdo->exec($type==='FUNCTION' ? "DROP FUNCTION IF EXISTS {$q}" : "DROP PROCEDURE IF EXISTS {$q}"); $dropped[]=['object'=>$name,'type'=>$type]; }
-                catch(Throwable $e){ $failed[]=['object'=>$name,'type'=>$type,'reason'=>$e->getMessage()]; }
+        // Stored procedure ve function nesnelerini kaldır.
+        try {
+            $stmt = $pdo->prepare("SELECT ROUTINE_NAME, ROUTINE_TYPE FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = ?");
+            $stmt->execute([$db_name]);
+            $routines = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
+
+            foreach ($routines as $routine) {
+                $name = (string)($routine['ROUTINE_NAME'] ?? '');
+                $type = strtoupper((string)($routine['ROUTINE_TYPE'] ?? ''));
+                if ($name === '' || !preg_match('/^[A-Za-z0-9_$]+$/', $name)) {
+                    $failed[] = ['object' => $name, 'type' => $type ?: 'ROUTINE', 'reason' => 'Geçersiz routine adı'];
+                    continue;
+                }
+
+                $q = '`' . str_replace('`', '``', $name) . '`';
+                try {
+                    if ($type === 'FUNCTION') {
+                        $pdo->exec("DROP FUNCTION IF EXISTS {$q}");
+                        $counts['functions']++;
+                    } elseif ($type === 'PROCEDURE') {
+                        $pdo->exec("DROP PROCEDURE IF EXISTS {$q}");
+                        $counts['procedures']++;
+                    } else {
+                        throw new Exception("Desteklenmeyen routine türü: {$type}");
+                    }
+                    $dropped[] = ['object' => $name, 'type' => $type];
+                    $counts['routines']++;
+                } catch (Throwable $e) {
+                    $failed[] = ['object' => $name, 'type' => $type ?: 'ROUTINE', 'reason' => $e->getMessage()];
+                }
             }
+        } catch (Throwable $e) {
+            $failed[] = ['object' => '*', 'type' => 'ROUTINE', 'reason' => $e->getMessage()];
         }
 
-        // Events
-        $stmt = $pdo->prepare($queries[2]['sql']);
-        $stmt->execute([$db_name]);
-        $events = $stmt->fetchAll(PDO::FETCH_COLUMN);
-        $stmt->closeCursor();
-        foreach ($events as $name) {
-            $name=(string)$name;
-            if ($name!=='' && preg_match('/^[A-Za-z0-9_$]+$/',$name)) {
-                try { $pdo->exec(sprintf($queries[2]['drop'],$name)); $dropped[]=['object'=>$name,'type'=>'EVENT']; }
-                catch(Throwable $e){ $failed[]=['object'=>$name,'type'=>'EVENT','reason'=>$e->getMessage()]; }
+        // Event Scheduler nesnelerini kaldır.
+        try {
+            $stmt = $pdo->prepare("SELECT EVENT_NAME FROM information_schema.EVENTS WHERE EVENT_SCHEMA = ?");
+            $stmt->execute([$db_name]);
+            $events = $stmt->fetchAll(PDO::FETCH_COLUMN);
+            $stmt->closeCursor();
+
+            foreach ($events as $name) {
+                $name = (string)$name;
+                if ($name === '' || !preg_match('/^[A-Za-z0-9_$]+$/', $name)) {
+                    $failed[] = ['object' => $name, 'type' => 'EVENT', 'reason' => 'Geçersiz event adı'];
+                    continue;
+                }
+                $q = '`' . str_replace('`', '``', $name) . '`';
+                try {
+                    $pdo->exec("DROP EVENT IF EXISTS {$q}");
+                    $dropped[] = ['object' => $name, 'type' => 'EVENT'];
+                    $counts['events']++;
+                } catch (Throwable $e) {
+                    $failed[] = ['object' => $name, 'type' => 'EVENT', 'reason' => $e->getMessage()];
+                }
             }
+        } catch (Throwable $e) {
+            $failed[] = ['object' => '*', 'type' => 'EVENT', 'reason' => $e->getMessage()];
         }
 
         $pdo->exec('SET FOREIGN_KEY_CHECKS=1');
@@ -1917,11 +1987,30 @@ function clear_database_for_restore(PDO $pdo, string $db_name): array {
         throw $e;
     }
 
+    $counts['total'] = count($dropped);
+
     if ($failed) {
         throw new Exception('Restore öncesi veritabanı tamamen temizlenemedi: ' . json_encode($failed, JSON_UNESCAPED_UNICODE));
     }
-    Logger::warning("Restore öncesi veritabanı temizlendi: {$db_name}; silinen nesne: " . count($dropped));
-    return $dropped;
+
+    Logger::warning(sprintf(
+        'Restore öncesi veritabanı temizlendi: %s | tables=%d | views=%d | triggers=%d | procedures=%d | functions=%d | routines=%d | events=%d | total=%d',
+        $db_name,
+        $counts['tables'],
+        $counts['views'],
+        $counts['triggers'],
+        $counts['procedures'],
+        $counts['functions'],
+        $counts['routines'],
+        $counts['events'],
+        $counts['total']
+    ));
+
+    return [
+        'dropped' => $dropped,
+        'failed' => $failed,
+        'counts' => $counts,
+    ];
 }
 function verify_restore_source_integrity(string $file_path): string {
     $hash = verify_backup_checksum($file_path);
@@ -2018,11 +2107,19 @@ function restore_parse_buffer(string $buffer, string &$queryBuffer, bool &$inStr
 
         if ($inString) {
             $queryBuffer .= $char;
+
             if ($escaped) {
                 $escaped = false;
             } elseif ($char === '\\') {
                 $escaped = true;
             } elseif ($char === $stringChar) {
+                // MySQL, tek ve çift tırnak içinde iki ardışık aynı tırnağı
+                // tek bir karakter olarak kabul edebilir: 'it''s' / "a""b".
+                if (($stringChar === "'" || $stringChar === '"' || $stringChar === '`') && $nextChar === $stringChar) {
+                    $queryBuffer .= $nextChar;
+                    $i++;
+                    continue;
+                }
                 $inString = false;
                 $stringChar = '';
             }
@@ -2103,7 +2200,7 @@ function restore_parse_buffer(string $buffer, string &$queryBuffer, bool &$inStr
 
     return $extractedQueries;
 }
-// Kapanmamış string/comment/delimiter veya yarım DELIMITER yönergesi varsa restore'u reddeder.
+// Dosya sonunda kapanmamış string, yorum veya DELIMITER durumu varsa işlemi reddet.
 function finalize_restore_parser(string &$queryBuffer, bool $inString, string $stringChar, bool $inCommentMulti, bool $inCommentSingle, bool $escaped, string $currentDelimiter, string $delimiterLineBuffer = ''): ?string {
     if ($inString) {
         throw new Exception('Restore dosyası EOF noktasında kapanmamış SQL stringi içeriyor.');
@@ -2136,6 +2233,185 @@ function finalize_restore_parser(string &$queryBuffer, bool $inString, string $s
 
     return $remaining;
 }
+
+/**
+ * DOĞRUDAN SQL DOSYASI İÇERİ AKTARMA
+ *
+ * Bu işlem RESTORE motorundan tamamen bağımsızdır:
+ * - mysqlyedek klasöründen dosya okumaz.
+ * - Mevcut veritabanını temizlemez/formatlamaz.
+ * - Restore SQL güvenlik filtresini kullanmaz; seçilen dosyadaki SQL
+ *   ifadelerini mevcut bağlantıdaki veritabanında sırayla çalıştırır.
+ * - DELIMITER kullanan PROCEDURE / FUNCTION / TRIGGER / EVENT scriptlerini destekler.
+ * - Bir sorgu hata verdiğinde sonraki sorguların çalışmasına devam eder ve
+ *   hataları raporlar.
+ */
+function import_uploaded_sql_file(PDO $pdo, array $uploadedFile, string $db_name): array {
+    @set_time_limit(0);
+    @ignore_user_abort(true);
+
+    $uploadError = (int)($uploadedFile['error'] ?? UPLOAD_ERR_NO_FILE);
+    if ($uploadError !== UPLOAD_ERR_OK) {
+        $messages = [
+            UPLOAD_ERR_INI_SIZE => 'SQL dosyası sunucunun upload_max_filesize sınırını aşıyor.',
+            UPLOAD_ERR_FORM_SIZE => 'SQL dosyası form tarafından izin verilen boyutu aşıyor.',
+            UPLOAD_ERR_PARTIAL => 'SQL dosyası eksik yüklendi.',
+            UPLOAD_ERR_NO_FILE => 'SQL dosyası seçilmedi.',
+            UPLOAD_ERR_NO_TMP_DIR => 'Sunucuda geçici upload klasörü bulunamadı.',
+            UPLOAD_ERR_CANT_WRITE => 'Yüklenen SQL dosyası geçici alana yazılamadı.',
+            UPLOAD_ERR_EXTENSION => 'Bir PHP uzantısı SQL dosyası yüklemesini durdurdu.',
+        ];
+        throw new Exception($messages[$uploadError] ?? 'SQL dosyası yüklenemedi.');
+    }
+
+    $tmpPath = (string)($uploadedFile['tmp_name'] ?? '');
+    $originalName = basename((string)($uploadedFile['name'] ?? 'sql-import.sql'));
+    $fileSize = (int)($uploadedFile['size'] ?? 0);
+
+    if ($tmpPath === '' || !is_uploaded_file($tmpPath) || !is_readable($tmpPath)) {
+        throw new Exception('Yüklenen SQL dosyasının geçici kopyası okunamadı.');
+    }
+
+    $handle = @fopen($tmpPath, 'rb');
+    if ($handle === false) {
+        throw new Exception('Yüklenen SQL dosyası açılamadı.');
+    }
+
+    $queryBuffer = '';
+    $inString = false;
+    $stringChar = '';
+    $inCommentMulti = false;
+    $inCommentSingle = false;
+    $escaped = false;
+    $currentDelimiter = ';';
+    $delimiterLineBuffer = '';
+    $queryCount = 0;
+    $successCount = 0;
+    $errorCount = 0;
+    $lineApprox = 1;
+    $errors = [];
+    $startedAt = microtime(true);
+
+    $executeQuery = static function (string $sql) use ($pdo, &$queryCount, &$successCount, &$errorCount, &$errors, &$lineApprox): void {
+        $sql = trim($sql);
+        $sql = preg_replace('/^\xEF\xBB\xBF/', '', $sql) ?? $sql;
+        if ($sql === '') return;
+
+        $queryCount++;
+        try {
+            // Burada validate_restore_sql_statement() bilerek çağrılmaz.
+            // SQL import, restore filtresinden bağımsız çalışır.
+            $pdo->exec($sql);
+            $successCount++;
+        } catch (Throwable $e) {
+            $errorCount++;
+            if (count($errors) < 100) {
+                $firstLine = preg_split('/\R/', $sql, 2)[0] ?? $sql;
+                $firstLine = mb_substr(trim($firstLine), 0, 500);
+                $errors[] = [
+                    'query' => $queryCount,
+                    'line' => $lineApprox,
+                    'sql' => $firstLine,
+                    'error' => $e->getMessage()
+                ];
+            }
+            Logger::error(sprintf(
+                'SQL IMPORT SORGU HATASI | query=%d | line=%d | error=%s | sql=%s',
+                $queryCount,
+                $lineApprox,
+                $e->getMessage(),
+                summarize_sql_for_log($sql)
+            ));
+            // Hata olsa bile sonraki SQL komutları çalıştırılmaya devam eder.
+        }
+    };
+
+    try {
+        while (!feof($handle)) {
+            $chunk = fread($handle, VEDO_RESTORE_CHUNK_BYTES);
+            if ($chunk === false) {
+                throw new Exception('SQL dosyası okunurken hata oluştu.');
+            }
+            if ($chunk === '') continue;
+
+            $lineApprox += substr_count($chunk, "\n");
+            $queries = restore_parse_buffer(
+                $chunk,
+                $queryBuffer,
+                $inString,
+                $stringChar,
+                $inCommentMulti,
+                $inCommentSingle,
+                $escaped,
+                $currentDelimiter,
+                $delimiterLineBuffer
+            );
+
+            foreach ($queries as $query) {
+                $executeQuery($query);
+            }
+        }
+
+        // Dosya sonunda satır sonu yoksa son DELIMITER yönergesini de işleyebilmek için
+        // parser'a tek bir newline gönderilir. Bu, normal SQL içeriğini değiştirmez.
+        if ($delimiterLineBuffer !== '' && !$inString && !$inCommentMulti && !$inCommentSingle) {
+            $queries = restore_parse_buffer(
+                "\n",
+                $queryBuffer,
+                $inString,
+                $stringChar,
+                $inCommentMulti,
+                $inCommentSingle,
+                $escaped,
+                $currentDelimiter,
+                $delimiterLineBuffer
+            );
+            foreach ($queries as $query) {
+                $executeQuery($query);
+            }
+        }
+
+        $finalQuery = finalize_restore_parser(
+            $queryBuffer,
+            $inString,
+            $stringChar,
+            $inCommentMulti,
+            $inCommentSingle,
+            $escaped,
+            $currentDelimiter,
+            $delimiterLineBuffer
+        );
+        if ($finalQuery !== null) {
+            $executeQuery($finalQuery);
+        }
+    } finally {
+        fclose($handle);
+    }
+
+    $duration = round(microtime(true) - $startedAt, 2);
+    Logger::info(sprintf(
+        'SQL IMPORT TAMAMLANDI | db=%s | file=%s | bytes=%d | queries=%d | success=%d | errors=%d | duration=%ss',
+        $db_name,
+        $originalName,
+        $fileSize,
+        $queryCount,
+        $successCount,
+        $errorCount,
+        $duration
+    ));
+
+    return [
+        'file_name' => $originalName,
+        'file_size' => $fileSize,
+        'formatted_size' => format_bytes($fileSize),
+        'queries' => $queryCount,
+        'success' => $successCount,
+        'errors' => $errorCount,
+        'duration_seconds' => $duration,
+        'error_details' => $errors,
+    ];
+}
+
 function validate_restore_sql_statement(string $sql, bool $throw = true): bool {
     $allowed_sql_regexes = [
         '/^CREATE\s+(?:OR\s+REPLACE\s+)?(?:TEMPORARY\s+)?TABLE\s+/i',
@@ -2203,6 +2479,13 @@ function validate_backup_restore_compatibility(string $file_path): array {
             if ($chunk === false) throw new Exception('Gzip test restore doğrulaması okunurken hata oluştu.');
             if ($chunk === '') continue;
             $queries = restore_parse_buffer($chunk, $query_buffer, $in_string, $string_char, $in_comment_multi, $in_comment_single, $escaped, $current_delimiter, $delimiter_line_buffer);
+            foreach ($queries as $query) {
+                validate_restore_sql_statement($query, true);
+                $query_count++;
+            }
+        }
+        if ($delimiter_line_buffer !== '' && !$in_string && !$in_comment_multi && !$in_comment_single) {
+            $queries = restore_parse_buffer("\n", $query_buffer, $in_string, $string_char, $in_comment_multi, $in_comment_single, $escaped, $current_delimiter, $delimiter_line_buffer);
             foreach ($queries as $query) {
                 validate_restore_sql_statement($query, true);
                 $query_count++;
@@ -2575,7 +2858,7 @@ function get_web_worker_tables(PDO $pdo, string $db_name): array {
     $stmt->closeCursor();
     return $tables;
 }
-// NOT: Web fallback, CLI'daki tek transaction/consistent snapshot modelinden farklı olarak tablo bazlı ilerler.
+// Not: Web Worker, CLI'deki tek transaction/consistent snapshot modelinden farklı olarak tablo bazlı ilerler.
 // Bunun nedeni shared hosting HTTP istekleri arasında aynı PDO transactionının güvenilir biçimde korunamamasıdır.
 function web_backup_step(
     PDO $pdo,
@@ -2961,18 +3244,23 @@ function web_restore_step(PDO $pdo, string $job_id, string $backup_dir, array $c
         $state['rows_count'] = 0;
         $state['cleanup_verified'] = true;
         $state['cleanup_counts'] = $emptyReport;
+        $state['cleanup_report'] = $clearReport['counts'] ?? [];
         $state['message'] = 'Veritabanı formatlandı ve tamamen boş olduğu doğrulandı. Restore başlıyor.';
         $state['current_table'] = 'Restore başlatılıyor';
         write_cli_job_state($backup_dir, $job_id, $state);
+        $cleanupCounts = $clearReport['counts'] ?? [];
         Logger::warning(sprintf(
-            'WEB RESTORE DB FORMATLANDI | job_id=%s | file=%s | silinen_nesne=%d | tables=%d | triggers=%d | routines=%d | events=%d',
+            'WEB RESTORE DB FORMATLANDI | job_id=%s | file=%s | silinen_nesne=%d | tables=%d | views=%d | triggers=%d | procedures=%d | functions=%d | routines=%d | events=%d | kalan=0',
             $job_id,
             $file,
-            count($clearReport['dropped'] ?? []),
-            $emptyReport['tables'],
-            $emptyReport['triggers'],
-            $emptyReport['routines'],
-            $emptyReport['events']
+            (int)($cleanupCounts['total'] ?? count($clearReport['dropped'] ?? [])),
+            (int)($cleanupCounts['tables'] ?? 0),
+            (int)($cleanupCounts['views'] ?? 0),
+            (int)($cleanupCounts['triggers'] ?? 0),
+            (int)($cleanupCounts['procedures'] ?? 0),
+            (int)($cleanupCounts['functions'] ?? 0),
+            (int)($cleanupCounts['routines'] ?? 0),
+            (int)($cleanupCounts['events'] ?? 0)
         ));
         return $state;
     }
@@ -3103,7 +3391,7 @@ function web_restore_step(PDO $pdo, string $job_id, string $backup_dir, array $c
             $state['backup_sha256'] = (string)($state['backup_sha256'] ?? '');
             $state['integrity'] = $integrity;
             $state['message'] = 'Restore başarıyla tamamlandı.';
-            $state['current_table'] = $currentRestoreTable !== '' ? $currentRestoreTable : 'Restore tamamlandı';
+            $state['current_table'] = 'Tamamlandı';
             Logger::info(sprintf(
                 'WEB RESTORE BAŞARILI | job_id=%s | file=%s | tables=%d | rows=%d | duration=%ss | integrity=%s',
                 $job_id,
@@ -3230,7 +3518,8 @@ function perform_restore_cli_job(
         'tables_count' => 0,
         'rows_count' => 0,
         'source_verified' => false,
-        'cleanup_verified' => false
+        'cleanup_verified' => false,
+        'cleanup_report' => []
     ]);
 
     try {
@@ -3238,15 +3527,29 @@ function perform_restore_cli_job(
         Logger::info(sprintf('CLI RESTORE KAYNAK DOĞRULANDI | file=%s | sha256=%s', $file, $backup_sha256));
 
         $clearReport = clear_database_for_restore($pdo, $config['db_name']);
+        $failedCount = count($clearReport['failed'] ?? []);
+        if ($failedCount > 0) {
+            $firstFailure = $clearReport['failed'][0] ?? [];
+            throw new Exception(
+                'Veritabanı temizlenemedi. Nesne: ' . (string)($firstFailure['object'] ?? '-') .
+                ' | Tür: ' . (string)($firstFailure['type'] ?? '-') .
+                ' | Hata: ' . (string)($firstFailure['reason'] ?? 'Bilinmeyen hata')
+            );
+        }
+
         $emptyReport = verify_database_is_empty_for_restore($pdo, $config['db_name']);
+        $cleanupCounts = $clearReport['counts'] ?? [];
         Logger::warning(sprintf(
-            'CLI RESTORE DB FORMATLANDI | file=%s | silinen_nesne=%d | tables=%d | triggers=%d | routines=%d | events=%d',
+            'CLI RESTORE DB FORMATLANDI | file=%s | silinen_nesne=%d | tables=%d | views=%d | triggers=%d | procedures=%d | functions=%d | routines=%d | events=%d | kalan=0',
             $file,
-            count($clearReport['dropped'] ?? []),
-            $emptyReport['tables'],
-            $emptyReport['triggers'],
-            $emptyReport['routines'],
-            $emptyReport['events']
+            (int)($cleanupCounts['total'] ?? count($clearReport['dropped'] ?? [])),
+            (int)($cleanupCounts['tables'] ?? 0),
+            (int)($cleanupCounts['views'] ?? 0),
+            (int)($cleanupCounts['triggers'] ?? 0),
+            (int)($cleanupCounts['procedures'] ?? 0),
+            (int)($cleanupCounts['functions'] ?? 0),
+            (int)($cleanupCounts['routines'] ?? 0),
+            (int)($cleanupCounts['events'] ?? 0)
         ));
 
         $pdo->exec('SET FOREIGN_KEY_CHECKS=0');
@@ -3273,7 +3576,8 @@ function perform_restore_cli_job(
                 'percent' => 0,
                 'file' => $file,
                 'tables_count' => 0,
-                'rows_count' => 0
+                'rows_count' => 0,
+                'cleanup_report' => $cleanupCounts
             ]);
 
             while (!gzeof($gz)) {
@@ -3348,7 +3652,7 @@ function perform_restore_cli_job(
                 'file' => $file,
                 'tables_count' => $tables_count,
                 'rows_count' => $rows_count,
-                'current_table' => $current_restore_table !== '' ? $current_restore_table : 'Restore tamamlandı',
+                'current_table' => 'Tamamlandı',
                 'processed_bytes' => $file_size,
                 'file_size' => $file_size,
                 'duration_seconds' => $restore_duration,
@@ -3600,7 +3904,7 @@ function run_cli_job_from_argv(array $argv, array $config, string $backup_dir): 
                 'file' => basename($file_path),
                 'size' => $size,
                 'duration_seconds' => max(0, $duration),
-                'current_table' => $final_state['current_table'] ?? '',
+                'current_table' => 'Tamamlandı',
                 'current_table_index' => (int)($final_state['total_tables'] ?? 0),
                 'total_tables' => (int)($final_state['total_tables'] ?? 0),
                 'processed_rows' => (int)($final_state['processed_rows'] ?? 0),
@@ -4353,7 +4657,7 @@ function get_server_metrics(array $config, string $backup_dir): array {
     }
     $metrics['backup_dir']['last_successful'] = $latestBackup;
 
-    // Database MySQL Version + summary
+    // MySQL sürümü ve veritabanı özeti
     try {
         $pdo = get_pdo($config['db_host'], $config['db_user'], $config['db_pass'], $config['db_name']);
         $metrics['mysql_version'] = $pdo->getAttribute(PDO::ATTR_SERVER_VERSION) ?: 'N/A';
@@ -4442,8 +4746,20 @@ function get_table_preview(PDO $pdo, string $db_name, string $table, int $limit 
 }
 function perform_table_maintenance(PDO $pdo, string $db_name, string $table, string $operation): string {
     $table = validate_db_identifier($table);
+    $operation = strtolower(trim($operation));
     $allowed = ['analyze' => 'ANALYZE TABLE', 'repair' => 'REPAIR TABLE', 'optimize' => 'OPTIMIZE TABLE'];
     if (!isset($allowed[$operation])) throw new Exception('Geçersiz bakım işlemi.');
+
+    if ($operation === 'repair') {
+        $engineStmt = $pdo->prepare("SELECT ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? LIMIT 1");
+        $engineStmt->execute([$db_name, $table]);
+        $engine = strtoupper((string)($engineStmt->fetchColumn() ?? ''));
+        $engineStmt->closeCursor();
+        if ($engine !== 'MYISAM') {
+            throw new Exception("REPAIR TABLE yalnızca MyISAM tablolarında kullanılabilir. Mevcut motor: {$engine}");
+        }
+    }
+
     $stmt = $pdo->query($allowed[$operation] . " `{$table}`");
     $rows = $stmt ? $stmt->fetchAll(PDO::FETCH_ASSOC) : [];
     if ($stmt) $stmt->closeCursor();
@@ -4484,6 +4800,7 @@ $allowed_actions = [
     'db_table_maintenance',
     'db_table_truncate',
     'db_table_drop',
+    'import_sql_upload',
     'bulk_delete_backups',
     'client_activity_log',
     'empty_database'
@@ -4505,71 +4822,109 @@ if (!empty($action)) {
         json_response(false, 'Güvenlik Doğrulaması (CSRF) Başarısız!', [], 403);
     }
 
-        // SADECE CPU/RAM/DISK: dashboard/log/SQL akışına dokunmaz.
-        // Bu endpoint PDO bağlantısı kurmaz ve yalnızca sistem metriklerini döndürür.
-        if ($action === 'live_metrics') {
-            $cpuLive = get_instant_cpu_metrics(120);
-            $cpuPercent = (float)$cpuLive['percent'];
-            $cpuCores = (int)$cpuLive['cores'];
-            $load1 = (float)$cpuLive['load_1min'];
-            $load5 = (float)$cpuLive['load_5min'];
-            $load15 = (float)$cpuLive['load_15min'];
+    // Canlı sistem metrikleri PDO bağlantısı açmadan döndürülür.
+    if ($action === 'live_metrics') {
+                $cpuLive = get_instant_cpu_metrics(120);
+                $cpuPercent = (float)$cpuLive['percent'];
+                $cpuCores = (int)$cpuLive['cores'];
+                $load1 = (float)$cpuLive['load_1min'];
+                $load5 = (float)$cpuLive['load_5min'];
+                $load15 = (float)$cpuLive['load_15min'];
 
-            $ramTotal = 0;
-            $ramAvailable = 0;
-            if (is_readable('/proc/meminfo')) {
-                $mem = @file_get_contents('/proc/meminfo');
-                if ($mem !== false) {
-                    if (preg_match('/MemTotal:\s+(\d+)\s+kB/i', $mem, $m)) {
-                        $ramTotal = (int)$m[1] * 1024;
-                    }
-                    if (preg_match('/MemAvailable:\s+(\d+)\s+kB/i', $mem, $m)) {
-                        $ramAvailable = (int)$m[1] * 1024;
+                $ramTotal = 0;
+                $ramAvailable = 0;
+                if (is_readable('/proc/meminfo')) {
+                    $mem = @file_get_contents('/proc/meminfo');
+                    if ($mem !== false) {
+                        if (preg_match('/MemTotal:\s+(\d+)\s+kB/i', $mem, $m)) {
+                            $ramTotal = (int)$m[1] * 1024;
+                        }
+                        if (preg_match('/MemAvailable:\s+(\d+)\s+kB/i', $mem, $m)) {
+                            $ramAvailable = (int)$m[1] * 1024;
+                        }
                     }
                 }
-            }
-            $ramUsed = max(0, $ramTotal - $ramAvailable);
-            $ramPercent = $ramTotal > 0 ? round(($ramUsed / $ramTotal) * 100, 1) : 0;
+                $ramUsed = max(0, $ramTotal - $ramAvailable);
+                $ramPercent = $ramTotal > 0 ? round(($ramUsed / $ramTotal) * 100, 1) : 0;
 
-            $diskPath = $backup_dir;
-            $diskFree = @disk_free_space($diskPath);
-            $diskTotal = @disk_total_space($diskPath);
-            $diskUsed = ($diskFree !== false && $diskTotal !== false && $diskTotal > 0)
-                ? max(0, $diskTotal - $diskFree) : 0;
-            $diskPercent = ($diskTotal !== false && $diskTotal > 0)
-                ? round(($diskUsed / $diskTotal) * 100, 1) : 0;
+                $diskPath = $backup_dir;
+                $diskFree = @disk_free_space($diskPath);
+                $diskTotal = @disk_total_space($diskPath);
+                $diskUsed = ($diskFree !== false && $diskTotal !== false && $diskTotal > 0)
+                    ? max(0, $diskTotal - $diskFree) : 0;
+                $diskPercent = ($diskTotal !== false && $diskTotal > 0)
+                    ? round(($diskUsed / $diskTotal) * 100, 1) : 0;
 
-            json_response(true, 'Canlı metrikler.', [
-                'cpu' => [
-                    'percent' => $cpuPercent,
-                    'load_1min' => $load1,
-                    'load_5min' => $load5,
-                    'load_15min' => $load15,
-                    'cores' => $cpuCores,
-                    'sample_ms' => (int)$cpuLive['sample_ms'],
-                    'source' => (string)$cpuLive['source']
-                ],
-                'ram' => [
-                    'percent' => $ramPercent,
-                    'used' => $ramUsed,
-                    'total' => $ramTotal,
-                    'free' => $ramAvailable
-                ],
-                'disk' => [
-                    'percent' => $diskPercent,
-                    'used' => $diskUsed,
-                    'total' => $diskTotal,
-                    'free' => $diskFree !== false ? $diskFree : 0
-                ]
-            ]);
-        }
-
+                json_response(true, 'Canlı metrikler.', [
+                    'cpu' => [
+                        'percent' => $cpuPercent,
+                        'load_1min' => $load1,
+                        'load_5min' => $load5,
+                        'load_15min' => $load15,
+                        'cores' => $cpuCores,
+                        'sample_ms' => (int)$cpuLive['sample_ms'],
+                        'source' => (string)$cpuLive['source']
+                    ],
+                    'ram' => [
+                        'percent' => $ramPercent,
+                        'used' => $ramUsed,
+                        'total' => $ramTotal,
+                        'free' => $ramAvailable
+                    ],
+                    'disk' => [
+                        'percent' => $diskPercent,
+                        'used' => $diskUsed,
+                        'total' => $diskTotal,
+                        'free' => $diskFree !== false ? $diskFree : 0
+                    ]
+                ]);
+    }
     try {
         $pdo = init_pdo_with_dynamic_memory($config);
 
         if ($action === 'db_tables') {
             json_response(true, 'Tablolar listelendi.', ['tables' => get_database_tables($pdo, $config['db_name']), 'database' => $config['db_name']]);
         }
+
+        if ($action === 'import_sql_upload') {
+            require_post();
+
+            if (!verify_csrf_token((string)($_POST['csrf_token'] ?? ''))) {
+                json_response(false, 'CSRF doğrulaması başarısız.', [], 403);
+            }
+
+            if (!isset($_FILES['sql_file']) || !is_array($_FILES['sql_file'])) {
+                json_response(false, 'SQL dosyası seçilmedi.', [], 400);
+            }
+
+            $lockHandle = acquire_system_lock($backup_dir, VEDO_DATABASE_OPERATION_LOCK, (int)$config['lock_timeout']);
+            if (!$lockHandle) {
+                json_response(false, 'Başka bir veritabanı işlemi aktif. SQL içeri aktarma başlatılamaz.', [], 409);
+            }
+
+            try {
+                require_database_operation_lock($lockHandle, $backup_dir);
+                update_system_lock_heartbeat($lockHandle);
+
+                $importReport = import_uploaded_sql_file($pdo, $_FILES['sql_file'], $config['db_name']);
+                update_system_lock_heartbeat($lockHandle);
+
+                $hasErrors = ((int)$importReport['errors']) > 0;
+                json_response(
+                    true,
+                    $hasErrors
+                        ? 'SQL içeri aktarma tamamlandı; bazı sorgular hata verdi ve sonraki sorgular çalıştırılmaya devam edildi.'
+                        : 'SQL içeri aktarma başarıyla tamamlandı.',
+                    $importReport
+                );
+            } catch (Throwable $e) {
+                Logger::error('SQL IMPORT BAŞARISIZ | db=' . $config['db_name'] . ' | error=' . $e->getMessage());
+                json_response(false, 'SQL içeri aktarma başlatılamadı: ' . $e->getMessage(), [], 500);
+            } finally {
+                release_system_lock($lockHandle);
+            }
+        }
+
 
         if ($action === 'db_table_structure') {
             $table = validate_db_identifier((string)($_POST['table'] ?? $_GET['table'] ?? ''));
@@ -4743,36 +5098,34 @@ if (!empty($action)) {
             ]);
         }
 
-if ($action === 'client_activity_log') {
-    require_post();
-    if (!verify_csrf_token((string)($_POST['csrf_token'] ?? ''))) {
-        json_response(false, 'CSRF doğrulaması başarısız.', [], 403);
+    if ($action === 'client_activity_log') {
+        require_post();
+        if (!verify_csrf_token((string)($_POST['csrf_token'] ?? ''))) {
+            json_response(false, 'CSRF doğrulaması başarısız.', [], 403);
+        }
+
+        $actionName = trim((string)($_POST['action_name'] ?? ''));
+        $details = trim((string)($_POST['details'] ?? ''));
+
+        // Aktivite adı kısa ve hassas veri içermemeli.
+        if ($actionName === '' || !preg_match('/^[\p{L}\p{N}_ .:+\-\/()]+$/u', $actionName)) {
+            json_response(false, 'Geçersiz aktivite adı.', [], 400);
+        }
+
+        $details = mb_substr($details, 0, 500);
+        // Aktivite ayrıntılarındaki hassas değerleri loglamadan önce maskele.
+        $details = preg_replace(
+            '/((?:password|passwd|pass|token|secret|csrf|session[_-]?id|authorization|cookie)\s*[:=]\s*)[^|,;\s]+/iu',
+            '$1***REDACTED***',
+            $details
+        ) ?? $details;
+        // Kullanıcıdan gelen ayrıntılar log satırını bölerek sahte kayıt üretmemeli.
+        $details = preg_replace('/[\x00-\x1F\x7F]+/u', ' ', $details) ?? $details;
+        $details = preg_replace('/\s{2,}/u', ' ', $details) ?? $details;
+
+        Logger::info('Panel işlemi: ' . $actionName . ($details !== '' ? ' | ' . $details : ''));
+        json_response(true, 'Aktivite loglandı.');
     }
-
-    $actionName = trim((string)($_POST['action_name'] ?? ''));
-    $details = trim((string)($_POST['details'] ?? ''));
-
-    // Aktivite adı kısa ve hassas veri içermemeli.
-    if ($actionName === '' || !preg_match('/^[\p{L}\p{N}_ .:+\-\/()]+$/u', $actionName)) {
-        json_response(false, 'Geçersiz aktivite adı.', [], 400);
-    }
-
-    $details = mb_substr($details, 0, 500);
-    // Aktivite ayrıntılarındaki hassas değerleri loglamadan önce maskele.
-    $details = preg_replace(
-        '/(?:password|passwd|pass|token|secret|csrf|session[_-]?id|authorization|cookie)\s*[:=]\s*[^|,;\s]+/iu',
-        '$0',
-        $details
-    ) ?? $details;
-    $details = preg_replace(
-        '/((?:password|passwd|pass|token|secret|csrf|session[_-]?id|authorization|cookie)\s*[:=]\s*)[^|,;\s]+/iu',
-        '$1***REDACTED***',
-        $details
-    ) ?? $details;
-    $details = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', '', $details) ?? $details;
-    Logger::info('Panel işlemi: ' . $actionName . ($details !== '' ? ' | ' . $details : ''));
-    json_response(true, 'Aktivite loglandı.');
-}
 
 if ($action === 'bulk_delete_backups') {
     require_post();
@@ -5269,9 +5622,8 @@ if ($action === 'download_backup') {
         if ($action === 'clear_logs') {
             require_post();
             $log_path = $backup_dir . '/system.log';
-            if (is_file($log_path)) {
-                safe_file_put_contents($log_path, '');
-                Logger::info("Sistem logları kullanıcı tarafından temizlendi.");
+            if (is_file($log_path) && !safe_file_put_contents($log_path, '')) {
+                json_response(false, 'Sistem logları temizlenemedi.', [], 500);
             }
             json_response(true, 'Loglar başarıyla temizlendi.');
         }
@@ -5332,24 +5684,7 @@ if ($action === 'download_backup') {
             ]);
         }
 
-        if ($action === 'get_cli_job_progress') {
-            require_post();
-            $job_id = (string)($_POST['job_id'] ?? '');
-            if (!preg_match('/^[a-f0-9]{32}$/', $job_id)) {
-                json_response(false, 'Geçersiz CLI job ID.', [], 400);
-            }
-            $state = read_cli_job_state($backup_dir, $job_id);
-            if (!$state) {
-                json_response(true, 'CLI job henüz başlamadı.', [
-                    'status' => 'starting',
-                    'percent' => 0,
-                    'job_id' => $job_id
-                ]);
-            }
-            json_response(true, 'CLI job durumu alındı.', $state);
-        }
-
-    } catch (Throwable $e) {
+            } catch (Throwable $e) {
         Logger::error("API İşlem Hatası ({$action}): " . get_class($e) . ' - ' . $e->getMessage());
         json_response(false, 'API işlem hatası: ' . $e->getMessage(), [], 500);
     }
@@ -6712,6 +7047,8 @@ td { font-size: 13px !important; line-height: 1.45 !important; font-weight: 400 
                     <button class="btn btn-red" id="dbTruncateBtn" type="button">Boşalt</button>
                     <button class="btn btn-red" id="dbDropBtn" type="button">Sil</button>
                     <button class="btn btn-secondary" id="dbRefreshBtn" type="button">Tabloları Yenile</button>
+                    <button class="btn btn-green" id="dbSqlImportBtn" type="button">SQL İçeri Aktar</button>
+                    <input type="file" id="dbSqlImportFile" accept=".sql,text/plain,application/sql" style="display:none">
                     <button class="btn btn-red" id="dbEmptyDatabaseBtn" type="button">Veritabanını Tamamen Temizle</button>
                 </div>
                 <div id="dbTableMeta" style="color:var(--text-secondary);margin-bottom:10px;">-</div>
@@ -6732,7 +7069,7 @@ td { font-size: 13px !important; line-height: 1.45 !important; font-weight: 400 
     <!-- CANLI YEDEKLEME İLERLEME PANELİ -->
     <div class="panel-box" id="live-progress-panel">
         <div class="section-title">
-            <span>Canlı Yedekleme İlerlemesi</span>
+            <span id="bg-progress-title">Canlı Yedekleme İlerlemesi</span>
             <span class="badge badge-warning" id="bg-status-badge">ÇALIŞIYOR</span>
         </div>
         <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
@@ -6947,7 +7284,7 @@ td { font-size: 13px !important; line-height: 1.45 !important; font-weight: 400 
         if (e.target.id === 'vedoConfirmOverlay') closeConfirm(false);
     });
 
-    // XSS Escape Helper
+    // XSS için HTML kaçış yardımcı fonksiyonu
     function escapeHtml(str) {
         return String(str)
             .replace(/&/g, '&amp;')
@@ -6957,7 +7294,7 @@ td { font-size: 13px !important; line-height: 1.45 !important; font-weight: 400 
             .replace(/'/g, '&#039;');
     }
 
-    // Merkezi API isteği.
+    // Tüm AJAX/API çağrılarını tek noktadan yönetir.
     async function apiRequest(action, data = {}, usePost = true) {
         const body = new URLSearchParams();
         body.append('csrf_token', CSRF_TOKEN);
@@ -7011,7 +7348,7 @@ td { font-size: 13px !important; line-height: 1.45 !important; font-weight: 400 
         return json;
     }
 
-    // Load Dashboard Data
+    // Dashboard verilerini yükle
     // DASHBOARD: sunucu, veritabanı, yedek ve log bilgilerini yeniler
     async function loadDashboard() {
         try {
@@ -7046,10 +7383,10 @@ td { font-size: 13px !important; line-height: 1.45 !important; font-weight: 400 
             document.getElementById('m-db-size').innerText = m.database.formatted_size;
             document.getElementById('m-db-tables').innerText = m.database.table_count.toLocaleString('tr-TR');
             document.getElementById('m-db-rows').innerText = m.database.total_rows.toLocaleString('tr-TR');
-            // Render Files
+            // Yedek dosyalarını oluştur ve ekrana getir
             renderBackupTable(files);
 
-            // Render Logs
+            // Logları oluştur ve ekrana getir
             filterLogs();
 
         } catch (err) {
@@ -7322,6 +7659,89 @@ td { font-size: 13px !important; line-height: 1.45 !important; font-weight: 400 
         } catch(e) { showToast('Yapı alınamadı: '+e.message,true); }
     }
 
+
+    async function importSqlFromComputer() {
+        const fileInput = document.getElementById('dbSqlImportFile');
+        const button = document.getElementById('dbSqlImportBtn');
+        if (!fileInput || !button) return;
+
+        fileInput.value = '';
+        fileInput.click();
+
+        const waitForSelection = () => new Promise(resolve => {
+            const handler = () => {
+                fileInput.removeEventListener('change', handler);
+                resolve(fileInput.files?.[0] || null);
+            };
+            fileInput.addEventListener('change', handler, {once:true});
+        });
+
+        const file = await waitForSelection();
+        if (!file) return;
+
+        const name = file.name || 'sql-import.sql';
+        const size = formatBytes(file.size || 0);
+        const confirmed = await showConfirm(
+            `“${name}” (${size}) mevcut veritabanına SQL olarak uygulanacak. Import motoru veritabanını kendisi temizlemez ve mysqlyedek klasöründen dosya okumaz. Ancak SQL dosyasındaki komutlar doğrudan çalıştırılır; dosyanın içinde DROP/DELETE/TRUNCATE gibi komutlar varsa MySQL bunları uygulayabilir. Devam edilsin mi?`,
+            'SQL içeri aktar',
+            'Evet, içeri aktar'
+        );
+        if (!confirmed) return;
+
+        const form = new FormData();
+        form.append('csrf_token', CSRF_TOKEN);
+        form.append('sql_file', file, name);
+
+        button.disabled = true;
+        const oldText = button.textContent;
+        button.textContent = 'SQL aktarılıyor...';
+        showToast(`SQL yükleniyor: ${name} (${size})`);
+
+        try {
+            const response = await fetch('?action=import_sql_upload', {
+                method: 'POST',
+                credentials: 'same-origin',
+                cache: 'no-store',
+                headers: {
+                    'X-CSRF-TOKEN': CSRF_TOKEN,
+                    'Accept': 'application/json'
+                },
+                body: form
+            });
+
+            const text = await response.text();
+            let json;
+            try {
+                json = JSON.parse(text);
+            } catch (e) {
+                throw new Error(`Sunucudan geçersiz JSON yanıtı geldi (HTTP ${response.status}).`);
+            }
+            if (!json.success) throw new Error(json.message || 'SQL içeri aktarma başarısız.');
+
+            const d = json.data || {};
+            const summary = `${Number(d.queries || 0).toLocaleString()} sorgu işlendi • ${Number(d.success || 0).toLocaleString()} başarılı • ${Number(d.errors || 0).toLocaleString()} hatalı`;
+            if (Number(d.errors || 0) > 0) {
+                showToast(`Import tamamlandı fakat bazı sorgular hata verdi: ${summary}`, true);
+                const details = Array.isArray(d.error_details) ? d.error_details : [];
+                if (details.length) {
+                    console.error('SQL import hataları:', details);
+                }
+            } else {
+                showToast(`SQL import tamamlandı: ${summary}`);
+            }
+
+            await loadDatabaseTables(false);
+            if (typeof loadDashboard === 'function') await loadDashboard();
+        } catch (e) {
+            console.error('SQL import:', e);
+            showToast('SQL içeri aktarma hatası: ' + e.message, true);
+        } finally {
+            button.disabled = false;
+            button.textContent = oldText;
+            fileInput.value = '';
+        }
+    }
+
     async function dbMaintenance(operation) {
         if (!dbSelectedTable) return showToast('Önce tablo seç.', true);
         try { const res = await apiRequest('db_table_maintenance',{table:dbSelectedTable,operation}); showToast(res.data?.message || res.message); loadDatabaseTables(false); }
@@ -7431,11 +7851,16 @@ td { font-size: 13px !important; line-height: 1.45 !important; font-weight: 400 
         logClientAction('Yedekleme başlatıldı', 'mod=' + workerMode.toUpperCase());
         try {
             document.getElementById('live-progress-panel').style.display = 'block';
+            const initialProgressTitle = document.getElementById('bg-progress-title');
+            const initialProgressStatus = document.getElementById('bg-status-text');
+            if (initialProgressTitle) initialProgressTitle.innerText = 'Canlı Yedekleme İlerlemesi';
+            if (initialProgressStatus) initialProgressStatus.innerText = 'Yedekleme hazırlanıyor...';
             showToast('Yedekleme işlemi başlatılıyor...');
             cliJobStartedThisPage = true;
             const res = await apiRequest('run_full_backup', { worker_mode: workerMode });
             activeCliJobId = res?.data?.job_id || '';
             if (!activeCliJobId) throw new Error('Worker job ID alınamadı.');
+            void logClientAction('Yedekleme başlatıldı', 'mod=' + workerMode.toUpperCase());
             startProgressPolling();
             showToast(res?.data?.engine === 'web' ? 'Web Worker yedekleme başlatıldı. Sayfayı açık tut.' : 'CLI yedekleme başlatıldı. Sayfayı kapatsan bile işlem devam eder.');
         } catch (err) {
@@ -7453,7 +7878,7 @@ td { font-size: 13px !important; line-height: 1.45 !important; font-weight: 400 
         }
     }
 
-    // Live Progress Polling
+    // Canlı ilerleme durumunu düzenli olarak sorgula
     function startProgressPolling() {
         stopProgressPolling();
         const poll = async () => {
@@ -7489,15 +7914,30 @@ td { font-size: 13px !important; line-height: 1.45 !important; font-weight: 400 
             if (!d || d.status === 'idle') return;
 
             document.getElementById('live-progress-panel').style.display = 'block';
-            document.getElementById('bg-status-text').innerText =
-                d.current_table ? `İşleniyor: ${d.current_table}` :
-
-                d.status === 'failed' ? (d.error || 'İşlem başarısız.') :
-                (d.engine === 'web' ? 'Web Worker çalışıyor...' : 'CLI işlem çalışıyor...');
+            const jobType = String(d.type || '').toLowerCase() === 'restore' ? 'restore' : 'backup';
+            const jobLabel = jobType === 'restore' ? 'Restore' : 'Yedekleme';
+            const progressTitle = document.getElementById('bg-progress-title');
+            const progressStatus = document.getElementById('bg-status-text');
+            if (progressTitle) progressTitle.innerText = `Canlı ${jobLabel} İlerlemesi`;
+            if (progressStatus) {
+                progressStatus.innerText =
+                    d.current_table ? `İşleniyor: ${d.current_table}` :
+                    d.status === 'failed' ? (d.error || `${jobLabel} başarısız.`) :
+                    (d.engine === 'web' ? `Web Worker ${jobLabel.toLowerCase()} çalışıyor...` : `${jobLabel} işlemi çalışıyor...`);
+            }
             document.getElementById('bg-percent-text').innerText = (d.percent || 0) + '%';
             document.getElementById('bg-progress-bar').style.width = (d.percent || 0) + '%';
 
-            document.getElementById('bg-active-table').innerText = d.current_table || d.file || '-';
+            const activeTableEl = document.getElementById('bg-active-table');
+            if (activeTableEl) {
+                if (d.status === 'completed') {
+                    activeTableEl.innerText = 'Tamamlandı';
+                } else if (d.current_table && !/\.sql\.gz$/i.test(String(d.current_table))) {
+                    activeTableEl.innerText = String(d.current_table);
+                } else {
+                    activeTableEl.innerText = '-';
+                }
+            }
             document.getElementById('bg-table-idx').innerText = d.total_tables ? `${d.current_table_index || 0} / ${d.total_tables}` : '-';
             document.getElementById('bg-processed-rows').innerText = (d.processed_rows || d.rows_count || 0).toLocaleString();
             document.getElementById('bg-speed').innerText = d.speed_mb_per_second
@@ -7510,8 +7950,10 @@ td { font-size: 13px !important; line-height: 1.45 !important; font-weight: 400 
 
             const badge = document.getElementById('bg-status-badge');
             if (d.status === 'completed') {
-                // İşlem tamamlandığında son tablo adı yerine kesin olarak tamamlandı mesajı göster.
-                document.getElementById('bg-status-text').innerText = 'Restore tamamlandı';
+                const completedType = String(d.type || '').toLowerCase() === 'restore' ? 'restore' : 'backup';
+                const completedLabel = completedType === 'restore' ? 'Restore' : 'Yedekleme';
+                if (progressTitle) progressTitle.innerText = `Canlı ${completedLabel} İlerlemesi`;
+                if (progressStatus) progressStatus.innerText = `${completedLabel} tamamlandı`;
                 badge.className = 'badge badge-success';
                 badge.innerText = 'TAMAMLANDI';
                 stopProgressPolling();
@@ -7519,6 +7961,10 @@ td { font-size: 13px !important; line-height: 1.45 !important; font-weight: 400 
                 loadDashboard();
 
             } else if (d.status === 'failed') {
+                const failedType = String(d.type || '').toLowerCase() === 'restore' ? 'restore' : 'backup';
+                const failedLabel = failedType === 'restore' ? 'Restore' : 'Yedekleme';
+                if (progressTitle) progressTitle.innerText = `Canlı ${failedLabel} İlerlemesi`;
+                if (progressStatus && !d.error) progressStatus.innerText = `${failedLabel} başarısız`;
                 badge.className = 'badge badge-danger';
                 badge.innerText = 'HATA';
                 stopProgressPolling();
@@ -7545,9 +7991,8 @@ td { font-size: 13px !important; line-height: 1.45 !important; font-weight: 400 
         }
     }
 
-    // Download File
+    // Yedek dosyasını indir
     async function downloadFile(file) {
-        logClientAction('Yedek indirildi', String(file || ''));
         try {
             const body = new URLSearchParams();
             body.append('csrf_token', CSRF_TOKEN);
@@ -7581,6 +8026,7 @@ td { font-size: 13px !important; line-height: 1.45 !important; font-weight: 400 
             a.click();
             a.remove();
             URL.revokeObjectURL(url);
+            void logClientAction('Yedek indirildi', String(file || ''));
         } catch (err) {
             showToast('İndirme hatası: ' + err.message, true);
         }
@@ -7594,9 +8040,9 @@ td { font-size: 13px !important; line-height: 1.45 !important; font-weight: 400 
         );
         if (!confirmed) return;
 
-        logClientAction('Yedek silindi', String(file || ''));
         try {
             await apiRequest('delete_backup', { file: file });
+            void logClientAction('Yedek silindi', String(file || ''));
             showToast('Yedek dosyası silindi.');
             loadDashboard();
         } catch (err) {
@@ -7605,10 +8051,10 @@ td { font-size: 13px !important; line-height: 1.45 !important; font-weight: 400 
     }
 
     async function verifyFile(file) {
-        logClientAction('Yedek bütünlük kontrolü', String(file || ''));
         showToast(`'${file}' için SHA256 bütünlük doğrulaması hesaplanıyor...`);
         try {
             const res = await apiRequest('check_integrity', { file: file });
+            void logClientAction('Yedek bütünlük kontrolü', String(file || ''));
             showToast(`BAŞARILI: ${res.message}`);
             loadDashboard();
         } catch (err) {
@@ -7619,7 +8065,6 @@ td { font-size: 13px !important; line-height: 1.45 !important; font-weight: 400 
     // RESTORE: seçilen yedekten geri yükleme işlemini başlatır
     async function triggerRestore(file) {
         const workerMode = getWorkerMode();
-        logClientAction('Restore başlatıldı', String(file || '') + ' | mod=' + workerMode.toUpperCase());
         if (!file || typeof file !== 'string') {
             showToast('Geri yüklenecek yedek dosyası bulunamadı.', true);
             return;
@@ -7633,11 +8078,16 @@ td { font-size: 13px !important; line-height: 1.45 !important; font-weight: 400 
         if (!confirmed) return;
 
         document.getElementById('live-progress-panel').style.display = 'block';
+        const initialProgressTitle = document.getElementById('bg-progress-title');
+        const initialProgressStatus = document.getElementById('bg-status-text');
+        if (initialProgressTitle) initialProgressTitle.innerText = 'Canlı Restore İlerlemesi';
+        if (initialProgressStatus) initialProgressStatus.innerText = 'Restore hazırlanıyor...';
         showToast(`'${file}' restore işlemi başlatılıyor...`);
         cliJobStartedThisPage = true;
 
         try {
             const res = await apiRequest('restore_chunk', { file: file, worker_mode: workerMode });
+            void logClientAction('Restore başlatıldı', String(file || '') + ' | mod=' + workerMode.toUpperCase());
             activeCliJobId = res?.data?.job_id || '';
             if (!activeCliJobId) throw new Error('Worker restore job ID alınamadı.');
             startProgressPolling();
@@ -7658,7 +8108,7 @@ td { font-size: 13px !important; line-height: 1.45 !important; font-weight: 400 
         }
     }
 
-    // Logs System
+    // Log sistemi
     function hasLogSelection(element) {
         if (!element || !window.getSelection) return false;
         const selection = window.getSelection();
@@ -7675,9 +8125,6 @@ td { font-size: 13px !important; line-height: 1.45 !important; font-weight: 400 
         // Kullanıcı mavi seçim yapıyorsa innerHTML değiştirilmez; aksi halde seçim anında kaybolur.
         if (hasLogSelection(logBox) || hasLogSelection(modalBox)) return;
 
-        const logScrollTop = logBox.scrollTop;
-        const modalScrollTop = modalBox ? modalBox.scrollTop : 0;
-
         // İçerik değişmediyse DOM'yi hiç yeniden oluşturma.
         if (logBox.innerHTML === html && (!modalBox || modalBox.innerHTML === html)) return;
 
@@ -7692,7 +8139,7 @@ td { font-size: 13px !important; line-height: 1.45 !important; font-weight: 400 
         }
     }
 
-    // Logs System
+    // Log sistemi
     function filterLogs() {
         const search = document.getElementById('logSearch').value.toLowerCase();
         const level = document.getElementById('logLevelFilter').value;
@@ -8157,6 +8604,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('dbTruncateBtn')?.addEventListener('click', () => dbDestructive('truncate'));
         document.getElementById('dbDropBtn')?.addEventListener('click', () => dbDestructive('drop'));
         document.getElementById('dbRefreshBtn')?.addEventListener('click', () => loadDatabaseTables(false));
+        document.getElementById('dbSqlImportBtn')?.addEventListener('click', importSqlFromComputer);
         document.getElementById('dbPrevBtn')?.addEventListener('click', () => { if (dbOffset >= DB_PAGE_SIZE) { dbOffset -= DB_PAGE_SIZE; loadDatabaseTableData(); } });
         document.getElementById('dbNextBtn')?.addEventListener('click', () => { dbOffset += DB_PAGE_SIZE; loadDatabaseTableData(); });
 
