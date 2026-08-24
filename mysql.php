@@ -16,9 +16,6 @@ declare(strict_types=1);
 // Sunucuya göre değiştirmeniz gereken ayarlar yalnızca bu bölümde bulunur.
 // =============================================================================
 
-// Ortam değişkeni tanımlı değilse kullanılacak varsayılan panel ve veritabanı şifresi.
-$default_pass = '???????????';
-
 $config = [
     // MySQL sunucusunun adresi.
     // Genellikle aynı sunucudaysa: localhost
