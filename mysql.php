@@ -1,10 +1,12 @@
 <?php
 /**
  * ==============================================================================
- * VEDO MYSQL BACKUP & ENTERPRISE SERVER MONITORING PANEL
+ * VEDO MYSQL YEDEKLEME VE SUNUCU İZLEME PANELİ
  * ==============================================================================
- * PHP 8.0+ | MySQL 5.7+ / 8.0+ / MariaDB
- * Güvenlik, Veri Bütünlüğü, Tam Nesne Yedekleme, Güvenli Restore & Live Progress
+ * Destek: PHP 8.0+ | MySQL 5.7+ / 8.0+ / MariaDB
+ * Amaç: Güvenli yedekleme, doğrulanmış geri yükleme, nesne aktarımı ve sunucu izlemesi.
+ * Çalışma modeli: Kısa HTTP istekleri, durum dosyaları ve gerektiğinde arka plan CLI işlemi.
+ * Güvenlik: Oturum, CSRF, dosya yolu, SQL ayrıştırma ve ortak işlem kilitleri korunur.
  * ==============================================================================
  */
 
@@ -22,27 +24,27 @@ $config = [
     'db_host'            => getenv('VEDO_DB_HOST') ?: 'localhost',
 
     // MySQL'e bağlanmak için kullanılacak kullanıcı adı.
-    'db_user'            => getenv('VEDO_DB_USER') ?: '???????????',
+    'db_user'            => getenv('VEDO_DB_USER') ?: '????????????',
 
     // MySQL kullanıcısının şifresi.
-    'db_pass'            => getenv('VEDO_DB_PASSWORD') ?: '???????????',
+    'db_pass'            => getenv('VEDO_DB_PASSWORD') ?: '????????????',
 
-    // Backup ve restore işlemlerinde kullanılacak veritabanının adı.
-    'db_name'            => getenv('VEDO_DB_NAME') ?: '???????????',
+    // Yedekleme ve geri yükleme işlemlerinde kullanılacak veritabanının adı.
+    'db_name'            => getenv('VEDO_DB_NAME') ?: '????????????',
 
     // Panele giriş yaparken kullanılacak yönetici kullanıcı adı.
     'auth_user'          => getenv('VEDO_ADMIN_USER') ?: 'admin',
 
     // Panele giriş yaparken kullanılacak yönetici şifresi.
-    'auth_pass'          => getenv('VEDO_ADMIN_PASSWORD') ?: '???????????',
+    'auth_pass'          => getenv('VEDO_ADMIN_PASSWORD') ?: '????????????',
 
-    // Sunucuda en fazla kaç adet .sql.gz backup dosyası tutulacağını belirler.
-    // Eski backup'lar bu sayıya ulaşıldığında otomatik olarak temizlenir.
+    // Sunucuda en fazla kaç adet .sql.gz yedekleme dosyası tutulacağını belirler.
+    // Eski yedekleme'lar bu sayıya ulaşıldığında otomatik olarak temizlenir.
     'max_backups'        => 720,
 
-    // Cron ile otomatik backup başlatılırken kullanılan güvenlik anahtarıdır.
-    // Mevcut Cron ayarınız çalışıyorsa bu değeri değiştirmeyin.
-    'cron_token'         => getenv('VEDO_CRON_TOKEN') ?: 'sql_backup_' . substr(md5('sql_backup_salt'), 0, 10),
+    // Cron ile otomatik yedekleme başlatılırken kullanılan güvenlik anahtarıdır.
+    // MEVCUT ZAMANLANMIŞ GÖREVİNİZİ BOZMAMAK İÇİN DEĞERİ DEĞİŞTİRİLMEZ.
+    'cron_token'         => getenv('VEDO_CRON_TOKEN') ?: 'sql_backup_a9a495811',
 
     // Bir INSERT komutunda aynı anda kaç satır yazılacağını belirler.
     // Sayı büyüdükçe işlem hızlanabilir, ancak RAM kullanımı da artabilir.
@@ -70,7 +72,7 @@ $config = [
     // beklenecek süre. Değer saniye cinsindendir. 900 = 15 dakika.
     'lockout_time'       => 900,
 
-    // Backup ve restore sırasında ortak kullanılan işlem kilidinin bekleme süresi.
+    // Yedekleme ve geri yükleme sırasında ortak kullanılan işlem kilidinin bekleme süresi.
     // Değer saniye cinsindendir.
     'lock_timeout'       => 60,
 
@@ -83,17 +85,21 @@ $config = [
     // Panelde kullanıcı için varsayılan renk teması.
     // light = Açık tema
     // dark = Koyu tema
-    'ui_default_theme'   => 'light',
+    'ui_default_theme'   => 'dark',
 
-    // Restore tamamlandıktan sonra veritabanının bütünlüğü kontrol edilsin mi?
+    // Geri yükleme tamamlandıktan sonra veritabanının bütünlüğü kontrol edilsin mi?
     // true = Kontrol et
     // false = Kontrol etme
     'verify_after_restore' => true,
 
-    // Restore tamamlandıktan sonra ANALYZE TABLE çalıştırılsın mı?
+    // Geri yükleme tamamlandıktan sonra ANALYZE TABLE çalıştırılsın mı?
     // true = Çalıştır
     // false = Çalıştırma
-    'analyze_after_restore' => true
+    'analyze_after_restore' => true,
+
+    // Yedekleme sırasında MyISAM tablolarına REPAIR TABLE uygulanıp uygulanmayacağını belirler.
+    // Varsayılan false: yedekleme salt-okuma davranışında kalır.
+    'repair_myisam_before_backup' => false
 ];
 
 if (version_compare(PHP_VERSION, '8.0.0', '<')) {
@@ -106,7 +112,7 @@ if (version_compare(PHP_VERSION, '8.0.0', '<')) {
     exit;
 }
 
-$required_extensions = ['pdo', 'pdo_mysql', 'json', 'zlib', 'session', 'hash', 'mbstring'];
+$required_extensions = ['pdo', 'pdo_mysql', 'json', 'zlib', 'session', 'hash'];
 foreach ($required_extensions as $ext) {
     if (!extension_loaded($ext)) {
         if (php_sapi_name() === 'cli') {
@@ -117,7 +123,39 @@ foreach ($required_extensions as $ext) {
     }
 }
 
-// Global Sabit Tanımlamaları
+// mbstring paylaşımlı hosting ortamlarında her zaman bulunmayabilir.
+// Uygulama bu uzantı olmadan da çalışabilecek güvenli UTF-8 yardımcıları kullanır.
+function vedo_utf8_valid(string $value): bool {
+    return preg_match('//u', $value) === 1;
+}
+function vedo_utf8_lower(string $value): string {
+    return function_exists('mb_strtolower') ? mb_strtolower($value, 'UTF-8') : strtolower($value);
+}
+function vedo_utf8_substr(string $value, int $start, ?int $length = null): string {
+    if (function_exists('mb_substr')) {
+        return mb_substr($value, $start, $length, 'UTF-8');
+    }
+    if (!vedo_utf8_valid($value)) {
+        return substr($value, $start, $length);
+    }
+    $chars = preg_split('//u', $value, -1, PREG_SPLIT_NO_EMPTY);
+    if ($chars === false) {
+        return substr($value, $start, $length);
+    }
+    return implode('', $length === null ? array_slice($chars, $start) : array_slice($chars, $start, $length));
+}
+function vedo_utf8_strlen(string $value): int {
+    if (function_exists('mb_strlen')) {
+        return mb_strlen($value, 'UTF-8');
+    }
+    if (!vedo_utf8_valid($value)) {
+        return strlen($value);
+    }
+    $count = preg_match_all('/./us', $value, $matches);
+    return $count === false ? strlen($value) : $count;
+}
+
+// Uygulamanın ortak sabit tanımları
 define('VEDO_BACKUP_FORMAT', '2');
 define('VEDO_RESTORE_CHUNK_BYTES', 1048576); // 1 MB
 define('VEDO_QUERY_BUFFER_MAX', 52428800); // 50 MB
@@ -126,8 +164,8 @@ define('VEDO_CHUNK_ROW_MEDIUM', 2500);
 define('VEDO_CHUNK_ROW_SMALL', 1500);
 define('VEDO_CHUNK_ROW_DEFAULT', 800);
 define('VEDO_MAX_LOG_SIZE', 5242880); // 5 MB
-define('VEDO_DATABASE_OPERATION_LOCK', 'database_operation'); // Backup ve restore için ortak kilit
-// Bu sabitler backup/restore akışlarında doğrudan kullanılır; gereksiz sabit bırakılmamıştır.
+define('VEDO_DATABASE_OPERATION_LOCK', 'database_operation'); // Yedekleme ve geri yükleme için ortak kilit
+// Bu sabitler yedekleme/geri yükleme akışlarında doğrudan kullanılır; gereksiz sabit bırakılmamıştır.
 
 /**
  * Çıktı arabelleklemesini temizler.
@@ -152,6 +190,10 @@ if (php_sapi_name() !== 'cli') {
 
 /**
  * Güvenli dosya yazma kontrolü.
+ */
+/**
+ * Dosyayı belirli sayıda yeniden deneyerek yazar. Yazma başarısız olursa ayrıntıyı
+ * günlük kaydına bırakır ve false döndürür.
  */
 function safe_file_put_contents(string $filepath, string $data, int $flags = 0): bool {
     $attempts = 0;
@@ -193,9 +235,9 @@ class Logger {
     public static function log(string $level, string $message): void {
         if (empty(self::$logFile)) return;
 
-        $message = preg_replace('/(password|pass|token|secret|csrf|session_id)=["\']?[^"\'&\s]+["\']?/i', '$1=***REDACTED***', $message);
+        $message = preg_replace('/(password|passwd|pass|token|secret|csrf|session_id|authorization|api_key|access_token|refresh_token|cookie)=["\']?[^"\'&\s]+["\']?/i', '$1=***REDACTED***', $message);
 
-        // Log satırlarının formatını bozan kontrol karakterlerini temizle.
+        // Log satırlarının biçimini bozan kontrol karakterlerini temizle.
         $message = preg_replace('/[\x00-\x1F\x7F]+/u', ' ', $message) ?? $message;
 
         if (self::$available && is_file(self::$logFile) && filesize(self::$logFile) > VEDO_MAX_LOG_SIZE) {
@@ -234,6 +276,15 @@ class Logger {
     public static function info(string $msg): void { self::log('INFO', $msg); }
 }
 
+function is_request_https(): bool {
+    if (!empty($_SERVER['HTTPS']) && strtolower((string)$_SERVER['HTTPS']) !== 'off') {
+        return true;
+    }
+
+    $forwardedProto = strtolower(trim((string)($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '')));
+    return $forwardedProto === 'https';
+}
+
 $nonce = base64_encode(random_bytes(16));
 
 if (php_sapi_name() !== 'cli') {
@@ -244,10 +295,6 @@ if (php_sapi_name() !== 'cli') {
     header("Pragma: no-cache");
     header("Expires: 0");
     header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-{$nonce}'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';");
-
-    if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
-        header("Strict-Transport-Security: max-age=31536000; includeSubDomains; preload");
-    }
 
     header("Permissions-Policy: camera=(), microphone=(), geolocation=(), autoplay=(), fullscreen=(), payment=(), usb=(), serial=(), accelerometer=()");
     header("Cross-Origin-Opener-Policy: same-origin");
@@ -366,6 +413,30 @@ function validate_backup_filename(string $filename): bool {
     }
     return (bool)preg_match('/^[A-Za-z0-9._-]+\.sql\.gz$/', $filename);
 }
+
+function is_emergency_backup_filename(string $filename): bool {
+    return str_starts_with($filename, '.vedo_emergency_') && str_ends_with($filename, '.sql.gz');
+}
+
+function cleanup_emergency_backup_artifacts(string $backup_dir, string $file): void {
+    if ($file === '' || !validate_backup_filename($file) || !is_emergency_backup_filename($file)) {
+        return;
+    }
+
+    try {
+        $safe = validate_path_safe($backup_dir . '/' . $file, $backup_dir);
+        if (is_file($safe)) @unlink($safe);
+        if (is_file($safe . '.sha256')) @unlink($safe . '.sha256');
+        if (is_file($safe . '.meta.json')) @unlink($safe . '.meta.json');
+        Logger::info('Emergency backup temizlendi: ' . $file);
+    } catch (Throwable $e) {
+        Logger::warning('Emergency backup temizlenirken hata [' . $file . ']: ' . $e->getMessage());
+    }
+}
+/**
+ * Hedef yolu gerçek ana dizin altında doğrular. Yol geçişi ve yetkisiz sembolik
+ * bağlantı hedeflerini engelleyerek yalnızca güvenli yolu döndürür.
+ */
 function validate_path_safe(string $filePath, string $baseDir): string {
     $realBase = realpath($baseDir);
     if (!$realBase) {
@@ -748,7 +819,7 @@ function limit_backup_files(string $dir, int $max): void {
 
             $filename = $fileinfo->getFilename();
 
-            if (str_ends_with($filename, '.sql.gz')) {
+            if (str_ends_with($filename, '.sql.gz') && !is_emergency_backup_filename($filename)) {
                 $sql_files[] = [
                     'path' => $fileinfo->getPathname(),
                     'mtime' => $fileinfo->getMTime()
@@ -802,7 +873,7 @@ function escape_string_safe(mixed $v, ?PDO $pdo = null): string {
     }
 
     if (is_string($v)) {
-        if (!mb_check_encoding($v, 'UTF-8') || preg_match('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', $v)) {
+        if (!vedo_utf8_valid($v) || preg_match('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', $v)) {
             return "0x" . bin2hex($v);
         }
     }
@@ -816,6 +887,10 @@ function escape_string_safe(mixed $v, ?PDO $pdo = null): string {
 
     throw new Exception("PDO::quote() başarısız oldu, bağlantı hatası veya geçersiz karakter.");
 }
+/**
+ * PDO bağlantısını oluşturur veya güvenli biçimde yeniden kullanır. Bağlantı ve
+ * sorgu hatalarını sessizce yutmak yerine exception olarak üst katmana bırakır.
+ */
 function get_pdo(string $h, string $u, string $p, string $d, bool $force_reconnect = false, bool $use_persistent = false): PDO {
     static $instances = [];
     static $last_pings = [];
@@ -885,7 +960,7 @@ function check_sufficient_disk_space(PDO $pdo, string $db_name, string $dir): vo
     }
 
     $db_size = get_database_size_bytes($pdo, $db_name);
-    $estimated_needed = max(50 * 1024 * 1024, (int)($db_size * 0.50));
+    $estimated_needed = max(512 * 1024 * 1024, (int)ceil($db_size * 1.50));
 
     if ($free_space < $estimated_needed) {
         throw new Exception(
@@ -1032,9 +1107,9 @@ function get_table_cursor_keys(?PDO $pdo, string $db_name, string $table): array
 
         // PRIMARY KEY yoksa, tek bir NOT NULL UNIQUE index seçilir.
         // Farklı UNIQUE index'lerin kolonları birleştirilerek sahte bir bileşik
-        // cursor oluşturulması bazı satırların atlanmasına veya tekrarlanmasına yol açabilir.
+        // imleç oluşturulması bazı satırların atlanmasına veya tekrarlanmasına yol açabilir.
         $stmt = $pdo->prepare("
-            SELECT s.INDEX_NAME, s.COLUMN_NAME, s.SEQ_IN_INDEX, c.IS_NULLABLE
+            SELECT s.INDEX_NAME, s.COLUMN_NAME, s.SEQ_IN_INDEX, s.SUB_PART, c.IS_NULLABLE
             FROM information_schema.STATISTICS s
             JOIN information_schema.COLUMNS c
               ON s.TABLE_SCHEMA = c.TABLE_SCHEMA
@@ -1054,7 +1129,7 @@ function get_table_cursor_keys(?PDO $pdo, string $db_name, string $table): array
             $unique_indexes[$indexName][] = [
                 'column' => (string)($row['COLUMN_NAME'] ?? ''),
                 'nullable' => strtoupper((string)($row['IS_NULLABLE'] ?? 'YES')) !== 'NO',
-                'sub_part' => $row['SUB_PART'] !== null ? (int)$row['SUB_PART'] : null,
+                'sub_part' => isset($row['SUB_PART']) && $row['SUB_PART'] !== null ? (int)$row['SUB_PART'] : null,
                 'seq' => (int)($row['SEQ_IN_INDEX'] ?? 0)
             ];
         }
@@ -1068,7 +1143,7 @@ function get_table_cursor_keys(?PDO $pdo, string $db_name, string $table): array
                 $column['sub_part'] !== null
             )) > 0) {
                 // Prefix UNIQUE index'ler tam kolon değerini temsil etmez; keyset
-                // pagination için cursor olarak kullanılırsa satır atlama/tekrarlama
+                // sayfalama için imleç olarak kullanılırsa satır atlama/tekrarlama
                 // riski doğurabilir. Bu nedenle yalnızca tam kapsamlı index'leri kullan.
                 continue;
             }
@@ -1118,7 +1193,7 @@ function safe_gzwrite(mixed $stream, string $data, bool $flush = false): void {
 }
 
 /**
- * VERİTABANI NESNELERİ DIŞA AKTARIMI (VIEW, TRIGGER, PROCEDURE, FUNCTION, EVENT)
+ * VERİTABANI NESNELERİ DIŞA AKTARIMI (GÖRÜNÜM, TETİKLEYİCİ, PROSEDÜR, FONKSİYON, OLAY)
  */
 function order_views_by_dependencies(PDO $pdo, string $db_name, array $views): array {
     $views = array_values(array_map('strval', $views));
@@ -1275,7 +1350,7 @@ function export_database_objects_to_stream(PDO $pdo, string $db_name, mixed $str
         'events' => 0,
     ];
 
-    // FUNCTIONS
+    // FONKSİYONLAR
     $stmt = $pdo->prepare("SELECT ROUTINE_NAME FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = ? AND ROUTINE_TYPE = 'FUNCTION' ORDER BY ROUTINE_NAME");
     $stmt->execute([$db_name]);
     $funcs = $stmt->fetchAll(PDO::FETCH_COLUMN);
@@ -1312,7 +1387,7 @@ function export_database_objects_to_stream(PDO $pdo, string $db_name, mixed $str
         $exported['functions']++;
     }
 
-    // 3. PROCEDURES
+    // 3. PROSEDÜRLER
     $stmt = $pdo->prepare("SELECT ROUTINE_NAME FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = ? AND ROUTINE_TYPE = 'PROCEDURE' ORDER BY ROUTINE_NAME");
     $stmt->execute([$db_name]);
     $procs = $stmt->fetchAll(PDO::FETCH_COLUMN);
@@ -1349,7 +1424,7 @@ function export_database_objects_to_stream(PDO $pdo, string $db_name, mixed $str
         $exported['procedures']++;
     }
 
-    // 4. VIEWS — view->view bağımlılıklarına göre sıralanır.
+    // 4. GÖRÜNÜMLER — görünüm->görünüm bağımlılıklarına göre sıralanır.
     $stmt = $pdo->prepare("SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA = ? AND TABLE_TYPE = 'VIEW'");
     $stmt->execute([$db_name]);
     $views = $stmt->fetchAll(PDO::FETCH_COLUMN);
@@ -1381,7 +1456,7 @@ function export_database_objects_to_stream(PDO $pdo, string $db_name, mixed $str
         $exported['views']++;
     }
 
-    // 5. TRIGGERS
+    // 5. TETİKLEYİCİLER
     $stmt = $pdo->prepare("SELECT TRIGGER_NAME FROM information_schema.TRIGGERS WHERE TRIGGER_SCHEMA = ? ORDER BY TRIGGER_NAME");
     $stmt->execute([$db_name]);
     $triggers = $stmt->fetchAll(PDO::FETCH_COLUMN);
@@ -1420,7 +1495,7 @@ function export_database_objects_to_stream(PDO $pdo, string $db_name, mixed $str
         $exported['triggers']++;
     }
 
-    // 6. EVENTS
+    // 6. OLAYLAR
     $stmt = $pdo->prepare("SELECT EVENT_NAME FROM information_schema.EVENTS WHERE EVENT_SCHEMA = ? ORDER BY EVENT_NAME");
     $stmt->execute([$db_name]);
     $events = $stmt->fetchAll(PDO::FETCH_COLUMN);
@@ -1602,7 +1677,7 @@ function export_single_table_to_stream(PDO $pdo, string $table, mixed $stream, s
 }
 
 /**
- * BACKUP ÖNCESİ MYISAM ONARIMI
+ * YEDEKLEME ÖNCESİ MYISAM ONARIMI
  * Sadece MyISAM tablolarında REPAIR TABLE çalıştırır.
  * InnoDB ve diğer motorlara dokunmaz.
  */
@@ -1648,7 +1723,7 @@ function repair_myisam_tables_before_backup(PDO $pdo, string $db_name): void {
 /**
  * MYISAM YEDEKLEME OKUMA KİLİDİ
  * MyISAM tabloları ayrı bir PDO bağlantısında READ LOCK altında tutulur.
- * Böylece ana PDO üzerindeki InnoDB consistent snapshot transaction'ı ile
+ * Böylece ana PDO üzerindeki InnoDB consistent anlık görüntü transaction'ı ile
  * LOCK TABLES birbirine karışmaz.
  */
 function acquire_myisam_read_locks(string $h, string $u, string $p, string $d): array {
@@ -1693,14 +1768,21 @@ function release_myisam_read_locks(?PDO $lockPdo): void {
 /**
  * MERKEZİ YEDEKLEME MOTORU
  */
-function perform_backup(PDO $pdo, string $db_name, string $backup_dir, array $config, mixed $lock_handle, ?callable $progress_callback = null): string {
-    // Backup yalnızca ortak veritabanı kilidi tutulurken çalıştırılır.
+/**
+ * Veritabanının tam yedeğini üretir. Tablo verileri ile VIEW, TRIGGER, PROCEDURE,
+ * FUNCTION ve EVENT gibi nesneleri uygun sırada aktarır ve doğrulanabilir bir gzip yedeği oluşturur.
+ */
+function perform_backup(PDO $pdo, string $db_name, string $backup_dir, array $config, mixed $lock_handle, ?callable $progress_callback = null, string $filename_prefix = '', bool $apply_retention = true): string {
+    // Yedekleme yalnızca ortak veritabanı kilidi tutulurken çalıştırılır.
     require_database_operation_lock($lock_handle, $backup_dir);
     update_system_lock_heartbeat($lock_handle);
 
-    // MyISAM için onarım ve ayrı bağlantıda READ LOCK uygulanır.
-    repair_myisam_tables_before_backup($pdo, $db_name);
-    update_system_lock_heartbeat($lock_handle);
+    // MyISAM tabloları ayrı bağlantıda READ LOCK ile korunur.
+    // REPAIR TABLE yalnızca açıkça etkinleştirildiyse çalıştırılır; varsayılan yedekleme salt-okumadır.
+    if (!empty($config['repair_myisam_before_backup'])) {
+        repair_myisam_tables_before_backup($pdo, $db_name);
+        update_system_lock_heartbeat($lock_handle);
+    }
     $myisam_lock_pdo = null;
     SchemaCache::clear();
     check_sufficient_disk_space($pdo, $db_name, $backup_dir);
@@ -1719,7 +1801,7 @@ function perform_backup(PDO $pdo, string $db_name, string $backup_dir, array $co
         throw $e;
     }
 
-    // Tüm tablo sorguları aynı InnoDB snapshot'ından okunur.
+    // Tüm tablo sorguları aynı InnoDB anlık görüntü'ından okunur.
     $snapshot_started = false;
     try {
         $pdo->exec("SET TRANSACTION ISOLATION LEVEL REPEATABLE READ");
@@ -1744,7 +1826,8 @@ function perform_backup(PDO $pdo, string $db_name, string $backup_dir, array $co
     $total_tables = count($tables);
 
     $backup_time_string = gmdate('Y-m-d_H-i') . 'UTC';
-    $base_gz_file = $backup_dir . '/' . $db_name . '_' . $backup_time_string;
+    $safePrefix = $filename_prefix !== '' ? trim($filename_prefix, '_') . '_' : '';
+    $base_gz_file = $backup_dir . '/' . $safePrefix . $db_name . '_' . $backup_time_string;
     $target_gz_file = $base_gz_file . '.sql.gz';
     $dup_counter = 1;
 
@@ -1828,7 +1911,7 @@ function perform_backup(PDO $pdo, string $db_name, string $backup_dir, array $co
         $update_progress('running', 'Database Objects (Views/Triggers/Functions)');
         export_database_objects_to_stream($pdo, $db_name, $gz);
 
-        // Snapshot tamamen tüketildi; DB transaction'ını kontrollü şekilde kapat.
+        // Anlık görüntü tamamen tüketildi; DB transaction'ını kontrollü şekilde kapat.
         if ($snapshot_started && $pdo->inTransaction()) {
             $pdo->commit();
             $snapshot_started = false;
@@ -1846,7 +1929,9 @@ function perform_backup(PDO $pdo, string $db_name, string $backup_dir, array $co
         }
 
         verify_and_checksum_gzip($target_gz_file);
-        limit_backup_files($backup_dir, $config['max_backups']);
+        if ($apply_retention) {
+            limit_backup_files($backup_dir, $config['max_backups']);
+        }
 
         release_myisam_read_locks($myisam_lock_pdo);
         $myisam_lock_pdo = null;
@@ -1876,7 +1961,7 @@ function perform_backup(PDO $pdo, string $db_name, string $backup_dir, array $co
 function verify_and_checksum_gzip(string $file_path): string {
     if (!is_file($file_path)) throw new Exception("Yedek dosyası bulunamadı.");
 
-    // Checksum sıkıştırılmış .gz byte'ları üzerinden hesaplanır.
+    // Sağlama özeti sıkıştırılmış .gz bayt'ları üzerinden hesaplanır.
     $ctx = hash_init('sha256');
     $fp = fopen($file_path, 'rb');
     if (!$fp) throw new Exception("Yedek dosyası okuma modunda açılamadı!");
@@ -1919,7 +2004,7 @@ function verify_backup_checksum(string $file_path): string {
         throw new Exception("Geçersiz checksum dosyası biçimi.");
     }
 
-    // 1) Ham .gz byte'larının SHA256 değerini doğrula.
+    // 1) Ham .gz bayt'larının SHA256 değerini doğrula.
     $ctx = hash_init('sha256');
     $fp = fopen($file_path, 'rb');
     if (!$fp) throw new Exception("Yedek okunamadı!");
@@ -1964,6 +2049,10 @@ function verify_backup_checksum(string $file_path): string {
 
     return $current_hash;
 }
+/**
+ * Geri yükleme sonrasında verilen tablo listesinde ANALYZE TABLE çalıştırır.
+ * ANALYZE ayrı PDO bağlantısında yürütülür ve ilerleme bilgisi çağırana geri verilir.
+ */
 function analyze_tables_after_restore(
     string $db_name,
     array $config,
@@ -1987,8 +2076,8 @@ function analyze_tables_after_restore(
     }
 
     try {
-        // ANALYZE TABLE ayrı bir bağlantıda çalıştırılır. Böylece restore'un
-        // ana PDO bağlantısındaki transaction/lock durumuna dokunmaz.
+        // ANALYZE TABLE ayrı bir bağlantıda çalıştırılır. Böylece geri yükleme'un
+        // ana PDO bağlantısındaki transaction/kilit durumuna dokunmaz.
         $analyzePdo = $existingPdo ?? get_pdo(
             (string)$config['db_host'],
             (string)$config['db_user'],
@@ -1998,7 +2087,7 @@ function analyze_tables_after_restore(
             false
         );
 
-        // Uzun metadata/table lock beklemeleri restore'u kilitlemesin.
+        // Uzun üstveri/tablo kilidi beklemeleri geri yükleme'u kilitlemesin.
         try {
             $analyzePdo->exec("SET SESSION lock_wait_timeout = 5");
         } catch (Throwable $e) {
@@ -2061,7 +2150,7 @@ function analyze_tables_after_restore(
                 if ($tableHasError) {
                     $result['failed']++;
                 } else {
-                    // PDO::query başarılı ve ANALYZE sonucu ERROR içermiyorsa
+                    // PDO::sorgu başarılı ve ANALYZE sonucu ERROR içermiyorsa
                     // bu tablo için ANALYZE gerçekten çalıştırılmış kabul edilir.
                     $result['successful']++;
                 }
@@ -2113,7 +2202,7 @@ function verify_database_integrity_after_restore(PDO $pdo, string $db_name, bool
                     $msgType = strtolower($row['Msg_type'] ?? '');
                     $msgText = strtolower($row['Msg_text'] ?? '');
                     if ($msgType === 'error' || ($msgType === 'status' && $msgText !== 'ok' && $msgText !== 'table is already up to date')) {
-                        $report['errors'][] = "Tablo [$t]: {$row['Msg_text']}";
+                        $report['errors'][] = "Tablo [$t]: " . (string)($row['Msg_text'] ?? 'Bilinmeyen CHECK TABLE sonucu');
                         $report['status'] = 'WARNING';
                     }
                 }
@@ -2193,7 +2282,11 @@ function verify_database_integrity_after_restore(PDO $pdo, string $db_name, bool
 
 /**
  * GERİ YÜKLEME ÖNCESİ VERİTABANI TEMİZLEME
- * Restore'un ilk chunk'ında bir kez çağrılır; sonraki chunk'lar dokunmaz.
+ * Geri yüklemenin ilk parçasında bir kez çağrılır; sonraki parça'lar dokunmaz.
+ */
+/**
+ * Geri yükleme öncesinde hedef veritabanındaki mevcut nesneleri kontrollü biçimde temizler.
+ * Yabancı anahtar kontrollerini ve nesne silme sırasını güvenli şekilde yönetir.
  */
 function clear_database_for_restore(PDO $pdo, string $db_name): array {
     $dropped = [];
@@ -2213,7 +2306,7 @@ function clear_database_for_restore(PDO $pdo, string $db_name): array {
     try {
         $pdo->exec('SET FOREIGN_KEY_CHECKS=0');
 
-        // VIEW'ları tabloların önünde sil. Ardından gerçek tabloları kaldır.
+        // GÖRÜNÜM'ları tabloların önünde sil. Ardından gerçek tabloları kaldır.
         $stmt = $pdo->prepare("SELECT TABLE_NAME, TABLE_TYPE, ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA = ? ORDER BY CASE WHEN TABLE_TYPE = 'VIEW' THEN 0 WHEN UPPER(COALESCE(ENGINE, '')) = 'SEQUENCE' THEN 1 ELSE 2 END, TABLE_NAME");
         $stmt->execute([$db_name]);
         $objects = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -2303,7 +2396,7 @@ function clear_database_for_restore(PDO $pdo, string $db_name): array {
             $failed[] = ['object' => '*', 'type' => 'TRIGGER', 'reason' => $e->getMessage()];
         }
 
-        // Stored procedure ve function nesnelerini kaldır.
+        // Saklı yordam ve function nesnelerini kaldır.
         try {
             $stmt = $pdo->prepare("SELECT ROUTINE_NAME, ROUTINE_TYPE FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = ?");
             $stmt->execute([$db_name]);
@@ -2339,7 +2432,7 @@ function clear_database_for_restore(PDO $pdo, string $db_name): array {
             $failed[] = ['object' => '*', 'type' => 'ROUTINE', 'reason' => $e->getMessage()];
         }
 
-        // Event Scheduler nesnelerini kaldır.
+        // Olay Zamanlayıcısı nesnelerini kaldır.
         try {
             $stmt = $pdo->prepare("SELECT EVENT_NAME FROM information_schema.EVENTS WHERE EVENT_SCHEMA = ?");
             $stmt->execute([$db_name]);
@@ -2402,9 +2495,9 @@ function verify_restore_source_integrity(string $file_path): string {
 }
 
 /**
- * RESTORE ÖNCESİ TEMİZLİK SONU KONTROLÜ
- * Database'in kendisi DROP edilmez; içindeki tüm restore nesneleri kaldırılır.
- * Restore başlamadan önce TABLES / TRIGGERS / ROUTINES / EVENTS tamamı 0 olmalıdır.
+ * GERİ YÜKLEME ÖNCESİ TEMİZLİK SONU KONTROLÜ
+ * Veritabanı'in kendisi DROP edilmez; içindeki tüm geri yükleme nesneleri kaldırılır.
+ * Geri yükleme başlamadan önce TABLES / TETİKLEYİCİLER / ROUTINES / OLAYLAR tamamı 0 olmalıdır.
  */
 function verify_database_is_empty_for_restore(PDO $pdo, string $db_name): array {
     $counts = [
@@ -2447,6 +2540,10 @@ function verify_database_is_empty_for_restore(PDO $pdo, string $db_name): array 
     return $counts;
 }
 
+/**
+ * Gzip akışından gelen SQL parçalarını durumlu ayrıştırıcıyla çözer. String, yorum
+ * ve DELIMITER durumlarını parça sınırlarında koruyarak tam SQL ifadeleri üretir.
+ */
 function restore_parse_buffer(string $buffer, string &$queryBuffer, bool &$inString, string &$stringChar, bool &$inCommentMulti, bool &$inCommentSingle, bool &$escaped, string &$currentDelimiter, string &$lineBuffer = ''): array {
     $extractedQueries = [];
     $bufLen = strlen($buffer);
@@ -2460,14 +2557,14 @@ function restore_parse_buffer(string $buffer, string &$queryBuffer, bool &$inStr
         }
 
         /*
-         * DELIMITER satırını ayrı bir state ile takip ediyoruz.
-         * Böylece "DELIMITER //" ifadesi gzip chunk sınırında bölünse bile
-         * bir sonraki chunk geldiğinde eksiksiz olarak değerlendirilebilir.
-         * lineBuffer yalnızca aktif satırı tutar; SQL queryBuffer'a ayrıca
+         * DELIMITER satırını ayrı bir durum ile takip ediyoruz.
+         * Böylece "DELIMITER //" ifadesi gzip parça sınırında bölünse bile
+         * bir sonraki parça geldiğinde eksiksiz olarak değerlendirilebilir.
+         * satır arabelleği yalnızca aktif satırı tutar; SQL sorgu arabelleğine ayrıca
          * yazıldığı için normal SQL içeriğinin kaybolmasına neden olmaz.
          */
-        // Satır state'i string/comment durumundan bağımsız tutulur; böylece
-        // chunk sınırında yarım kalan DELIMITER satırı asla kaybolmaz.
+        // Satır durum'i string/comment durumundan bağımsız tutulur; böylece
+        // parça sınırında yarım kalan DELIMITER satırı asla kaybolmaz.
         $lineBuffer .= $char;
         if (strlen($lineBuffer) > 4096) {
             $lineBuffer = substr($lineBuffer, -4096);
@@ -2551,7 +2648,7 @@ function restore_parse_buffer(string $buffer, string &$queryBuffer, bool &$inStr
                 if ($newDelimiter === '' || strlen($newDelimiter) > 32 || preg_match('/[\x00-\x1F\x7F]/', $newDelimiter)) {
                     throw new Exception('Geçersiz DELIMITER yönergesi tespit edildi.');
                 }
-                // Sadece yönerge satırını queryBuffer'dan çıkar.
+                // Sadece yönerge satırını sorgu arabelleğinden çıkar.
                 $lineLength = strlen($lineBuffer);
                 $queryBufferLength = strlen($queryBuffer);
                 if ($lineLength <= $queryBufferLength) {
@@ -2566,7 +2663,7 @@ function restore_parse_buffer(string $buffer, string &$queryBuffer, bool &$inStr
 
         /*
          * DELIMITER yönergesinin ilk satır parçası tamamlanmadan mevcut
-         * delimiter ile SQL'i bölme. Bu kontrol yalnızca satır başındaki
+         * ayraç ile SQL'i bölme. Bu kontrol yalnızca satır başındaki
          * yönerge adayları için geçerlidir.
          */
         $directiveCandidate = ltrim($lineBuffer);
@@ -2622,16 +2719,411 @@ function finalize_restore_parser(string &$queryBuffer, bool $inString, string $s
 }
 
 /**
- * DOĞRUDAN SQL DOSYASI İÇERİ AKTARMA
+ * SQL IMPORT GÜVENLİK KURALI
  *
- * Bu işlem RESTORE motorundan tamamen bağımsızdır:
- * - mysqlyedek klasöründen dosya okumaz.
- * - Mevcut veritabanını temizlemez/formatlamaz.
- * - Restore SQL güvenlik filtresini kullanmaz; seçilen dosyadaki SQL
- *   ifadelerini mevcut bağlantıdaki veritabanında sırayla çalıştırır.
- * - DELIMITER kullanan PROCEDURE / FUNCTION / TRIGGER / EVENT scriptlerini destekler.
- * - Bir sorgu hata verdiğinde sonraki sorguların çalışmasına devam eder ve
- *   hataları raporlar.
+ * Import dosyası çalıştırılabilir; ancak import başlamadan ÖNCE mevcut olan
+ * hiçbir tablo, görünüm, sequence, trigger, procedure, function veya event
+ * değiştirilemez/silinemez.
+ *
+ * Import sırasında yeni oluşturulan tablolar üzerinde INSERT/UPDATE/DELETE/
+ * REPLACE/ALTER/INDEX/TRUNCATE gibi işlemler yapılabilir. Yeni tabloların
+ * gerektiğinde silinmesine de izin verilir. Event/trigger gibi sonradan otomatik
+ * çalışarak mevcut veriye dokunabilecek nesneler import sırasında engellenir.
+ */
+function normalize_import_identifier_key(string $name): string {
+    return vedo_utf8_lower($name);
+}
+
+function strip_sql_comments_stateful(string $sql, bool $reject_executable_comments = false): string {
+    $sql = preg_replace('/^\xEF\xBB\xBF/', '', $sql) ?? $sql;
+    $len = strlen($sql);
+    $out = '';
+    $in_string = false;
+    $string_char = '';
+    $escaped = false;
+
+    for ($i = 0; $i < $len; $i++) {
+        $char = $sql[$i];
+        $next = ($i + 1 < $len) ? $sql[$i + 1] : '';
+
+        if ($in_string) {
+            $out .= $char;
+            if ($escaped) {
+                $escaped = false;
+            } elseif ($char === '\\') {
+                $escaped = true;
+            } elseif ($char === $string_char) {
+                if (($string_char === "'" || $string_char === '"' || $string_char === '`') && $next === $string_char) {
+                    $out .= $next;
+                    $i++;
+                    continue;
+                }
+                $in_string = false;
+                $string_char = '';
+            }
+            continue;
+        }
+
+        if ($char === "'" || $char === '"' || $char === '`') {
+            $out .= $char;
+            $in_string = true;
+            $string_char = $char;
+            $escaped = false;
+            continue;
+        }
+
+        if ($char === '/' && $next === '*') {
+            $is_executable = (($i + 2 < $len) && $sql[$i + 2] === '!');
+            if ($is_executable && $reject_executable_comments) {
+                throw new Exception('MySQL executable/conditional comment (/*!) import/restore sırasında yasaktır.');
+            }
+
+            $i += 2;
+            $comment_closed = false;
+            while ($i < $len) {
+                if ($sql[$i] === '*' && (($i + 1) < $len) && $sql[$i + 1] === '/') {
+                    $i++;
+                    $comment_closed = true;
+                    break;
+                }
+                $i++;
+            }
+            if (!$comment_closed) {
+                throw new Exception('SQL güvenlik analizi sırasında kapanmamış çok satırlı yorum tespit edildi.');
+            }
+            $out .= ' ';
+            continue;
+        }
+
+        if ($char === '#') {
+            $out .= ' ';
+            while ($i + 1 < $len && $sql[$i + 1] !== "\n" && $sql[$i + 1] !== "\r") {
+                $i++;
+            }
+            continue;
+        }
+
+        if ($char === '-' && $next === '-' && (($i + 2) >= $len || in_array($sql[$i + 2], [' ', "\t", "\r", "\n"], true))) {
+            $out .= ' ';
+            $i += 2;
+            while ($i < $len && $sql[$i] !== "\n" && $sql[$i] !== "\r") {
+                $i++;
+            }
+            $i--;
+            continue;
+        }
+
+        $out .= $char;
+    }
+
+    if ($in_string) {
+        throw new Exception('SQL güvenlik analizi sırasında kapanmamış string tespit edildi.');
+    }
+
+    return ltrim($out);
+}
+
+function import_strip_sql_comments_and_leading(string $sql): string {
+    return strip_sql_comments_stateful($sql, true);
+}
+
+function parse_import_object_reference(string $reference, string $db_name): array {
+    $reference = trim($reference);
+    $pattern = '/^(?:(?:`([^`]+)`)|([\p{L}\p{N}_$]+))(?:\s*\.\s*(?:(?:`([^`]+)`)|([\p{L}\p{N}_$]+)))?$/u';
+    if (!preg_match($pattern, $reference, $m)) {
+        throw new Exception('SQL import nesne adı güvenli biçimde çözümlenemedi.');
+    }
+
+    $first = (string)(($m[1] ?? '') !== '' ? $m[1] : ($m[2] ?? ''));
+    $second = (string)(($m[3] ?? '') !== '' ? $m[3] : ($m[4] ?? ''));
+    $schema = $second === '' ? $db_name : $first;
+    $name = $second === '' ? $first : $second;
+
+    if (!is_db_identifier_safe($schema) || !is_db_identifier_safe($name)) {
+        throw new Exception('SQL import içinde güvenli olmayan nesne adı tespit edildi.');
+    }
+    if (strcasecmp($schema, $db_name) !== 0) {
+        throw new Exception("SQL import yalnızca hedef veritabanında ('{$db_name}') çalışabilir; '{$schema}' veritabanına erişim reddedildi.");
+    }
+
+    return [
+        'schema' => $schema,
+        'name' => $name,
+        'key' => normalize_import_identifier_key($name),
+    ];
+}
+
+function load_import_existing_schema(PDO $pdo, string $db_name): array {
+    $objects = [
+        'tables' => [],
+        'views' => [],
+        'sequences' => [],
+        'functions' => [],
+        'procedures' => [],
+        'events' => [],
+        'triggers' => [],
+    ];
+
+    $stmt = $pdo->prepare("SELECT TABLE_NAME, TABLE_TYPE, UPPER(COALESCE(ENGINE, '')) AS ENGINE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA = ?");
+    $stmt->execute([$db_name]);
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $name = (string)($row['TABLE_NAME'] ?? '');
+        if ($name === '' || !is_db_identifier_safe($name)) continue;
+        $key = normalize_import_identifier_key($name);
+        $type = strtoupper((string)($row['TABLE_TYPE'] ?? ''));
+        $engine = strtoupper((string)($row['ENGINE_NAME'] ?? ''));
+        if ($type === 'VIEW') {
+            $objects['views'][$key] = $name;
+        } elseif ($engine === 'SEQUENCE') {
+            $objects['sequences'][$key] = $name;
+        } else {
+            $objects['tables'][$key] = $name;
+        }
+    }
+    $stmt->closeCursor();
+
+    $stmt = $pdo->prepare("SELECT ROUTINE_NAME, ROUTINE_TYPE FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = ?");
+    $stmt->execute([$db_name]);
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $name = (string)($row['ROUTINE_NAME'] ?? '');
+        if ($name === '' || !is_db_identifier_safe($name)) continue;
+        $key = normalize_import_identifier_key($name);
+        if (strtoupper((string)($row['ROUTINE_TYPE'] ?? '')) === 'FUNCTION') {
+            $objects['functions'][$key] = $name;
+        } else {
+            $objects['procedures'][$key] = $name;
+        }
+    }
+    $stmt->closeCursor();
+
+    $stmt = $pdo->prepare("SELECT EVENT_NAME FROM information_schema.EVENTS WHERE EVENT_SCHEMA = ?");
+    $stmt->execute([$db_name]);
+    while ($name = $stmt->fetchColumn()) {
+        $name = (string)$name;
+        if ($name !== '' && is_db_identifier_safe($name)) {
+            $objects['events'][normalize_import_identifier_key($name)] = $name;
+        }
+    }
+    $stmt->closeCursor();
+
+    $stmt = $pdo->prepare("SELECT TRIGGER_NAME FROM information_schema.TRIGGERS WHERE TRIGGER_SCHEMA = ?");
+    $stmt->execute([$db_name]);
+    while ($name = $stmt->fetchColumn()) {
+        $name = (string)$name;
+        if ($name !== '' && is_db_identifier_safe($name)) {
+            $objects['triggers'][normalize_import_identifier_key($name)] = $name;
+        }
+    }
+    $stmt->closeCursor();
+
+    return $objects;
+}
+
+function import_target_was_existing(array $existing, string $type, string $name): bool {
+    return isset($existing[$type][normalize_import_identifier_key($name)]);
+}
+
+function import_target_was_created(array $created, string $type, string $name): bool {
+    return isset($created[$type][normalize_import_identifier_key($name)]);
+}
+
+function import_register_created(array &$created, string $type, string $name): void {
+    $created[$type][normalize_import_identifier_key($name)] = $name;
+}
+
+function import_unregister_created(array &$created, string $type, string $name): void {
+    unset($created[$type][normalize_import_identifier_key($name)]);
+}
+
+function import_policy_for_sql(string $sql, string $db_name, array $existing, array $created): array {
+    $clean = import_strip_sql_comments_and_leading($sql);
+    if ($clean === '') {
+        return ['allow' => true, 'class' => 'EMPTY'];
+    }
+
+    $forbidden = [
+        '/^USE\s+/i',
+        '/^(?:CREATE|ALTER|DROP)\s+DATABASE\b/i',
+        '/^(?:CREATE|ALTER|DROP)\s+(?:USER|ROLE)\b/i',
+        '/^(?:GRANT|REVOKE)\b/i',
+        '/^CALL\b/i',
+        '/^DO\b/i',
+        '/^CREATE\s+TRIGGER\b/i',
+        '/^CREATE\s+EVENT\b/i',
+        '/^(?:LOAD\s+DATA|LOAD\s+XML)\b/i',
+        '/^SELECT\b.*\bINTO\s+(?:OUTFILE|DUMPFILE)\b/is',
+            '/^FLUSH\b/i',
+        '/^KILL\b/i',
+        '/^SHUTDOWN\b/i',
+        '/^(?:INSTALL|UNINSTALL)\b/i',
+        '/^RESET\b/i',
+    ];
+    foreach ($forbidden as $pattern) {
+        if (preg_match($pattern, $clean)) {
+            return ['allow' => false, 'reason' => 'Bu SQL komutu import güvenlik politikası tarafından yasaklandı.', 'class' => 'FORBIDDEN'];
+        }
+    }
+
+    if (preg_match('/^SET\s+/i', $clean)) {
+        if (preg_match('/\b(?:GLOBAL|PERSIST|PERSIST_ONLY)\b/i', $clean)) {
+            return ['allow' => false, 'reason' => 'GLOBAL/PERSIST kapsamlı SET komutları import sırasında yasaktır.', 'class' => 'SET'];
+        }
+        $allowed = [
+            'FOREIGN_KEY_CHECKS', 'UNIQUE_CHECKS', 'SQL_MODE', 'TIME_ZONE', 'NAMES',
+            'CHARACTER_SET_CLIENT', 'CHARACTER_SET_RESULTS', 'CHARACTER_SET_CONNECTION',
+            'AUTOCOMMIT'
+        ];
+        foreach ($allowed as $variable) {
+            if (preg_match('/^SET\s+(?:SESSION\s+|@@SESSION\.|@@LOCAL\.|@@)?' . preg_quote($variable, '/') . '\s*=/i', $clean)) {
+                return ['allow' => true, 'class' => 'SET'];
+            }
+        }
+        return ['allow' => false, 'reason' => 'İzin verilmeyen SET değişkeni.', 'class' => 'SET'];
+    }
+
+    if (preg_match('/^DROP\s+(?:TEMPORARY\s+)?TABLE(?:\s+IF\s+EXISTS)?\s+((?:`[^`]+`|[\p{L}\p{N}_$]+)(?:\s*\.\s*(?:`[^`]+`|[\p{L}\p{N}_$]+))?)/iu', $clean, $m)) {
+        $ref = parse_import_object_reference($m[1], $db_name);
+        if (!import_target_was_created($created, 'tables', $ref['name'])) {
+            return ['allow' => false, 'reason' => "Mevcut tablo '{$ref['name']}' silinemez.", 'class' => 'DROP TABLE'];
+        }
+        return ['allow' => true, 'class' => 'DROP TABLE', 'object_type' => 'tables', 'object' => $ref['name']];
+    }
+
+    if (preg_match('/^CREATE\s+(?:TEMPORARY\s+)?TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?((?:`[^`]+`|[\p{L}\p{N}_$]+)(?:\s*\.\s*(?:`[^`]+`|[\p{L}\p{N}_$]+))?)/iu', $clean, $m)) {
+        $ref = parse_import_object_reference($m[1], $db_name);
+        if (import_target_was_existing($existing, 'tables', $ref['name']) || import_target_was_existing($existing, 'views', $ref['name']) || import_target_was_existing($existing, 'sequences', $ref['name'])) {
+            return ['allow' => false, 'reason' => "Mevcut nesne '{$ref['name']}' üzerine CREATE TABLE uygulanamaz.", 'class' => 'CREATE TABLE'];
+        }
+        if (import_target_was_created($created, 'views', $ref['name']) || import_target_was_created($created, 'sequences', $ref['name'])) {
+            return ['allow' => false, 'reason' => "Import sırasında oluşturulmuş farklı türdeki '{$ref['name']}' nesnesi üzerine tablo oluşturulamaz.", 'class' => 'CREATE TABLE'];
+        }
+        return ['allow' => true, 'class' => 'CREATE TABLE', 'object_type' => 'tables', 'object' => $ref['name']];
+    }
+
+    $createObjectPatterns = [
+        'views' => '/^CREATE\s+VIEW\s+(?:IF\s+NOT\s+EXISTS\s+)?((?:`[^`]+`|[\p{L}\p{N}_$]+)(?:\s*\.\s*(?:`[^`]+`|[\p{L}\p{N}_$]+))?)/iu',
+        'functions' => '/^CREATE\s+FUNCTION\s+((?:`[^`]+`|[\p{L}\p{N}_$]+)(?:\s*\.\s*(?:`[^`]+`|[\p{L}\p{N}_$]+))?)/iu',
+        'procedures' => '/^CREATE\s+PROCEDURE\s+((?:`[^`]+`|[\p{L}\p{N}_$]+)(?:\s*\.\s*(?:`[^`]+`|[\p{L}\p{N}_$]+))?)/iu',
+        'events' => '/^CREATE\s+EVENT\s+(?:IF\s+NOT\s+EXISTS\s+)?((?:`[^`]+`|[\p{L}\p{N}_$]+)(?:\s*\.\s*(?:`[^`]+`|[\p{L}\p{N}_$]+))?)/iu',
+        'sequences' => '/^CREATE\s+SEQUENCE\s+(?:IF\s+NOT\s+EXISTS\s+)?((?:`[^`]+`|[\p{L}\p{N}_$]+)(?:\s*\.\s*(?:`[^`]+`|[\p{L}\p{N}_$]+))?)/iu',
+    ];
+    foreach ($createObjectPatterns as $type => $pattern) {
+        if (preg_match($pattern, $clean, $m)) {
+            if (preg_match('/^CREATE\s+VIEW\s+(?:OR\s+REPLACE|CREATE\s+OR\s+REPLACE)/i', $clean)) {
+                return ['allow' => false, 'reason' => 'CREATE OR REPLACE mevcut nesneleri değiştirebildiği için import sırasında yasaktır.', 'class' => 'CREATE OR REPLACE'];
+            }
+            if (preg_match('/^CREATE\s+(?:OR\s+REPLACE)\s+(?:FUNCTION|PROCEDURE|EVENT|SEQUENCE)\b/i', $clean)) {
+                return ['allow' => false, 'reason' => 'CREATE OR REPLACE mevcut nesneleri değiştirebildiği için import sırasında yasaktır.', 'class' => 'CREATE OR REPLACE'];
+            }
+            $ref = parse_import_object_reference($m[1], $db_name);
+            if (import_target_was_existing($existing, $type, $ref['name'])) {
+                return ['allow' => false, 'reason' => "Mevcut {$type} nesnesi '{$ref['name']}' değiştirilemez.", 'class' => 'CREATE'];
+            }
+            if (import_target_was_created($created, $type, $ref['name'])) {
+                return ['allow' => false, 'reason' => "Import sırasında zaten oluşturulmuş '{$ref['name']}' nesnesi yeniden tanımlanamaz.", 'class' => 'CREATE'];
+            }
+            if (in_array($type, ['views', 'sequences'], true)) {
+                if (import_target_was_existing($existing, 'tables', $ref['name']) || import_target_was_existing($existing, $type === 'views' ? 'sequences' : 'views', $ref['name'])) {
+                    return ['allow' => false, 'reason' => "Mevcut nesne '{$ref['name']}' üzerine yeni nesne oluşturulamaz.", 'class' => 'CREATE'];
+                }
+            }
+            return ['allow' => true, 'class' => 'CREATE', 'object_type' => $type, 'object' => $ref['name']];
+        }
+    }
+
+    if (preg_match('/^CREATE\s+(?:UNIQUE\s+)?(?:FULLTEXT\s+|SPATIAL\s+)?INDEX\s+(?:`[^`]+`|[\p{L}\p{N}_$]+)\s+ON\s+((?:`[^`]+`|[\p{L}\p{N}_$]+)(?:\s*\.\s*(?:`[^`]+`|[\p{L}\p{N}_$]+))?)/iu', $clean, $m)) {
+        $ref = parse_import_object_reference($m[1], $db_name);
+        if (!import_target_was_created($created, 'tables', $ref['name'])) {
+            return ['allow' => false, 'reason' => "Mevcut tablo '{$ref['name']}' üzerinde index oluşturulamaz.", 'class' => 'CREATE INDEX'];
+        }
+        return ['allow' => true, 'class' => 'CREATE INDEX', 'object' => $ref['name']];
+    }
+
+    // CREATE TETİKLEYİCİ güvenlik nedeniyle baştan engellendi: yeni tabloya eklenen trigger bile import sırasında yapılacak INSERT'lerle mevcut tablolara yan etki oluşturabilir.
+
+
+    if (preg_match('/^ALTER\s+TABLE\s+((?:`[^`]+`|[\p{L}\p{N}_$]+)(?:\s*\.\s*(?:`[^`]+`|[\p{L}\p{N}_$]+))?)\s+/iu', $clean, $m)) {
+        $ref = parse_import_object_reference($m[1], $db_name);
+        if (!import_target_was_created($created, 'tables', $ref['name'])) {
+            return ['allow' => false, 'reason' => "Mevcut tablo '{$ref['name']}' ALTER TABLE ile değiştirilemez.", 'class' => 'ALTER TABLE'];
+        }
+        if (preg_match('/\bRENAME\s+(?:TO|AS)\b/i', $clean)) {
+            return ['allow' => false, 'reason' => 'ALTER TABLE ... RENAME import güvenliği için yasaktır.', 'class' => 'ALTER TABLE'];
+        }
+        return ['allow' => true, 'class' => 'ALTER TABLE', 'object' => $ref['name']];
+    }
+
+    $dmlPatterns = [
+        'INSERT' => '/^INSERT(?:\s+IGNORE)?\s+INTO\s+((?:`[^`]+`|[\p{L}\p{N}_$]+)(?:\s*\.\s*(?:`[^`]+`|[\p{L}\p{N}_$]+))?)/iu',
+        'UPDATE' => '/^UPDATE\s+((?:`[^`]+`|[\p{L}\p{N}_$]+)(?:\s*\.\s*(?:`[^`]+`|[\p{L}\p{N}_$]+))?)\s+/iu',
+        'DELETE' => '/^DELETE\s+FROM\s+((?:`[^`]+`|[\p{L}\p{N}_$]+)(?:\s*\.\s*(?:`[^`]+`|[\p{L}\p{N}_$]+))?)/iu',
+        'REPLACE' => '/^REPLACE(?:\s+INTO)?\s+((?:`[^`]+`|[\p{L}\p{N}_$]+)(?:\s*\.\s*(?:`[^`]+`|[\p{L}\p{N}_$]+))?)/iu',
+    ];
+    foreach ($dmlPatterns as $verb => $pattern) {
+        if (preg_match($pattern, $clean, $m)) {
+            $ref = parse_import_object_reference($m[1], $db_name);
+            if (!import_target_was_created($created, 'tables', $ref['name'])) {
+                return ['allow' => false, 'reason' => "Mevcut tablo '{$ref['name']}' üzerinde {$verb} yapılamaz.", 'class' => $verb];
+            }
+            return ['allow' => true, 'class' => $verb, 'object' => $ref['name']];
+        }
+    }
+
+    if (preg_match('/^TRUNCATE\s+(?:TABLE\s+)?((?:`[^`]+`|[\p{L}\p{N}_$]+)(?:\s*\.\s*(?:`[^`]+`|[\p{L}\p{N}_$]+))?)/iu', $clean, $m)) {
+        $ref = parse_import_object_reference($m[1], $db_name);
+        if (!import_target_was_created($created, 'tables', $ref['name'])) {
+            return ['allow' => false, 'reason' => "Mevcut tablo '{$ref['name']}' boşaltılamaz.", 'class' => 'TRUNCATE'];
+        }
+        return ['allow' => true, 'class' => 'TRUNCATE', 'object' => $ref['name']];
+    }
+
+    if (preg_match('/^DROP\s+INDEX(?:\s+IF\s+EXISTS)?\s+(?:`[^`]+`|[\p{L}\p{N}_$]+)\s+ON\s+((?:`[^`]+`|[\p{L}\p{N}_$]+)(?:\s*\.\s*(?:`[^`]+`|[\p{L}\p{N}_$]+))?)/iu', $clean, $m)) {
+        $ref = parse_import_object_reference($m[1], $db_name);
+        if (!import_target_was_created($created, 'tables', $ref['name'])) {
+            return ['allow' => false, 'reason' => "Mevcut tablo '{$ref['name']}' üzerinde index silinemez.", 'class' => 'DROP INDEX'];
+        }
+        return ['allow' => true, 'class' => 'DROP INDEX', 'object' => $ref['name']];
+    }
+
+    $dropPatterns = [
+        'views' => '/^DROP\s+VIEW(?:\s+IF\s+EXISTS)?\s+((?:`[^`]+`|[\p{L}\p{N}_$]+)(?:\s*\.\s*(?:`[^`]+`|[\p{L}\p{N}_$]+))?)/iu',
+        'triggers' => '/^DROP\s+TRIGGER(?:\s+IF\s+EXISTS)?\s+((?:`[^`]+`|[\p{L}\p{N}_$]+)(?:\s*\.\s*(?:`[^`]+`|[\p{L}\p{N}_$]+))?)/iu',
+        'functions' => '/^DROP\s+FUNCTION(?:\s+IF\s+EXISTS)?\s+((?:`[^`]+`|[\p{L}\p{N}_$]+)(?:\s*\.\s*(?:`[^`]+`|[\p{L}\p{N}_$]+))?)/iu',
+        'procedures' => '/^DROP\s+PROCEDURE(?:\s+IF\s+EXISTS)?\s+((?:`[^`]+`|[\p{L}\p{N}_$]+)(?:\s*\.\s*(?:`[^`]+`|[\p{L}\p{N}_$]+))?)/iu',
+        'events' => '/^DROP\s+EVENT(?:\s+IF\s+EXISTS)?\s+((?:`[^`]+`|[\p{L}\p{N}_$]+)(?:\s*\.\s*(?:`[^`]+`|[\p{L}\p{N}_$]+))?)/iu',
+        'sequences' => '/^DROP\s+SEQUENCE(?:\s+IF\s+EXISTS)?\s+((?:`[^`]+`|[\p{L}\p{N}_$]+)(?:\s*\.\s*(?:`[^`]+`|[\p{L}\p{N}_$]+))?)/iu',
+    ];
+    foreach ($dropPatterns as $type => $pattern) {
+        if (preg_match($pattern, $clean, $m)) {
+            $ref = parse_import_object_reference($m[1], $db_name);
+            if (!import_target_was_created($created, $type, $ref['name'])) {
+                return ['allow' => false, 'reason' => "Mevcut {$type} nesnesi '{$ref['name']}' silinemez.", 'class' => 'DROP'];
+            }
+            return ['allow' => true, 'class' => 'DROP', 'object_type' => $type, 'object' => $ref['name']];
+        }
+    }
+
+    if (preg_match('/^(?:ANALYZE|OPTIMIZE|CHECK|REPAIR)\s+TABLE\s+((?:`[^`]+`|[\p{L}\p{N}_$]+)(?:\s*\.\s*(?:`[^`]+`|[\p{L}\p{N}_$]+))?)/iu', $clean, $m)) {
+        $ref = parse_import_object_reference($m[1], $db_name);
+        if (!import_target_was_created($created, 'tables', $ref['name'])) {
+            return ['allow' => false, 'reason' => "Mevcut tablo '{$ref['name']}' üzerinde tablo bakım komutu çalıştırılamaz.", 'class' => 'TABLE MAINTENANCE'];
+        }
+        return ['allow' => true, 'class' => 'TABLE MAINTENANCE', 'object' => $ref['name']];
+    }
+
+    return ['allow' => false, 'reason' => 'SQL import güvenlik politikası bu komut türünü desteklemiyor.', 'class' => 'UNSUPPORTED'];
+}
+
+/**
+ * GÜVENLİ SQL DOSYASI İÇERİ AKTARMA
+ *
+ * Import dosyası komutları çalıştırır; ancak import başlamadan önce mevcut
+ * olan hiçbir veritabanı nesnesini değiştiremez/silemez. Yeni oluşturulan
+ * tablolar üzerinde sonraki komutlara izin verilir.
+ */
+/**
+ * Yüklenen SQL dosyasını doğrular, güvenlik politikasından geçirir ve kontrollü biçimde uygular.
+ * Politika tarafından doğrulanan SQL ile çalıştırılan SQL aynı normalize edilmiş içeriktir.
  */
 function import_uploaded_sql_file(PDO $pdo, array $uploadedFile, string $db_name): array {
     @set_time_limit(0);
@@ -2654,7 +3146,6 @@ function import_uploaded_sql_file(PDO $pdo, array $uploadedFile, string $db_name
     $tmpPath = (string)($uploadedFile['tmp_name'] ?? '');
     $originalName = basename((string)($uploadedFile['name'] ?? 'sql-import.sql'));
     $fileSize = (int)($uploadedFile['size'] ?? 0);
-
     if ($tmpPath === '' || !is_uploaded_file($tmpPath) || !is_readable($tmpPath)) {
         throw new Exception('Yüklenen SQL dosyasının geçici kopyası okunamadı.');
     }
@@ -2663,6 +3154,12 @@ function import_uploaded_sql_file(PDO $pdo, array $uploadedFile, string $db_name
     if ($handle === false) {
         throw new Exception('Yüklenen SQL dosyası açılamadı.');
     }
+
+    $existing = load_import_existing_schema($pdo, $db_name);
+    $created = [
+        'tables' => [], 'views' => [], 'sequences' => [], 'functions' => [],
+        'procedures' => [], 'events' => [], 'triggers' => []
+    ];
 
     $queryBuffer = '';
     $inString = false;
@@ -2675,26 +3172,84 @@ function import_uploaded_sql_file(PDO $pdo, array $uploadedFile, string $db_name
     $queryCount = 0;
     $successCount = 0;
     $errorCount = 0;
+    $blockedCount = 0;
     $lineApprox = 1;
     $errors = [];
+    $blocked = [];
     $startedAt = microtime(true);
 
-    $executeQuery = static function (string $sql) use ($pdo, &$queryCount, &$successCount, &$errorCount, &$errors, &$lineApprox): void {
+    $recordBlocked = static function (string $sql, string $reason, string $class) use (&$queryCount, &$blockedCount, &$blocked, &$lineApprox): void {
+        $queryCount++;
+        $blockedCount++;
+        if (count($blocked) < 100) {
+            $firstLine = preg_split('/\R/', $sql, 2)[0] ?? $sql;
+            $firstLine = vedo_utf8_substr(trim($firstLine), 0, 500);
+            $blocked[] = [
+                'query' => $queryCount,
+                'line' => $lineApprox,
+                'sql' => $firstLine,
+                'class' => $class,
+                'reason' => $reason,
+            ];
+        }
+        Logger::warning(sprintf(
+            'SQL IMPORT GÜVENLİK ENGELİ | query=%d | line=%d | class=%s | reason=%s | sql=%s',
+            $queryCount,
+            $lineApprox,
+            $class,
+            $reason,
+            summarize_sql_for_log($sql)
+        ));
+    };
+
+    $executeQuery = static function (string $sql) use ($pdo, $db_name, &$existing, &$created, &$queryCount, &$successCount, &$errorCount, &$errors, &$lineApprox, $recordBlocked): void {
         $sql = trim($sql);
         $sql = preg_replace('/^\xEF\xBB\xBF/', '', $sql) ?? $sql;
         if ($sql === '') return;
 
+        try {
+            // Güvenlik politikası ile çalıştırılan SQL birebir aynı normalize edilmiş metin olmalıdır.
+            // Böylece yorum temizleme / parser farkı üzerinden policy bypass mümkün olmaz.
+            $sql_to_execute = import_strip_sql_comments_and_leading($sql);
+            if ($sql_to_execute === '') {
+                return;
+            }
+            $policy = import_policy_for_sql($sql_to_execute, $db_name, $existing, $created);
+        } catch (Throwable $e) {
+            $recordBlocked($sql, $e->getMessage(), 'POLICY_ERROR');
+            return;
+        }
+
+        if (!($policy['allow'] ?? false)) {
+            $recordBlocked($sql_to_execute, (string)($policy['reason'] ?? 'Güvenlik nedeniyle engellendi.'), (string)($policy['class'] ?? 'BLOCKED'));
+            return;
+        }
+
         $queryCount++;
         try {
-            // Burada validate_restore_sql_statement() bilerek çağrılmaz.
-            // SQL import, restore filtresinden bağımsız çalışır.
-            $pdo->exec($sql);
+            $pdo->exec($sql_to_execute);
+
             $successCount++;
+            $class = (string)($policy['class'] ?? '');
+            $type = (string)($policy['object_type'] ?? '');
+            $object = (string)($policy['object'] ?? '');
+
+            if ($class === 'CREATE TABLE' && $object !== '') {
+                import_register_created($created, 'tables', $object);
+            } elseif ($class === 'CREATE' && $type !== '' && $object !== '') {
+                import_register_created($created, $type, $object);
+            } elseif ($class === 'CREATE TRIGGER' && $object !== '') {
+                import_register_created($created, 'triggers', $object);
+            } elseif ($class === 'DROP TABLE' && $object !== '') {
+                import_unregister_created($created, 'tables', $object);
+            } elseif ($class === 'DROP' && $type !== '' && $object !== '') {
+                import_unregister_created($created, $type, $object);
+            }
         } catch (Throwable $e) {
             $errorCount++;
             if (count($errors) < 100) {
                 $firstLine = preg_split('/\R/', $sql, 2)[0] ?? $sql;
-                $firstLine = mb_substr(trim($firstLine), 0, 500);
+                $firstLine = vedo_utf8_substr(trim($firstLine), 0, 500);
                 $errors[] = [
                     'query' => $queryCount,
                     'line' => $lineApprox,
@@ -2709,7 +3264,6 @@ function import_uploaded_sql_file(PDO $pdo, array $uploadedFile, string $db_name
                 $e->getMessage(),
                 summarize_sql_for_log($sql)
             ));
-            // Hata olsa bile sonraki SQL komutları çalıştırılmaya devam eder.
         }
     };
 
@@ -2733,14 +3287,11 @@ function import_uploaded_sql_file(PDO $pdo, array $uploadedFile, string $db_name
                 $currentDelimiter,
                 $delimiterLineBuffer
             );
-
             foreach ($queries as $query) {
                 $executeQuery($query);
             }
         }
 
-        // Dosya sonunda satır sonu yoksa son DELIMITER yönergesini de işleyebilmek için
-        // parser'a tek bir newline gönderilir. Bu, normal SQL içeriğini değiştirmez.
         if ($delimiterLineBuffer !== '' && !$inString && !$inCommentMulti && !$inCommentSingle) {
             $queries = restore_parse_buffer(
                 "\n",
@@ -2777,13 +3328,14 @@ function import_uploaded_sql_file(PDO $pdo, array $uploadedFile, string $db_name
 
     $duration = round(microtime(true) - $startedAt, 2);
     Logger::info(sprintf(
-        'SQL IMPORT TAMAMLANDI | db=%s | file=%s | bytes=%d | queries=%d | success=%d | errors=%d | duration=%ss',
+        'GÜVENLİ SQL IMPORT TAMAMLANDI | db=%s | file=%s | bytes=%d | queries=%d | success=%d | errors=%d | blocked=%d | duration=%ss',
         $db_name,
         $originalName,
         $fileSize,
         $queryCount,
         $successCount,
         $errorCount,
+        $blockedCount,
         $duration
     ));
 
@@ -2794,11 +3346,17 @@ function import_uploaded_sql_file(PDO $pdo, array $uploadedFile, string $db_name
         'queries' => $queryCount,
         'success' => $successCount,
         'errors' => $errorCount,
+        'blocked' => $blockedCount,
         'duration_seconds' => $duration,
         'error_details' => $errors,
+        'blocked_details' => $blocked,
     ];
 }
 
+/**
+ * Tek bir geri yükleme SQL ifadesini güvenlik ve uyumluluk kurallarına göre denetler.
+ * İstenirse hatayı exception olarak bildirir; aksi halde false döndürebilir.
+ */
 function validate_restore_sql_statement(string $sql, bool $throw = true): bool {
     $allowed_sql_regexes = [
         '/^CREATE\s+(?:OR\s+REPLACE\s+)?(?:TEMPORARY\s+)?TABLE\s+/i',
@@ -2814,9 +3372,8 @@ function validate_restore_sql_statement(string $sql, bool $throw = true): bool {
         '/^RENAME\s+TABLE\s+/i',
         '/^(?:INSERT(?:\s+IGNORE)?|UPDATE|DELETE|REPLACE)\s+/i', '/^TRUNCATE\s+(?:TABLE\s+)?/i',
         '/^ALTER\s+TABLE\s+/i', '/^(?:ANALYZE|OPTIMIZE|CHECK)\s+TABLE\s+/i',
-        '/^(?:LOCK|UNLOCK)\s+TABLES(?:\s+|$)/i',
     ];
-    // Yalnızca bu backup motorunun üretebileceği ve restore için gerekli SET değişkenleri kabul edilir.
+    // Yalnızca bu yedekleme motorunun üretebileceği ve geri yükleme için gerekli SET değişkenleri kabul edilir.
     $allowed_set_variables = [
         'FOREIGN_KEY_CHECKS', 'UNIQUE_CHECKS', 'SQL_MODE', 'TIME_ZONE', 'NAMES',
         'CHARACTER_SET_CLIENT', 'CHARACTER_SET_RESULTS', 'CHARACTER_SET_CONNECTION',
@@ -2825,9 +3382,8 @@ function validate_restore_sql_statement(string $sql, bool $throw = true): bool {
 
     $sql_trimmed = (string)$sql;
     $sql_trimmed = preg_replace('/^\xEF\xBB\xBF/', '', $sql_trimmed) ?? $sql_trimmed;
-    $clean_sql_check = preg_replace('/\/\*.*?\*\//s', '', $sql_trimmed);
-    $clean_sql_check = preg_replace('/(--|#)[^\r\n]*/', '', (string)$clean_sql_check);
-    $clean_sql_check = preg_replace('/^(?:(?:\s+)|(?:\\[nrt])+)+/u', '', (string)$clean_sql_check) ?? ltrim((string)$clean_sql_check);
+    $clean_sql_check = strip_sql_comments_stateful($sql_trimmed, true);
+    $clean_sql_check = preg_replace('/^(?:(?:\s+)|(?:\\[nrt])+)+/u', '', $clean_sql_check) ?? ltrim($clean_sql_check);
     $clean_sql_check = ltrim($clean_sql_check);
     if ($clean_sql_check === '') return true;
 
@@ -2910,6 +3466,10 @@ function extract_restore_table_name(string $sql): string {
     }
     return '';
 }
+/**
+ * Ayrıştırılmış geri yükleme sorgularını sıralı biçimde yürütür ve tablo/satır ilerlemesini günceller.
+ * Her sorgu çalıştırılmadan önce izin verilen geri yükleme SQL politikası kontrol edilir.
+ */
 function restore_execute_sql(PDO &$pdo, array $queries, int &$processed_tables_count, int &$processed_rows_count, string $backup_dir, array $config = [], ?string &$current_table = null): int {
     $executed = 0;
     $max_retries = 5;
@@ -2922,7 +3482,8 @@ function restore_execute_sql(PDO &$pdo, array $queries, int &$processed_tables_c
         }
         $sql_trimmed = preg_replace('/^\xEF\xBB\xBF/', '', $sql_trimmed) ?? $sql_trimmed;
         $sql_trimmed = preg_replace('/^(?:(?:\s+)|(?:\\[nrt])+)+/u', '', $sql_trimmed) ?? ltrim($sql_trimmed);
-        validate_restore_sql_statement($sql_trimmed, true);
+        $sql_to_execute = $sql_trimmed;
+        validate_restore_sql_statement($sql_to_execute, true);
 
         $attempt = 0;
         $success = false;
@@ -2931,7 +3492,7 @@ function restore_execute_sql(PDO &$pdo, array $queries, int &$processed_tables_c
         while ($attempt < $max_retries && !$success) {
             $attempt++;
             try {
-                $pdo->exec($sql);
+                $pdo->exec($sql_to_execute);
                 $success = true;
             } catch (Exception $e) {
                 $last_error_message = $e->getMessage();
@@ -2946,7 +3507,7 @@ function restore_execute_sql(PDO &$pdo, array $queries, int &$processed_tables_c
 
                 if ($is_transient) {
                     if ($pdo->inTransaction()) {
-                        // Aktif chunk transaction'ı sırasında PDO'yu değiştirmek transaction state'ini kaybettirir.
+                        // Aktif parça transaction'ı sırasında PDO'yu değiştirmek transaction durum'ini kaybettirir.
                         // Aktif transaction varken bağlantıyı değiştirmek güvenli olmadığından yeniden deneme yapılmaz.
                         break;
                     }
@@ -2970,7 +3531,7 @@ function restore_execute_sql(PDO &$pdo, array $queries, int &$processed_tables_c
         }
 
         if (!$success) {
-            Logger::error("SQL Hatası (Deneme {$attempt}): {$last_error_message} | Sorgu: " . summarize_sql_for_log($sql_trimmed));
+            Logger::error("SQL Hatası (Deneme {$attempt}): {$last_error_message} | Sorgu: " . summarize_sql_for_log($sql_to_execute));
             throw new Exception("SQL Çalıştırma Hatası: " . $last_error_message);
         }
 
@@ -2985,9 +3546,7 @@ function summarize_sql_for_log(string $sql): string {
         return 'EMPTY';
     }
 
-    $sql = preg_replace('/^\xEF\xBB\xBF/', '', $sql) ?? $sql;
-    $sql = preg_replace('/\/\*.*?\*\//s', ' ', $sql) ?? $sql;
-    $sql = preg_replace('/(?:--|#)[^\r\n]*/', ' ', $sql) ?? $sql;
+    $sql = strip_sql_comments_stateful($sql, false);
     $sql = trim((string)(preg_replace('/\s+/u', ' ', $sql) ?? $sql));
 
     $type = strtoupper((string)(preg_match('/^([A-Z]+)/iu', $sql, $m) ? $m[1] : 'SQL'));
@@ -3064,7 +3623,7 @@ function restore_calculate_progress(string $sql, int &$processed_tables_count, i
 }
 
 // 6A. ARKA PLAN CLI İŞLERİ
-// Panelden başlatılan uzun backup/restore işlemleri ayrı bir CLI PHP sürecinde yürütülür.
+// Panelden başlatılan uzun yedekleme/geri yükleme işlemleri ayrı bir CLI PHP sürecinde yürütülür.
 // Tarayıcı yalnızca job durumunu izler; uzun işlem HTTP request'ine bağlı değildir.
 // 6A. ARKA PLAN CLI İŞ DURUMU
 function write_cli_job_state(string $backup_dir, string $job_id, array $state): void {
@@ -3161,12 +3720,12 @@ function cleanup_stale_cli_job_states(string $backup_dir, int $max_age = 86400):
             (int)@filemtime($path)
         );
 
-        // "starting" yalnızca worker'ın ilk HTTP isteği ile gerçek işe geçmesini
-        // bekleyen kısa bir geçiş durumudur. Worker başlayamazsa eski kayıt yeni
-        // restore işlemlerini günlerce kilitlememeli.
+        // "starting" yalnızca işçi süreç'ın ilk HTTP isteği ile gerçek işe geçmesini
+        // bekleyen kısa bir geçiş durumudur. işçi süreç başlayamazsa eski kayıt yeni
+        // geri yükleme işlemlerini günlerce kilitlememeli.
         $ttl = match ($status) {
-            'starting' => 300,   // 5 dk
-            'waiting'  => 900,   // 15 dk
+            'starting' => 300,   // 5 dakika
+            'waiting'  => 900,   // 15 dakika
             'verifying', 'clearing', 'restoring', 'running' => 7200, // 2 saat
             default => min($max_age, 3600)
         };
@@ -3187,6 +3746,7 @@ function find_active_cli_job_states(string $backup_dir): array {
         if (!is_file($path)) continue;
         $data = json_decode((string)@file_get_contents($path), true);
         if (!is_array($data)) continue;
+        if (!empty($data['is_emergency_backup'])) continue;
 
         $status = (string)($data['status'] ?? '');
         if (!in_array($status, ['starting', 'verifying', 'waiting', 'running', 'clearing', 'restoring'], true)) {
@@ -3249,7 +3809,7 @@ function assert_no_active_database_job(string $backup_dir, string $ignore_job_id
         ));
     }
 }
-// PAYLAŞIMLI HOST: CLI/exec/proc_open kullanılamıyorsa Web Worker yedeği kullanılabilir.
+// PAYLAŞIMLI HOST: CLI/exec/proc_open kullanılamıyorsa Web işçi süreci yedeği kullanılabilir.
 function detect_cli_worker_capability(): array {
     $result = [
         'available' => false,
@@ -3331,9 +3891,9 @@ function build_web_backup_paths(string $backup_dir, string $db_name, string $job
     $target = $base . '.sql.gz';
     $tmp = $target . '.tmp';
 
-    // Job-ID tabanlı isimler çakışmayı pratikte ortadan kaldırır.
-    // Ek olarak O_EXCL ile boş bir reservation dosyası atomik oluşturulur.
-    // Böylece iki aynı job-id isteği bile aynı işi ikinci kez başlatamaz.
+    // İş kimliği tabanlı isimler çakışmayı pratikte ortadan kaldırır.
+    // Ek olarak O_EXCL ile boş bir rezervasyon dosyası atomik oluşturulur.
+    // Böylece iki aynı iş kimliği isteği bile aynı işi ikinci kez başlatamaz.
     $reservation = $tmp . '.reserve';
 
     $fp = @fopen($reservation, 'x');
@@ -3356,8 +3916,12 @@ function get_web_worker_tables(PDO $pdo, string $db_name): array {
     $stmt->closeCursor();
     return $tables;
 }
-// Not: Web Worker, CLI'deki tek transaction/consistent snapshot modelinden farklı olarak tablo bazlı ilerler.
-// Bunun nedeni shared hosting HTTP istekleri arasında aynı PDO transactionının güvenilir biçimde korunamamasıdır.
+// Not: WEB işçi süreci, CLI'deki tek transaction/consistent anlık görüntü modelinden farklı olarak tablo bazlı ilerler.
+// Bunun nedeni paylaşımlı hosting HTTP istekleri arasında aynı PDO transactionının güvenilir biçimde korunamamasıdır.
+/**
+ * WEB işçi sürecinin tek yedekleme adımını yürütür. Kısa HTTP isteğinde sınırlı sayıda tabloyu
+ * işler, durum dosyasını günceller ve bir sonraki istekte kaldığı yerden devam edilmesini sağlar.
+ */
 function web_backup_step(
     PDO $pdo,
     string $job_id,
@@ -3413,9 +3977,9 @@ function web_backup_step(
     }
 
     /*
-     * WEB WORKER HIZ OPTİMİZASYONU:
+     * WEB İŞÇİ SÜREÇ HIZ OPTİMİZASYONU:
      * Her HTTP isteğinde tek tablo yerine en fazla 4 tablo işlenir.
-     * Böylece shared hosting ortamında HTTP istek sayısı azalır ve toplam yedekleme süresi kısalır.
+     * Böylece paylaşımlı hosting ortamında HTTP istek sayısı azalır ve toplam yedekleme süresi kısalır.
      * Güvenlik için tek adım yaklaşık 6 saniyeyi aşarsa sonraki tablolar bir sonraki isteğe bırakılır.
      */
     if ($index < count($tables)) {
@@ -3439,21 +4003,103 @@ function web_backup_step(
                 heartbeat_web_worker_locks();
 
                 // Bir HTTP isteği boyunca bu tabloyu READ LOCK altında tut.
-                // Böylece o tablonun export'u kendi içinde tutarlı olur; lock
+                // Böylece o tablonun dışa aktarma'u kendi içinde tutarlı olur; kilit
                 // istek sonunda bırakıldığı için diğer HTTP adımlarına taşınmaz.
                 $tableLocked = false;
                 try {
                     $pdo->exec("LOCK TABLES {$quotedTable} READ");
                     $tableLocked = true;
 
+                    $isEmergencyStep = !empty($state['is_emergency_backup']);
+                    $emergencyProgressTableEstimate = 0;
+                    if ($isEmergencyStep) {
+                        try {
+                            $estimateStmt = $pdo->prepare("SELECT TABLE_ROWS FROM information_schema.TABLES WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? LIMIT 1");
+                            $estimateStmt->execute([$state['db_name'], $table]);
+                            $emergencyProgressTableEstimate = max(0, (int)($estimateStmt->fetchColumn() ?? 0));
+                            $estimateStmt->closeCursor();
+                        } catch (Throwable $estimateError) {
+                            $emergencyProgressTableEstimate = 0;
+                        }
+                    }
+                    $lastEmergencyStateWriteAt = 0.0;
+                    $lastEmergencyPercent = -1;
                     export_single_table_to_stream(
                         $pdo,
                         $table,
                         $gz,
                         $state['db_name'],
                         $processedRows,
-                        static function (): void {
+                        static function () use (
+                            &$state,
+                            &$lastEmergencyStateWriteAt,
+                            &$lastEmergencyPercent,
+                            $backup_dir,
+                            $job_id,
+                            $table,
+                            $index,
+                            $tables,
+                            &$processedRows,
+                            $emergencyProgressTableEstimate
+                        ): void {
                             heartbeat_web_worker_locks();
+                            if (empty($state['is_emergency_backup'])) {
+                                return;
+                            }
+
+                            $now = microtime(true);
+                            $estimatedTotalRows = max(0, (int)($state['estimated_total_rows'] ?? 0));
+                            $tableProgress = $emergencyProgressTableEstimate > 0
+                                ? min(0.999, max(0.0, ($processedRows - (int)($state['processed_rows'] ?? 0)) / $emergencyProgressTableEstimate))
+                                : 0.0;
+                            $basePercent = count($tables) > 0 ? ($index / count($tables)) * 100 : 0;
+                            $percentByTable = $basePercent + (count($tables) > 0 ? ($tableProgress / count($tables)) * 100 : 0);
+                            $percentByRows = $estimatedTotalRows > 0
+                                ? min(99.0, ($processedRows / $estimatedTotalRows) * 100)
+                                : $percentByTable;
+                            $percent = min(99, max($lastEmergencyPercent, (int)floor(max($percentByTable, $percentByRows))));
+
+                            if (($now - $lastEmergencyStateWriteAt) < 0.35 && $percent <= $lastEmergencyPercent) {
+                                return;
+                            }
+
+                            $state['status'] = 'running';
+                            $state['phase'] = 'backup';
+                            $state['percent'] = $percent;
+                            $state['current_table'] = $table;
+                            $state['current_table_index'] = $index;
+                            $state['total_tables'] = count($tables);
+                            $state['processed_rows'] = $processedRows;
+                            $state['elapsed_seconds'] = round($now - (float)($state['job_started_at'] ?? $now), 2);
+                            $state['activity_tick'] = (int)($state['activity_tick'] ?? 0) + 1;
+                            $state['message'] = sprintf(
+                                "Emergency snapshot: %s | %d/%d tablo | %d satır",
+                                $table,
+                                $index + 1,
+                                count($tables),
+                                $processedRows
+                            );
+                            $lastEmergencyStateWriteAt = $now;
+                            $lastEmergencyPercent = $percent;
+
+                            write_cli_job_state($backup_dir, $job_id, $state);
+                            $parentJobId = (string)($state['parent_restore_job_id'] ?? '');
+                            if (preg_match('/^[a-f0-9]{32}$/', $parentJobId)) {
+                                $parentState = read_cli_job_state($backup_dir, $parentJobId);
+                                if (is_array($parentState)) {
+                                    $parentState['status'] = 'waiting';
+                                    $parentState['phase'] = 'emergency_backup';
+                                    $parentState['percent'] = $percent;
+                                    $parentState['emergency_percent'] = $percent;
+                                    $parentState['current_table'] = $table;
+                                    $parentState['current_table_index'] = $index;
+                                    $parentState['total_tables'] = count($tables);
+                                    $parentState['processed_rows'] = $processedRows;
+                                    $parentState['emergency_activity_tick'] = (int)($parentState['emergency_activity_tick'] ?? 0) + 1;
+                                    $parentState['message'] = $state['message'];
+                                    write_cli_job_state($backup_dir, $parentJobId, $parentState);
+                                }
+                            }
                         },
                         (int)$config['max_insert_rows']
                     );
@@ -3509,6 +4155,10 @@ function web_backup_step(
         $state['speed_rows_per_second'] = $speedRows;
         $state['speed_mb_per_second'] = round(((is_file($tmpFile) ? (int)filesize($tmpFile) : 0) / 1048576) / $elapsedTotal, 2);
         $state['bytes_written'] = is_file($tmpFile) ? (int)filesize($tmpFile) : 0;
+        if (!empty($state['is_emergency_backup'])) {
+            $state['emergency_percent'] = $percent;
+            $state['activity_tick'] = (int)($state['activity_tick'] ?? 0) + 1;
+        }
         $state['formatted_bytes'] = format_bytes($state['bytes_written']);
         $state['tables_processed_this_step'] = $tablesProcessed;
         $state['message'] = sprintf('%d tablo işlendi, Web Worker devam ediyor. Her tablo ayrı READ LOCK ile işlendi.', $tablesProcessed);
@@ -3516,7 +4166,7 @@ function web_backup_step(
         return $state;
     }
 
-    // Tablolar bitti: VIEW/TRIGGER/PROCEDURE/FUNCTION/EVENT nesnelerini ekle.
+    // Tablolar bitti: GÖRÜNÜM/TETİKLEYİCİ/PROSEDÜR/FONKSİYON/OLAY nesnelerini ekle.
     if (empty($state['objects_exported'])) {
         $gz = @gzopen($tmpFile, 'ab3');
         if (!$gz) throw new Exception('Web Worker nesne export gzip dosyası açılamadı.');
@@ -3540,7 +4190,9 @@ function web_backup_step(
     if ($reservationFile !== '' && is_file($reservationFile)) {
         @unlink($reservationFile);
     }
-    limit_backup_files($backup_dir, (int)$config['max_backups']);
+    if (empty($state['is_emergency_backup'])) {
+        limit_backup_files($backup_dir, (int)$config['max_backups']);
+    }
     $duration = round(microtime(true) - (float)($state['job_started_at'] ?? microtime(true)), 2);
 
     $state['status'] = 'completed';
@@ -3582,6 +4234,15 @@ function initialize_web_backup_job(PDO $pdo, string $backup_dir, array $config, 
 
     $tables = get_web_worker_tables($pdo, $config['db_name']);
     $paths = build_web_backup_paths($backup_dir, $config['db_name'], $job_id);
+    $estimatedTotalRows = 0;
+    try {
+        $rowStmt = $pdo->prepare("SELECT COALESCE(SUM(TABLE_ROWS),0) FROM information_schema.TABLES WHERE TABLE_SCHEMA = ? AND TABLE_TYPE = 'BASE TABLE'");
+        $rowStmt->execute([$config['db_name']]);
+        $estimatedTotalRows = max(0, (int)($rowStmt->fetchColumn() ?? 0));
+        $rowStmt->closeCursor();
+    } catch (Throwable $rowEstimateError) {
+        Logger::warning('Web backup toplam satır tahmini alınamadı: ' . $rowEstimateError->getMessage());
+    }
     $now = microtime(true);
 
     $state = [
@@ -3595,6 +4256,7 @@ function initialize_web_backup_job(PDO $pdo, string $backup_dir, array $config, 
         'total_tables' => count($tables),
         'current_table_index' => 0,
         'processed_rows' => 0,
+        'estimated_total_rows' => $estimatedTotalRows,
         'current_table' => '',
         'backup_table_index' => 0,
         'backup_processed_rows' => 0,
@@ -3607,8 +4269,9 @@ function initialize_web_backup_job(PDO $pdo, string $backup_dir, array $config, 
         'reservation_file' => $paths['reservation'],
         'job_started_at' => $now,
         'consistency_mode' => 'per_table_read_lock',
+        'consistency_warning' => 'WEB modu veritabanı genelinde tek zamanlı snapshot garanti etmez. Tutarlı tam yedek için CLI modu kullanılmalıdır.',
         'sequences_exported' => false,
-        'message' => 'Web Worker backup başlatıldı; her tablo export sırasında READ LOCK ile tutarlı okunacak.',
+        'message' => 'Web Worker backup başlatıldı. Her tablo kendi export adımı içinde READ LOCK ile korunur; veritabanı genelinde tek snapshot garantisi yoktur.',
         'fallback_reason' => (string)($config['_web_fallback_reason'] ?? '')
     ];
 
@@ -3625,7 +4288,72 @@ function initialize_web_backup_job(PDO $pdo, string $backup_dir, array $config, 
         release_job_admission_lock($admissionLock);
     }
 }
-// Web Worker restore işini parça parça yürütür; önce veritabanı durumunu kontrol eder ve gerekiyorsa temizler.
+function initialize_web_emergency_backup_job(PDO $pdo, string $backup_dir, array $config, string $parent_job_id): array {
+    $emergencyJobId = bin2hex(random_bytes(16));
+    check_sufficient_disk_space($pdo, $config['db_name'], $backup_dir);
+    $tables = get_web_worker_tables($pdo, $config['db_name']);
+    $estimatedTotalRows = 0;
+    try {
+        $rowStmt = $pdo->prepare("SELECT COALESCE(SUM(TABLE_ROWS),0) FROM information_schema.TABLES WHERE TABLE_SCHEMA = ? AND TABLE_TYPE = 'BASE TABLE'");
+        $rowStmt->execute([$config['db_name']]);
+        $estimatedTotalRows = max(0, (int)($rowStmt->fetchColumn() ?? 0));
+        $rowStmt->closeCursor();
+    } catch (Throwable $rowEstimateError) {
+        Logger::warning('Web emergency snapshot toplam satır tahmini alınamadı: ' . $rowEstimateError->getMessage());
+    }
+    $base = $backup_dir . '/.vedo_emergency_web_' . $parent_job_id . '_' . $emergencyJobId . '_' . gmdate('Y-m-d_H-i-s') . 'UTC';
+    $target = $base . '.sql.gz';
+    $tmp = $target . '.tmp';
+    $reservation = $tmp . '.reserve';
+    $fp = @fopen($reservation, 'x');
+    if ($fp === false) throw new Exception('Web Worker emergency backup rezervasyonu oluşturulamadı.');
+    fclose($fp);
+
+    $state = [
+        'job_id' => $emergencyJobId,
+        'engine' => 'web',
+        'type' => 'backup',
+        'is_emergency_backup' => true,
+        'parent_restore_job_id' => $parent_job_id,
+        'status' => 'starting',
+        'phase' => 'backup',
+        'db_name' => $config['db_name'],
+        'tables' => $tables,
+        'total_tables' => count($tables),
+        'current_table_index' => 0,
+        'processed_rows' => 0,
+        'current_table' => '',
+        'backup_table_index' => 0,
+        'backup_processed_rows' => 0,
+        'backup_tables' => $tables,
+        'backup_tmp_file' => $tmp,
+        'backup_target_file' => $target,
+        'backup_reservation_file' => $reservation,
+        'tmp_file' => $tmp,
+        'target_file' => $target,
+        'reservation_file' => $reservation,
+        'job_started_at' => microtime(true),
+        'consistency_mode' => 'per_table_read_lock_emergency',
+        'sequences_exported' => false,
+        'message' => 'Web Worker emergency snapshot: tablolar ayrı READ LOCK ile alınacak.'
+    ];
+    write_cli_job_state($backup_dir, $emergencyJobId, $state);
+    Logger::warning(sprintf(
+        'WEB RESTORE ÖNCESİ EMERGENCY SNAPSHOT BAŞLADI | parent_job=%s | emergency_job=%s | tables=%d',
+        $parent_job_id, $emergencyJobId, count($tables)
+    ));
+    return $state;
+}
+
+function is_emergency_state_completed(array $state): bool {
+    return !empty($state['is_emergency_backup']) && ($state['status'] ?? '') === 'completed' && !empty($state['file']);
+}
+
+// WEB işçi süreci geri yükleme işini parça parça yürütür; önce veritabanı durumunu kontrol eder ve gerekiyorsa temizler.
+/**
+ * WEB geri yükleme durum makinesinin tek adımını yürütür. Kaynak doğrulama, acil durum yedeği,
+ * veritabanı temizliği, SQL aktarımı ve son ANALYZE aşamalarını sırayla yönetir.
+ */
 function web_restore_step(PDO $pdo, string $job_id, string $backup_dir, array $config): array {
     $state = read_cli_job_state($backup_dir, $job_id);
     if (!$state || ($state['engine'] ?? '') !== 'web' || ($state['type'] ?? '') !== 'restore') {
@@ -3638,8 +4366,9 @@ function web_restore_step(PDO $pdo, string $job_id, string $backup_dir, array $c
     if (!is_file($safePath)) throw new Exception('Restore dosyası bulunamadı.');
 
     $phase = (string)($state['phase'] ?? 'verify_source');
+    $recoveryMode = !empty($state['recovery_mode']);
 
-    // WEB RESTORE KAYNAK DOĞRULAMASI
+    // WEB GERİ YÜKLEME KAYNAK DOĞRULAMASI
     // SHA-256 doğrulama durumu polling istekleri arasında korunur.
     if ($phase === 'check_database') {
         $phase = 'verify_source';
@@ -3728,10 +4457,10 @@ function web_restore_step(PDO $pdo, string $job_id, string $backup_dir, array $c
                 throw new Exception('Checksum uyuşmazlığı! Restore kaynağı değiştirilmiş veya bozulmuş.');
             }
 
-            // Gzip başlığı ve akışı açılabiliyor mu diye doğrula. Restore motorunun
-            // kendisi dosyanın tamamını okuyacağı için stream bütünlüğü de restore
+            // Gzip başlığı ve akışı açılabiliyor mu diye doğrula. Geri yükleme motorunun
+            // kendisi dosyanın tamamını okuyacağı için stream bütünlüğü de geri yükleme
             // sırasında kesin olarak kontrol edilir; burada en azından kaynağın
-            // geçerli bir gzip olarak açılabildiğini restore öncesinde teyit ederiz.
+            // geçerli bir gzip olarak açılabildiğini geri yükleme öncesinde teyit ederiz.
             $gzTest = @gzopen($safePath, 'rb');
             if (!$gzTest) {
                 throw new Exception('Restore kaynağı geçerli bir gzip arşivi olarak açılamadı.');
@@ -3748,11 +4477,23 @@ function web_restore_step(PDO $pdo, string $job_id, string $backup_dir, array $c
             $state['backup_sha256'] = $currentHash;
             $state['source_verified'] = true;
             $state['source_gzip_verified'] = true;
-            $state['phase'] = 'clear_database';
-            $state['status'] = 'clearing';
-            $state['percent'] = 0;
-            $state['current_table'] = 'Veritabanına format atılıyor';
-            $state['message'] = 'Restore kaynağı doğrulandı. Mevcut veritabanı tamamen temizlenecek.';
+            if ($recoveryMode) {
+                $state['phase'] = 'clear_database';
+                $state['status'] = 'clearing';
+                $state['percent'] = 0;
+                $state['current_table'] = 'Recovery için veritabanı hazırlanıyor';
+                $state['message'] = 'Emergency restore kaynağı doğrulandı. Recovery için mevcut veritabanı temizlenecek.';
+            } else {
+                $emergencyState = initialize_web_emergency_backup_job($pdo, $backup_dir, $config, $job_id);
+                $state['emergency_job_id'] = $emergencyState['job_id'];
+                $state['emergency_file'] = '';
+                $state['emergency_backup_completed'] = false;
+                $state['phase'] = 'emergency_backup';
+                $state['status'] = 'waiting';
+                $state['percent'] = 0;
+                $state['current_table'] = "Mevcut veritabanının emergency snapshot'ı alınıyor";
+                $state['message'] = 'Restore kaynağı doğrulandı. Mevcut veritabanı Web Worker ile tablo tablo emergency snapshot olarak alınacak.';
+            }
 
             Logger::info(sprintf(
                 'WEB RESTORE KAYNAK DOĞRULANDI | job_id=%s | file=%s | sha256=%s | bytes=%d',
@@ -3767,7 +4508,60 @@ function web_restore_step(PDO $pdo, string $job_id, string $backup_dir, array $c
         return $state;
     }
 
-    // RESTORE ÖNCESİ DB FORMATLAMA
+    // GERİ YÜKLEME ÖNCESİ ACİL DURUM ANLIK GÖRÜNTÜSÜ
+    if ($phase === 'emergency_backup') {
+        $emergencyJobId = (string)($state['emergency_job_id'] ?? '');
+        if (!preg_match('/^[a-f0-9]{32}$/', $emergencyJobId)) {
+            throw new Exception('Web emergency backup job ID geçersiz.');
+        }
+
+        $emergencyState = read_cli_job_state($backup_dir, $emergencyJobId);
+        if (!$emergencyState || empty($emergencyState['is_emergency_backup'])) {
+            throw new Exception('Web emergency backup durumu bulunamadı.');
+        }
+
+        if (($emergencyState['status'] ?? '') === 'failed') {
+            $reservationFile = (string)($emergencyState['backup_reservation_file'] ?? $emergencyState['reservation_file'] ?? '');
+            if ($reservationFile !== '' && is_file($reservationFile)) @unlink($reservationFile);
+            throw new Exception('Web emergency snapshot başarısız: ' . (string)($emergencyState['error'] ?? 'Bilinmeyen hata'));
+        }
+
+        if (is_emergency_state_completed($emergencyState)) {
+            $emergencyFile = (string)$emergencyState['file'];
+            if (!validate_backup_filename($emergencyFile) || !is_emergency_backup_filename($emergencyFile)) {
+                throw new Exception('Web emergency backup dosya adı geçersiz.');
+            }
+            $emergencyPath = validate_path_safe($backup_dir . '/' . $emergencyFile, $backup_dir);
+            if (!is_file($emergencyPath)) throw new Exception('Web emergency backup dosyası bulunamadı.');
+            verify_backup_checksum($emergencyPath);
+
+            $state['emergency_file'] = $emergencyFile;
+            $state['emergency_backup_completed'] = true;
+            $state['phase'] = 'clear_database';
+            $state['status'] = 'clearing';
+            $state['percent'] = 0;
+            $state['current_table'] = 'Veritabanına format atılıyor';
+            $state['message'] = 'Web emergency snapshot tamamlandı. Mevcut veritabanı şimdi temizlenecek.';
+            @unlink($backup_dir . '/.cli_job_' . $emergencyJobId . '.json');
+            @unlink($backup_dir . '/.cli_job_' . $emergencyJobId . '.json.tmp');
+            Logger::warning(sprintf(
+                'WEB RESTORE ÖNCESİ EMERGENCY SNAPSHOT TAMAMLANDI | parent_job=%s | emergency_job=%s | file=%s',
+                $job_id, $emergencyJobId, $emergencyFile
+            ));
+            write_cli_job_state($backup_dir, $job_id, $state);
+            return $state;
+        }
+
+        $state['status'] = 'waiting';
+        $state['percent'] = 0;
+        $state['current_table'] = (string)($emergencyState['current_table'] ?? 'Emergency snapshot hazırlanıyor');
+        $state['emergency_percent'] = (int)($emergencyState['percent'] ?? 0);
+        $state['message'] = (string)($emergencyState['message'] ?? 'Web emergency snapshot devam ediyor.');
+        write_cli_job_state($backup_dir, $job_id, $state);
+        return $state;
+    }
+
+    // GERİ YÜKLEME ÖNCESİ DB FORMATLAMA
     if ($phase === 'clear_database') {
         if (empty($state['source_verified']) || empty($state['backup_sha256'])) {
             throw new Exception('Restore kaynağı doğrulanmadan veritabanı temizlenemez.');
@@ -3857,7 +4651,7 @@ function web_restore_step(PDO $pdo, string $job_id, string $backup_dir, array $c
 
         write_cli_job_state($backup_dir, $job_id, $state);
 
-        // Aynı session'dan gelen progress istekleri state dosyasını okuyabilsin.
+        // Aynı oturum'dan gelen ilerleme istekleri durum dosyasını okuyabilsin.
         release_web_session_lock();
 
         $analysis = analyze_tables_after_restore(
@@ -4072,6 +4866,26 @@ function web_restore_step(PDO $pdo, string $job_id, string $backup_dir, array $c
                 throw new Exception('Restore sonrası bütünlük kontrolü başarısız.');
             }
 
+            $state['restore_verified'] = true;
+            $completedEmergencyFile = (string)($state['emergency_file'] ?? '');
+            $emergencyJobId = (string)($state['emergency_job_id'] ?? '');
+            if (!$recoveryMode) {
+                if ($completedEmergencyFile !== '') cleanup_emergency_backup_artifacts($backup_dir, $completedEmergencyFile);
+                if (preg_match('/^[a-f0-9]{32}$/', $emergencyJobId)) {
+                    @unlink($backup_dir . '/.cli_job_' . $emergencyJobId . '.json');
+                    @unlink($backup_dir . '/.cli_job_' . $emergencyJobId . '.json.tmp');
+                }
+            } else {
+                // Recovery kaynağı parent durum içindeki emergency_file ise başarıdan sonra temp olarak temizlenir.
+                if ($completedEmergencyFile !== '') cleanup_emergency_backup_artifacts($backup_dir, $completedEmergencyFile);
+                if (preg_match('/^[a-f0-9]{32}$/', $emergencyJobId)) {
+                    @unlink($backup_dir . '/.cli_job_' . $emergencyJobId . '.json');
+                    @unlink($backup_dir . '/.cli_job_' . $emergencyJobId . '.json.tmp');
+                }
+            }
+            $state['emergency_file'] = '';
+            $state['emergency_backup_completed'] = false;
+
             $duration = round(microtime(true) - $startedAt, 2);
             $state['processed_bytes'] = $fileSize;
             $state['file_size'] = $fileSize;
@@ -4079,10 +4893,10 @@ function web_restore_step(PDO $pdo, string $job_id, string $backup_dir, array $c
             $state['backup_sha256'] = (string)($state['backup_sha256'] ?? '');
             $state['integrity'] = $integrity;
 
-            if ((bool)$config['analyze_after_restore']) {
-                // WEB modu seçildiği için ANALYZE kesinlikle WEB Worker'da kalır.
-                // Bir sonraki progress isteğinde run_web_worker_step() DB kilidini
-                // alır ve yalnızca bir tabloyu ANALYZE edip state'i günceller.
+            if (!$recoveryMode && (bool)$config['analyze_after_restore']) {
+                // WEB modu seçildiği için ANALYZE kesinlikle WEB işçi sürecinde kalır.
+                // Bir sonraki ilerleme isteğinde run_web_işçi süreç_step() DB kilidini
+                // alır ve yalnızca bir tabloyu ANALYZE edip durum'i günceller.
                 $state['engine'] = 'web';
                 $state['status'] = 'waiting';
                 $state['phase'] = 'analyze_pending';
@@ -4109,7 +4923,13 @@ function web_restore_step(PDO $pdo, string $job_id, string $backup_dir, array $c
             $state['status'] = 'completed';
             $state['phase'] = 'completed';
             $state['percent'] = 100;
-            $state['message'] = 'Restore başarıyla tamamlandı.';
+            $state['message'] = $recoveryMode ? 'Recovery başarıyla tamamlandı; eski veritabanı geri yüklendi.' : 'Restore başarıyla tamamlandı.';
+            if ($recoveryMode) {
+                $state['recovered'] = true;
+                $state['original_restore_file'] = (string)($state['original_restore_file'] ?? '');
+                $state['file'] = $state['original_restore_file'];
+                $state['recovery_source_file'] = $completedEmergencyFile;
+            }
             $state['current_table'] = 'Tamamlandı';
             Logger::info(sprintf(
                 'WEB RESTORE BAŞARILI | job_id=%s | file=%s | tables=%d | rows=%d | duration=%ss | integrity=%s',
@@ -4176,6 +4996,87 @@ function initialize_web_restore_job(PDO $pdo, string $backup_dir, array $config,
         release_job_admission_lock($admissionLock);
     }
 }
+function prepare_web_restore_recovery_state(string $backup_dir, string $job_id, Throwable $error): ?array {
+    $state = read_cli_job_state($backup_dir, $job_id);
+    if (!$state || ($state['engine'] ?? '') !== 'web' || ($state['type'] ?? '') !== 'restore') {
+        return null;
+    }
+
+    // Recovery sırasında tekrar recovery başlatma; bu ikinci hata doğrudan failed olarak kalır.
+    if (!empty($state['recovery_mode'])) {
+        return null;
+    }
+
+    $emergencyFile = (string)($state['emergency_file'] ?? '');
+    if ($emergencyFile === '' || !is_emergency_backup_filename($emergencyFile) || !validate_backup_filename($emergencyFile)) {
+        return null;
+    }
+
+    try {
+        $safeEmergencyPath = validate_path_safe($backup_dir . '/' . $emergencyFile, $backup_dir);
+    } catch (Throwable $pathError) {
+        Logger::error('WEB RESTORE RECOVERY HAZIRLANAMADI | job_id=' . $job_id . ' | emergency=' . $emergencyFile . ' | path_error=' . $pathError->getMessage());
+        return null;
+    }
+
+    if (!is_file($safeEmergencyPath)) {
+        Logger::error('WEB RESTORE RECOVERY HAZIRLANAMADI | job_id=' . $job_id . ' | emergency dosya bulunamadı=' . $emergencyFile);
+        return null;
+    }
+
+    $originalFile = (string)($state['original_restore_file'] ?? $state['file'] ?? '');
+    if ($originalFile === '' || !validate_backup_filename($originalFile)) {
+        Logger::error('WEB RESTORE RECOVERY HAZIRLANAMADI | job_id=' . $job_id . ' | original file geçersiz.');
+        return null;
+    }
+
+    $state['recovery_mode'] = true;
+    $state['original_restore_file'] = $originalFile;
+    $state['recovery_source_file'] = $emergencyFile;
+    $state['file'] = $emergencyFile;
+    $state['emergency_file'] = $emergencyFile;
+    $state['emergency_backup_completed'] = true;
+    $state['source_verified'] = false;
+    $state['source_gzip_verified'] = false;
+    $state['cleanup_verified'] = false;
+    $state['restore_verified'] = false;
+    $state['verify_offset'] = 0;
+    $state['verify_file_size'] = (int)@filesize($safeEmergencyPath);
+    $state['verify_hash_context'] = '';
+    $state['processed_bytes'] = 0;
+    $state['query_buffer'] = '';
+    $state['in_string'] = false;
+    $state['string_char'] = '';
+    $state['in_comment_multi'] = false;
+    $state['in_comment_single'] = false;
+    $state['escaped'] = false;
+    $state['current_delimiter'] = ';';
+    $state['delimiter_line_buffer'] = '';
+    $state['tables_count'] = 0;
+    $state['rows_count'] = 0;
+    $state['current_table'] = 'Recovery kaynağı doğrulanıyor';
+    $state['phase'] = 'verify_source';
+    $state['status'] = 'waiting';
+    $state['percent'] = 0;
+    $state['recovery_error'] = $error->getMessage();
+    $state['message'] = 'Restore başarısız oldu. Eski veritabanı Web Worker emergency snapshot üzerinden geri yüklenmeye hazırlanıyor.';
+
+    write_cli_job_state($backup_dir, $job_id, $state);
+    Logger::warning(sprintf(
+        'WEB RESTORE RECOVERY HAZIRLANDI | job_id=%s | original_file=%s | emergency_file=%s | error=%s',
+        $job_id,
+        $originalFile,
+        $emergencyFile,
+        $error->getMessage()
+    ));
+
+    return $state;
+}
+
+/**
+ * Etkin WEB işinin türüne göre bir sonraki yedekleme veya geri yükleme adımını çalıştırır.
+ * Aynı anda birden fazla veritabanı işi çalışmasını ortak işlem kilidiyle engeller.
+ */
 function run_web_worker_step(PDO $pdo, string $backup_dir, array $config, string $job_id): array {
     if (!preg_match('/^[a-f0-9]{32}$/', $job_id)) {
         throw new Exception('Geçersiz Web Worker job ID.');
@@ -4206,7 +5107,7 @@ function run_web_worker_step(PDO $pdo, string $backup_dir, array $config, string
         $state['step_started_at'] = microtime(true);
         $phase = (string)($state['phase'] ?? '');
 
-        // WEB modu seçildiyse ANALYZE de tamamen Web Worker içinde çalışır.
+        // WEB modu seçildiyse ANALYZE de tamamen Web işçi süreci içinde çalışır.
         // Bu noktada sadece fazı hazırlarız; aşağıda alınacak veritabanı kilidi
         // ile bir sonraki tek-tabllolu ANALYZE adımı çalıştırılır.
         if (($state['type'] ?? '') === 'restore' && $phase === 'analyze_pending') {
@@ -4226,7 +5127,15 @@ function run_web_worker_step(PDO $pdo, string $backup_dir, array $config, string
             $GLOBALS['VEDO_WEB_WORKER_JOB_LOCK_HANDLE'] = $worker_lock;
             try {
                 update_system_lock_heartbeat($worker_lock);
-                return web_restore_step($pdo, $job_id, $backup_dir, $config);
+                try {
+                    return web_restore_step($pdo, $job_id, $backup_dir, $config);
+                } catch (Throwable $restoreError) {
+                    $recoveryState = prepare_web_restore_recovery_state($backup_dir, $job_id, $restoreError);
+                    if ($recoveryState !== null) {
+                        return $recoveryState;
+                    }
+                    throw $restoreError;
+                }
             } finally {
                 unset($GLOBALS['VEDO_WEB_WORKER_JOB_LOCK_HANDLE']);
             }
@@ -4258,7 +5167,42 @@ function run_web_worker_step(PDO $pdo, string $backup_dir, array $config, string
             }
 
             if (($state['type'] ?? '') === 'restore') {
-                return web_restore_step($pdo, $job_id, $backup_dir, $config);
+                if ((string)($state['phase'] ?? '') === 'emergency_backup') {
+                    $emergencyJobId = (string)($state['emergency_job_id'] ?? '');
+                    if (!preg_match('/^[a-f0-9]{32}$/', $emergencyJobId)) {
+                        throw new Exception('Web emergency backup job ID bulunamadı.');
+                    }
+                    $emergencyState = read_cli_job_state($backup_dir, $emergencyJobId);
+                    if (!$emergencyState || empty($emergencyState['is_emergency_backup'])) {
+                        throw new Exception('Web emergency backup işi bulunamadı.');
+                    }
+                    $result = web_backup_step($pdo, $emergencyJobId, $backup_dir, $config);
+                    $latestParent = read_cli_job_state($backup_dir, $job_id) ?: $state;
+                    if (($result['status'] ?? '') === 'completed') {
+                        $latestParent['emergency_file'] = (string)($result['file'] ?? '');
+                        $latestParent['emergency_backup_completed'] = true;
+                        $latestParent['phase'] = 'clear_database';
+                        $latestParent['status'] = 'clearing';
+                        $latestParent['percent'] = 0;
+                        $latestParent['message'] = 'Web emergency snapshot tamamlandı. Mevcut veritabanı şimdi temizlenecek.';
+                        write_cli_job_state($backup_dir, $job_id, $latestParent);
+                    } else {
+                        $latestParent['status'] = 'waiting';
+                        $latestParent['emergency_percent'] = (int)($result['percent'] ?? 0);
+                        $latestParent['message'] = (string)($result['message'] ?? 'Web emergency snapshot devam ediyor.');
+                        write_cli_job_state($backup_dir, $job_id, $latestParent);
+                    }
+                    return $latestParent;
+                }
+                try {
+                    return web_restore_step($pdo, $job_id, $backup_dir, $config);
+                } catch (Throwable $restoreError) {
+                    $recoveryState = prepare_web_restore_recovery_state($backup_dir, $job_id, $restoreError);
+                    if ($recoveryState !== null) {
+                        return $recoveryState;
+                    }
+                    throw $restoreError;
+                }
             }
 
             throw new Exception('Bilinmeyen Web Worker iş tipi.');
@@ -4277,7 +5221,8 @@ function perform_restore_cli_job(
     string $backup_dir,
     array $config,
     $lock_handle,
-    string $job_id
+    string $job_id,
+    bool $create_emergency_backup = true
 ): void {
     $safe_path = validate_path_safe($backup_dir . '/' . $file, $backup_dir);
     if (!is_file($safe_path) || !validate_backup_filename($file)) {
@@ -4289,6 +5234,8 @@ function perform_restore_cli_job(
     $tables_count = 0;
     $rows_count = 0;
     $started_at = microtime(true);
+    $emergency_file = '';
+    $restore_verified = false;
 
     write_cli_job_state($backup_dir, $job_id, [
         'type' => 'restore',
@@ -4305,6 +5252,45 @@ function perform_restore_cli_job(
     try {
         $backup_sha256 = verify_restore_source_integrity($safe_path);
         Logger::info(sprintf('CLI RESTORE KAYNAK DOĞRULANDI | file=%s | sha256=%s', $file, $backup_sha256));
+
+        if ($create_emergency_backup) {
+            Logger::warning('CLI RESTORE ÖNCESİ EMERGENCY SNAPSHOT BAŞLADI | job_id=' . $job_id . ' | db=' . $config['db_name']);
+            $emergencyProgressCallback = static function (array $emergencyState) use ($backup_dir, $job_id): void {
+                $parentState = read_cli_job_state($backup_dir, $job_id) ?: [];
+                $percent = (int)($emergencyState['percent'] ?? 0);
+                $parentState['status'] = 'waiting';
+                $parentState['phase'] = 'emergency_backup';
+                $parentState['percent'] = $percent;
+                $parentState['emergency_percent'] = $percent;
+                $parentState['current_table'] = (string)($emergencyState['current_table'] ?? 'Emergency snapshot hazırlanıyor');
+                $parentState['current_table_index'] = (int)($emergencyState['current_table_index'] ?? 0);
+                $parentState['total_tables'] = (int)($emergencyState['total_tables'] ?? 0);
+                $parentState['processed_rows'] = (int)($emergencyState['processed_rows'] ?? 0);
+                $parentState['emergency_activity_tick'] = (int)($parentState['emergency_activity_tick'] ?? 0) + 1;
+                $parentState['message'] = sprintf(
+                    'Emergency snapshot: %s',
+                    (string)($emergencyState['current_table'] ?? 'çalışıyor')
+                );
+                write_cli_job_state($backup_dir, $job_id, $parentState);
+            };
+            $emergency_path = perform_backup(
+                $pdo,
+                $config['db_name'],
+                $backup_dir,
+                $config,
+                $lock_handle,
+                $emergencyProgressCallback,
+                '.vedo_emergency_cli_' . $job_id,
+                false
+            );
+            $emergency_file = basename($emergency_path);
+            verify_backup_checksum($emergency_path);
+            Logger::warning(sprintf(
+                'CLI RESTORE ÖNCESİ EMERGENCY SNAPSHOT TAMAMLANDI | job_id=%s | file=%s',
+                $job_id,
+                $emergency_file
+            ));
+        }
 
         $clearReport = clear_database_for_restore($pdo, $config['db_name']);
         $failedCount = count($clearReport['failed'] ?? []);
@@ -4420,6 +5406,12 @@ function perform_restore_cli_job(
                 throw new Exception('Restore sonrası bütünlük kontrolü başarısız.');
             }
 
+            $restore_verified = true;
+            if ($emergency_file !== '') {
+                cleanup_emergency_backup_artifacts($backup_dir, $emergency_file);
+                $emergency_file = '';
+            }
+
             $analyzeReport = [
                 'processed' => 0,
                 'successful' => 0,
@@ -4488,20 +5480,93 @@ function perform_restore_cli_job(
         } catch (Throwable $ignored) {}
 
         $restore_duration = round(microtime(true) - $started_at, 2);
+
+        if ($create_emergency_backup && !$restore_verified && $emergency_file !== '') {
+            $recoveryError = '';
+            $recoveredSuccessfully = false;
+            try {
+                Logger::warning(sprintf(
+                    'CLI RESTORE RECOVERY BAŞLADI | job_id=%s | emergency_file=%s | original_error=%s',
+                    $job_id,
+                    $emergency_file,
+                    $e->getMessage()
+                ));
+                $recoveryConfig = $config;
+                $recoveryConfig['analyze_after_restore'] = false;
+                perform_restore_cli_job(
+                    $pdo,
+                    $emergency_file,
+                    $backup_dir,
+                    $recoveryConfig,
+                    $lock_handle,
+                    $job_id,
+                    false
+                );
+                cleanup_emergency_backup_artifacts($backup_dir, $emergency_file);
+                write_cli_job_state($backup_dir, $job_id, [
+                    'type' => 'restore',
+                    'status' => 'failed',
+                    'recovered' => true,
+                    'percent' => 100,
+                    'file' => $file,
+                    'tables_count' => $tables_count,
+                    'rows_count' => $rows_count,
+                    'error' => $e->getMessage(),
+                    'recovery_message' => 'Restore başarısız oldu; restore öncesi CLI emergency snapshot başarıyla geri yüklendi.',
+                    'duration_seconds' => $restore_duration
+                ]);
+                $recoveredSuccessfully = true;
+                Logger::warning(sprintf(
+                    'CLI RESTORE RECOVERY TAMAMLANDI | job_id=%s | original_file=%s | emergency_file=%s',
+                    $job_id, $file, $emergency_file
+                ));
+            } catch (Throwable $recoveryException) {
+                $recoveryError = $recoveryException->getMessage();
+                Logger::error(sprintf(
+                    'CLI RESTORE RECOVERY BAŞARISIZ | job_id=%s | emergency_file=%s | error=%s',
+                    $job_id,
+                    $emergency_file,
+                    $recoveryError
+                ));
+            }
+            if ($recoveredSuccessfully) {
+                throw new Exception('Restore başarısız oldu ancak eski veritabanı CLI emergency snapshot ile geri yüklendi: ' . $e->getMessage(), 0, $e);
+            }
+            if ($recoveryError !== '') {
+                write_cli_job_state($backup_dir, $job_id, [
+                    'type' => 'restore',
+                    'status' => 'failed',
+                    'recovered' => false,
+                    'percent' => min(99, $file_size > 0 ? (int)floor(($processed_bytes / $file_size) * 100) : 0),
+                    'file' => $file,
+                    'tables_count' => $tables_count,
+                    'rows_count' => $rows_count,
+                    'error' => $e->getMessage(),
+                    'recovery_error' => $recoveryError,
+                    'emergency_file' => $emergency_file,
+                    'duration_seconds' => $restore_duration
+                ]);
+                throw new Exception('Restore başarısız oldu ve eski veritabanının recovery işlemi de başarısız oldu. Emergency snapshot korunuyor: ' . $recoveryError, 0, $e);
+            }
+        }
+
         write_cli_job_state($backup_dir, $job_id, [
             'type' => 'restore',
             'status' => 'failed',
+            'recovered' => false,
             'percent' => min(99, $file_size > 0 ? (int)floor(($processed_bytes / $file_size) * 100) : 0),
             'file' => $file,
             'tables_count' => $tables_count,
             'rows_count' => $rows_count,
             'error' => $e->getMessage(),
+            'emergency_file' => $emergency_file,
             'duration_seconds' => $restore_duration
         ]);
 
         Logger::error(sprintf(
-            'RESTORE BAŞARISIZ | file=%s | status=failed | tables=%d | rows=%d | rollback=YOK | duration=%ss | error=%s',
+            'RESTORE BAŞARISIZ | file=%s | status=failed | recovery=%s | tables=%d | rows=%d | duration=%ss | error=%s',
             $file,
+            $emergency_file !== '' ? 'FAILED/KEPT' : ($restore_verified ? 'NOT_NEEDED' : 'NONE'),
             $tables_count,
             $rows_count,
             $restore_duration,
@@ -4548,11 +5613,15 @@ function resolve_cli_php_binary(): string {
 
     throw new Exception('Gerçek CLI PHP binary bulunamadı. PHP CLI kurulumunu kontrol edin.');
 }
-// GÜVENLİK: Log dosyasına gerçek cron tokenı yazılmaz; yalnızca komut yapısı kaydedilir.
+// GÜVENLİK: Log dosyasına gerçek cron anahtarı yazılmaz; yalnızca komut yapısı kaydedilir.
 function mask_cli_token_in_command(string $command, string $token): string {
     if ($token === '') return $command;
     return str_replace($token, '***CRON_TOKEN_MASKED***', $command);
 }
+/**
+ * Uzun süren yedekleme veya geri yükleme işini arka plan CLI PHP süreci olarak başlatır.
+ * Böylece tarayıcı isteğinin kapanması uzun süren işlemi durdurmaz.
+ */
 function spawn_cli_job(
     string $script,
     string $backup_dir,
@@ -4572,9 +5641,9 @@ function spawn_cli_job(
 
     try {
         // Aynı admission kilidi altında:
-        // 1) eski state'leri temizle
+        // 1) eski durum'leri temizle
         // 2) aktif iş kontrolü yap
-        // 3) yeni job state'i atomik olarak rezerve et
+        // 3) yeni job durum'i atomik olarak rezerve et
         cleanup_stale_cli_job_states($backup_dir);
         assert_no_active_database_job($backup_dir, $job_id);
         reserve_cli_job_state($backup_dir, $job_id, $job_type, $file);
@@ -4586,10 +5655,12 @@ function spawn_cli_job(
             throw new Exception('CLI process başlatılamadı: ' . $e->getMessage(), 0, $e);
         }
 
+        // Arka plan işçi süreç anahtarını process komut satırına yazma.
+        // Sabit cron çağrısı aşağıda mevcut anahtar ile çalışmaya devam eder;
+        // yalnızca web panelin başlattığı iç işçi süreç anahtarı environment üzerinden taşınır.
         $args = [
             escapeshellarg($php),
             escapeshellarg($script),
-            escapeshellarg($token),
             escapeshellarg('--job=' . $job_type),
             escapeshellarg('--job-id=' . $job_id)
         ];
@@ -4613,7 +5684,17 @@ function spawn_cli_job(
         if (function_exists('exec')) {
             $output = [];
             $exitCode = 1;
-            @exec($cmd, $output, $exitCode);
+            $oldWorkerToken = getenv('VEDO_WORKER_TOKEN');
+            putenv('VEDO_WORKER_TOKEN=' . $token);
+            try {
+                @exec($cmd, $output, $exitCode);
+            } finally {
+                if ($oldWorkerToken === false) {
+                    putenv('VEDO_WORKER_TOKEN');
+                } else {
+                    putenv('VEDO_WORKER_TOKEN=' . $oldWorkerToken);
+                }
+            }
             if ($exitCode === 0) {
                 Logger::info("CLI {$job_type} job başlatıldı: {$job_id}");
                 return true;
@@ -4626,7 +5707,17 @@ function spawn_cli_job(
                 1 => ['file', PHP_OS_FAMILY === 'Windows' ? 'NUL' : '/dev/null', 'a'],
                 2 => ['file', PHP_OS_FAMILY === 'Windows' ? 'NUL' : '/dev/null', 'a'],
             ];
-            $process = @proc_open($cmd, $descriptor, $pipes);
+            $oldWorkerToken = getenv('VEDO_WORKER_TOKEN');
+            putenv('VEDO_WORKER_TOKEN=' . $token);
+            try {
+                $process = @proc_open($cmd, $descriptor, $pipes);
+            } finally {
+                if ($oldWorkerToken === false) {
+                    putenv('VEDO_WORKER_TOKEN');
+                } else {
+                    putenv('VEDO_WORKER_TOKEN=' . $oldWorkerToken);
+                }
+            }
             if (is_resource($process)) {
                 $exitCode = @proc_close($process);
                 if ($exitCode === 0) {
@@ -4825,6 +5916,11 @@ if ($is_cli_sapi && isset($argv) && is_array($argv)) {
     }
 }
 
+$workerToken = $is_cli_sapi ? (string)(getenv('VEDO_WORKER_TOKEN') ?: '') : '';
+if (!$has_cron_token && $workerToken !== '' && hash_equals($config['cron_token'], $workerToken)) {
+    $has_cron_token = true;
+}
+
 $is_cli_cron = ($is_cli_sapi && $has_cron_token);
 
 if ($is_cli_cron && isset($argv) && is_array($argv)) {
@@ -4882,10 +5978,10 @@ if (php_sapi_name() === 'cli') {
 }
 
 /**
- * Persistan login rate-limit durumu. Session'a bağlı olmadığı için yeni session
+ * Persistan login istek sınırı durumu. Oturum'a bağlı olmadığı için yeni oturum
  * açarak limitin aşılması engellenir. Sadece başarısız denemeleri kısa süre tutar.
  */
-// Rate-limit dosya anahtarı için kullanıcı adı ve IP SHA-256 ile özetlenir.
+// İstek sınırı dosya anahtarı için kullanıcı adı ve IP SHA-256 ile özetlenir.
 function get_login_rate_limit_keys(string $ip, string $username): array {
     $ip = substr($ip, 0, 128);
     $username = strtolower(trim($username));
@@ -5017,10 +6113,11 @@ function register_login_failure_all(string $backup_dir, string $ip, string $user
     return $maxState;
 }
 
+
 ini_set('session.use_strict_mode', '1');
 session_set_cookie_params([
     'httponly' => true,
-    'secure'   => !empty($_SERVER['HTTPS']),
+    'secure'   => is_request_https(),
     'samesite' => 'Strict'
 ]);
 session_start();
@@ -5118,7 +6215,7 @@ if (empty($_SESSION['logged_in'])) {
             html.theme-light { color-scheme: light; --login-bg:#f5f7fa; --login-card:#fff; --login-border:#dbe2ea; --login-text:#1c2733; --login-muted:#667585; --login-input:#fff; --login-input-border:#cbd5df; --login-error-bg:#fff1f1; --login-error-text:#b42318; --login-error-border:#f3b4b0; --login-shadow:0 12px 36px rgba(32,56,85,.12); }
             body { background:var(--login-bg); color:var(--login-text); font-family: var(--vedo-ui-font) !important; display:flex; align-items:center; justify-content:center; min-height:100vh; margin:0; padding:20px; box-sizing:border-box; transition:background-color .2s ease,color .2s ease; }
             .login-wrap { width:100%; max-width:400px; }
-            .login-toolbar { display:flex; justify-content:flex-end; margin-bottom:10px; }
+            .login-toolbar { display:flex; justify-content:flex-end; gap:8px; margin-bottom:10px; }
             .login-theme-toggle { width:auto; margin:0; padding:8px 12px; background:transparent; color:var(--login-text); border:1px solid var(--login-border); border-radius:6px; cursor:pointer; }
             .login-theme-toggle:hover { background:rgba(127,127,127,.10); }
             .login-card { background:var(--login-card); border-radius:12px; padding:30px; width:100%; box-sizing:border-box; box-shadow:var(--login-shadow); border:1px solid var(--login-border); }
@@ -5310,7 +6407,7 @@ function get_instant_cpu_metrics(int $sampleMs = 120): array {
         }
     }
 
-    // /proc/stat yoksa (ör. bazı Windows/shared hosting ortamları) load average yalnızca geri dönüş yöntemidir.
+    // /proc/stat yoksa (ör. bazı Windows/paylaşımlı hosting ortamları) load average yalnızca geri dönüş yöntemidir.
     $fallback = $cores > 0 ? ($load1 / $cores) * 100 : 0;
     return [
         'percent' => round(min(100, max(0, $fallback)), 1),
@@ -5323,6 +6420,10 @@ function get_instant_cpu_metrics(int $sampleMs = 120): array {
     ];
 }
 
+/**
+ * Panelde gösterilecek CPU, RAM, disk ve yedek klasörü metriklerini toplar.
+ * İşletim sistemi metrikleri okunamazsa güvenli geri dönüş değerleri kullanılır.
+ */
 function get_server_metrics(array $config, string $backup_dir): array {
     $metrics = [
         'hostname' => gethostname() ?: 'N/A',
@@ -5469,7 +6570,7 @@ function get_server_metrics(array $config, string $backup_dir): array {
     if (is_dir($backup_dir)) {
         try {
             foreach (new DirectoryIterator($backup_dir) as $fileinfo) {
-                if (!$fileinfo->isFile() || !str_ends_with($fileinfo->getFilename(), '.sql.gz')) continue;
+                if (!$fileinfo->isFile() || !str_ends_with($fileinfo->getFilename(), '.sql.gz') || is_emergency_backup_filename($fileinfo->getFilename())) continue;
 
                 $fileSize = $fileinfo->getSize();
                 $fileTime = $fileinfo->getMTime();
@@ -5553,13 +6654,13 @@ function is_db_identifier_safe(string $name): bool {
     if ($name === '' || str_contains($name, "\0") || str_contains($name, '`')) {
         return false;
     }
-    if (!mb_check_encoding($name, 'UTF-8')) {
+    if (!vedo_utf8_valid($name)) {
         return false;
     }
     if (preg_match('/[\\x00-\\x1F\\x7F]/u', $name)) {
         return false;
     }
-    return mb_strlen($name, 'UTF-8') <= 64;
+    return vedo_utf8_strlen($name) <= 64;
 }
 
 function validate_db_identifier(string $name): string {
@@ -5600,6 +6701,10 @@ function get_table_preview(PDO $pdo, string $db_name, string $table, int $limit 
     if ($stmt) $stmt->closeCursor();
     return ['rows' => $rows, 'offset' => $offset, 'limit' => $limit];
 }
+/**
+ * Seçilen tablo üzerinde yalnızca izin verilen bakım işlemini çalıştırır.
+ * Tablo adı ve işlem türü çalıştırmadan önce ayrı güvenlik kontrollerinden geçirilir.
+ */
 function perform_table_maintenance(PDO $pdo, string $db_name, string $table, string $operation): string {
     $table = validate_db_identifier($table);
     $operation = strtolower(trim($operation));
@@ -5765,11 +6870,11 @@ if (!empty($action)) {
                 $importReport = import_uploaded_sql_file($pdo, $_FILES['sql_file'], $config['db_name']);
                 update_system_lock_heartbeat($lockHandle);
 
-                $hasErrors = ((int)$importReport['errors']) > 0;
+                $hasErrors = ((int)$importReport['errors']) > 0 || ((int)($importReport['blocked'] ?? 0)) > 0;
                 json_response(
                     true,
                     $hasErrors
-                        ? 'SQL içeri aktarma tamamlandı; bazı sorgular hata verdi ve sonraki sorgular çalıştırılmaya devam edildi.'
+                        ? 'SQL içeri aktarma tamamlandı; mevcut veritabanını değiştirecek komutlar güvenlik nedeniyle engellendi veya bazı sorgular hata verdi.'
                         : 'SQL içeri aktarma başarıyla tamamlandı.',
                     $importReport
                 );
@@ -5832,13 +6937,14 @@ if (!empty($action)) {
                 'cli_available' => (bool)$cli['available'],
                 'cli_php' => $cli['php_binary'],
                 'reason' => $cli['reason'],
-                'web_fallback_available' => false,
+                'web_fallback_available' => true,
                 'web_backup_available' => true,
-                'web_restore_available' => true
+                'web_restore_available' => true,
+                'background_worker_required' => false
             ]);
         }
 
-        // Varsayılan seçim CLI'dir; WEB seçilirse Web Worker zorunlu olarak kullanılır.
+        // Varsayılan seçim CLI'dir; WEB seçilirse Web işçi süreci zorunlu olarak kullanılır.
         if ($action === 'run_full_backup') {
             require_post();
             $worker_mode = strtolower(trim((string)($_POST['worker_mode'] ?? 'cli')));
@@ -5882,7 +6988,7 @@ if (!empty($action)) {
                 'status' => $state['status'],
                 'job_id' => $job_id,
                 'engine' => 'web',
-                'message' => 'Web Worker ile yedekleme adım adım yürütülecek.'
+                'message' => 'Web Worker ile yedekleme adım adım yürütülecek. WEB modu veritabanı genelinde tek zamanlı snapshot garanti etmez.'
             ]);
         }
 
@@ -5891,6 +6997,20 @@ if (!empty($action)) {
             cleanup_stale_cli_job_states($backup_dir);
             json_response(true, 'Aktif CLI işler alındı.', [
                 'jobs' => find_active_cli_job_states($backup_dir)
+            ]);
+        }
+
+        if ($action === 'read_cli_job_state') {
+            require_post();
+            $job_id = (string)($_POST['job_id'] ?? '');
+            if (!preg_match('/^[a-f0-9]{32}$/', $job_id)) {
+                json_response(false, 'Geçersiz CLI job ID.', [], 400);
+            }
+            $state = read_cli_job_state($backup_dir, $job_id);
+            json_response(true, 'Job durumu okundu.', $state ?: [
+                'status' => 'starting',
+                'percent' => 0,
+                'job_id' => $job_id
             ]);
         }
 
@@ -5905,7 +7025,7 @@ if (!empty($action)) {
                 json_response(true, 'Job henüz başlamadı.', ['status' => 'starting', 'percent' => 0, 'job_id' => $job_id]);
             }
 
-            // Web Worker işlerinde her progress sorgusu aynı zamanda bir küçük işlem adımıdır.
+            // WEB işçi süreci işlerinde her ilerleme sorgusu aynı zamanda bir küçük işlem adımıdır.
             if (
                 ($state['engine'] ?? 'cli') === 'web' &&
                 empty($state['analyze_in_progress']) &&
@@ -5914,16 +7034,93 @@ if (!empty($action)) {
                 try {
                     $state = run_web_worker_step($pdo, $backup_dir, $config, $job_id);
                 } catch (Throwable $workerError) {
-                    $state['status'] = 'failed';
-                    $state['error'] = $workerError->getMessage();
+                    $state = read_cli_job_state($backup_dir, $job_id) ?: $state;
+                    $canRecover = (($state['type'] ?? '') === 'restore')
+                        && empty($state['recovery_mode'])
+                        && empty($state['restore_verified']);
 
-                    $reservationFile = (string)($state['backup_reservation_file'] ?? $state['reservation_file'] ?? '');
-                    if ($reservationFile !== '' && is_file($reservationFile)) {
-                        @unlink($reservationFile);
+                    if ($canRecover) {
+                        $emergencyFile = (string)($state['emergency_file'] ?? '');
+                        $emergencyJobId = (string)($state['emergency_job_id'] ?? '');
+                        $emergencyState = null;
+
+                        try {
+                            // Parent durum henüz emergency_file yazamadan hata oluşmuş olabilir.
+                            // Acil durum işçi süreç tamamlandıysa kendi durum dosyasından dosyayı bulup recovery yapılabilir.
+                            if ($emergencyFile === '' && preg_match('/^[a-f0-9]{32}$/', $emergencyJobId)) {
+                                $emergencyState = read_cli_job_state($backup_dir, $emergencyJobId);
+                                if (is_array($emergencyState) && is_emergency_state_completed($emergencyState)) {
+                                    $emergencyFile = (string)($emergencyState['file'] ?? '');
+                                    $state['emergency_file'] = $emergencyFile;
+                                    $state['emergency_backup_completed'] = true;
+                                }
+                            }
+
+                            if ($emergencyFile === '') {
+                                throw new Exception('Kullanılabilir tamamlanmış Web emergency snapshot bulunamadı.');
+                            }
+                            if (!validate_backup_filename($emergencyFile) || !is_emergency_backup_filename($emergencyFile)) {
+                                throw new Exception('Emergency backup dosya adı geçersiz.');
+                            }
+                            $safeEmergency = validate_path_safe($backup_dir . '/' . $emergencyFile, $backup_dir);
+                            if (!is_file($safeEmergency)) throw new Exception('Emergency backup dosyası bulunamadı.');
+                            verify_backup_checksum($safeEmergency);
+
+                            $state['recovery_mode'] = true;
+                            $state['recovery_original_error'] = $workerError->getMessage();
+                            $state['original_restore_file'] = (string)($state['file'] ?? '');
+                            $state['file'] = $emergencyFile;
+                            $state['phase'] = 'verify_source';
+                            $state['status'] = 'running';
+                            $state['percent'] = 0;
+                            $state['source_verified'] = false;
+                            $state['source_gzip_verified'] = false;
+                            $state['cleanup_verified'] = false;
+                            $state['processed_bytes'] = 0;
+                            $state['file_size'] = (int)filesize($safeEmergency);
+                            $state['verify_offset'] = 0;
+                            $state['verify_hash_context'] = '';
+                            $state['restore_verified'] = false;
+                            $state['message'] = 'Restore başarısız oldu. Web emergency snapshot doğrulanıyor ve eski veritabanı geri yüklenecek.';
+                            write_cli_job_state($backup_dir, $job_id, $state);
+                            Logger::warning(sprintf('WEB RESTORE RECOVERY HAZIRLANDI | job_id=%s | emergency_file=%s | error=%s', $job_id, $emergencyFile, $workerError->getMessage()));
+                        } catch (Throwable $prepError) {
+                            // Acil durum anlık görüntü tamamlanmadıysa yarım kalan temp/durum dosyalarını temizle.
+                            if ($emergencyFile === '' && is_array($emergencyState) && !is_emergency_state_completed($emergencyState)) {
+                                $tmpFile = (string)($emergencyState['tmp_file'] ?? $emergencyState['backup_tmp_file'] ?? '');
+                                $targetFile = (string)($emergencyState['target_file'] ?? $emergencyState['backup_target_file'] ?? '');
+                                $reservationFile = (string)($emergencyState['reservation_file'] ?? $emergencyState['backup_reservation_file'] ?? '');
+                                foreach ([$tmpFile, $reservationFile] as $artifact) {
+                                    if ($artifact !== '' && is_file($artifact)) @unlink($artifact);
+                                }
+                                if ($targetFile !== '' && is_emergency_backup_filename(basename($targetFile)) && is_file($targetFile)) {
+                                    @unlink($targetFile);
+                                    if (is_file($targetFile . '.sha256')) @unlink($targetFile . '.sha256');
+                                    if (is_file($targetFile . '.meta.json')) @unlink($targetFile . '.meta.json');
+                                }
+                                if (preg_match('/^[a-f0-9]{32}$/', $emergencyJobId)) {
+                                    @unlink($backup_dir . '/.cli_job_' . $emergencyJobId . '.json');
+                                    @unlink($backup_dir . '/.cli_job_' . $emergencyJobId . '.json.tmp');
+                                }
+                            }
+                            $state['status'] = 'failed';
+                            $state['recovered'] = false;
+                            $state['error'] = $workerError->getMessage();
+                            $state['recovery_error'] = $prepError->getMessage();
+                            write_cli_job_state($backup_dir, $job_id, $state);
+                            Logger::error(sprintf('WEB RESTORE RECOVERY HAZIRLANAMADI | job_id=%s | error=%s', $job_id, $prepError->getMessage()));
+                        }
+                    } else {
+                        $state['status'] = 'failed';
+                        $state['recovered'] = false;
+                        $state['error'] = $workerError->getMessage();
+                        $reservationFile = (string)($state['backup_reservation_file'] ?? $state['reservation_file'] ?? '');
+                        if ($reservationFile !== '' && is_file($reservationFile)) {
+                            @unlink($reservationFile);
+                        }
+                        write_cli_job_state($backup_dir, $job_id, $state);
+                        Logger::error(sprintf('WEB WORKER BAŞARISIZ | job_id=%s | type=%s | recovery=N/A | error=%s', $job_id, $state['type'] ?? '-', $workerError->getMessage()));
                     }
-
-                    write_cli_job_state($backup_dir, $job_id, $state);
-                    Logger::error(sprintf('WEB WORKER BAŞARISIZ | job_id=%s | type=%s | rollback=YOK | error=%s', $job_id, $state['type'] ?? '-', $workerError->getMessage()));
                 }
             }
 
@@ -5939,7 +7136,7 @@ if (!empty($action)) {
                 try {
                     $iterator = new DirectoryIterator($backup_dir);
                     foreach ($iterator as $fileinfo) {
-                        if ($fileinfo->isFile() && str_ends_with($fileinfo->getFilename(), '.sql.gz')) {
+                        if ($fileinfo->isFile() && str_ends_with($fileinfo->getFilename(), '.sql.gz') && !is_emergency_backup_filename($fileinfo->getFilename())) {
                             $filename = $fileinfo->getFilename();
                             $path = $fileinfo->getPathname();
                             $sha_file = $path . '.sha256';
@@ -5984,7 +7181,7 @@ if (!empty($action)) {
             json_response(false, 'Geçersiz aktivite adı.', [], 400);
         }
 
-        $details = mb_substr($details, 0, 500);
+        $details = vedo_utf8_substr($details, 0, 500);
         // Aktivite ayrıntılarındaki hassas değerleri loglamadan önce maskele.
         $details = preg_replace(
             '/((?:password|passwd|pass|token|secret|csrf|session[_-]?id|authorization|cookie)\s*[:=]\s*)[^|,;\s]+/iu',
@@ -6019,7 +7216,7 @@ if ($action === 'bulk_delete_backups') {
     $files = [];
     foreach ($rawFiles as $file) {
         $file = trim((string)$file);
-        if ($file !== '' && validate_backup_filename($file)) {
+        if ($file !== '' && validate_backup_filename($file) && !is_emergency_backup_filename($file)) {
             $files[$file] = true;
         }
     }
@@ -6098,7 +7295,7 @@ if ($action === 'empty_database') {
     try {
         require_database_operation_lock($emptyLock, $backup_dir);
         update_system_lock_heartbeat($emptyLock);
-        // Önce mevcut tablo ve view isimleri alınır.
+        // Önce mevcut tablo ve görünüm isimleri alınır.
         // Bu sorgu yalnızca hedef veritabanındaki nesneleri listeler.
         $stmt = $pdo->prepare("
             SELECT TABLE_NAME, TABLE_TYPE
@@ -6113,7 +7310,7 @@ if ($action === 'empty_database') {
         // Foreign key ilişkileri DROP işlemini engellemesin.
         $pdo->exec("SET FOREIGN_KEY_CHECKS=0");
 
-        // Önce tablolar ve view'lar kaldırılır.
+        // Önce tablolar ve görünüm'lar kaldırılır.
         foreach ($objects as $object) {
             $name = (string)($object['TABLE_NAME'] ?? '');
             $type = strtoupper((string)($object['TABLE_TYPE'] ?? ''));
@@ -6132,7 +7329,7 @@ if ($action === 'empty_database') {
 
             try {
                 if ($type === 'VIEW') {
-                    // View tamamen kaldırılır.
+                    // Görünüm tamamen kaldırılır.
                     $pdo->exec("DROP VIEW IF EXISTS {$quotedName}");
                 } else {
                     // BASE TABLE ve varsa diğer tablo tipleri tamamen kaldırılır.
@@ -6200,7 +7397,7 @@ if ($action === 'empty_database') {
                 }
             }
         } catch (Throwable $e) {
-            // TRIGGER sorgusu yetki nedeniyle çalışmazsa ana işlem başarısız kabul edilir.
+            // TETİKLEYİCİ sorgusu yetki nedeniyle çalışmazsa ana işlem başarısız kabul edilir.
             $failed[] = [
                 'object' => '*',
                 'type' => 'TRIGGER',
@@ -6208,7 +7405,7 @@ if ($action === 'empty_database') {
             ];
         }
 
-        // Stored procedure ve function nesnelerini temizler.
+        // Saklı yordam ve function nesnelerini temizler.
         try {
             $stmt = $pdo->prepare("
                 SELECT ROUTINE_NAME, ROUTINE_TYPE
@@ -6266,7 +7463,7 @@ if ($action === 'empty_database') {
             ];
         }
 
-        // Event Scheduler nesnelerini de kaldır.
+        // Olay Zamanlayıcısı nesnelerini de kaldır.
         try {
             $stmt = $pdo->prepare("
                 SELECT EVENT_NAME
@@ -6339,8 +7536,8 @@ if ($action === 'empty_database') {
 
         foreach ($remainingTables as $row) {
             $remaining[] = [
-                'object' => (string)$row['TABLE_NAME'],
-                'type' => (string)$row['TABLE_TYPE']
+                'object' => (string)($row['TABLE_NAME'] ?? ''),
+                'type' => (string)($row['TABLE_TYPE'] ?? '')
             ];
         }
 
@@ -6366,8 +7563,8 @@ if ($action === 'empty_database') {
         $stmt->execute([$dbName]);
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $remaining[] = [
-                'object' => (string)$row['ROUTINE_NAME'],
-                'type' => (string)$row['ROUTINE_TYPE']
+                'object' => (string)($row['ROUTINE_NAME'] ?? ''),
+                'type' => (string)($row['ROUTINE_TYPE'] ?? '')
             ];
         }
         $stmt->closeCursor();
@@ -6432,8 +7629,8 @@ if ($action === 'empty_database') {
 if ($action === 'download_backup') {
     require_post();
     $file = $_POST['file'] ?? '';
-    if (!is_string($file) || !validate_backup_filename($file)) {
-        json_response(false, 'Yalnızca geçerli .sql.gz yedek dosyaları indirilebilir.', [], 400);
+    if (!is_string($file) || !validate_backup_filename($file) || is_emergency_backup_filename($file)) {
+        json_response(false, 'Yalnızca kullanıcı yedekleri indirilebilir.', [], 400);
     }
     $safe_path = validate_path_safe($backup_dir . '/' . $file, $backup_dir);
     if (!is_file($safe_path)) {
@@ -6456,8 +7653,8 @@ if ($action === 'download_backup') {
             require_post();
     Logger::warning('Yedek silme işlemi başlatıldı: ' . (string)($_POST['file'] ?? ''));
             $file = $_POST['file'] ?? '';
-            if (!is_string($file) || !validate_backup_filename($file)) {
-                json_response(false, 'Yalnızca geçerli .sql.gz yedek dosyaları silinebilir.', [], 400);
+            if (!is_string($file) || !validate_backup_filename($file) || is_emergency_backup_filename($file)) {
+                json_response(false, 'Yalnızca kullanıcı yedekleri silinebilir.', [], 400);
             }
             $safe_path = validate_path_safe($backup_dir . '/' . $file, $backup_dir);
 
@@ -6481,8 +7678,8 @@ if ($action === 'download_backup') {
             }
             Logger::info('Yedek bütünlük kontrolü başlatıldı: ' . (string)($_POST['file'] ?? ''));
             $file = $_POST['file'] ?? '';
-            if (!is_string($file) || !validate_backup_filename($file)) {
-                json_response(false, 'Yalnızca geçerli .sql.gz yedek dosyaları doğrulanabilir.', [], 400);
+            if (!is_string($file) || !validate_backup_filename($file) || is_emergency_backup_filename($file)) {
+                json_response(false, 'Yalnızca kullanıcı yedekleri doğrulanabilir.', [], 400);
             }
             $safe_path = validate_path_safe($backup_dir . '/' . $file, $backup_dir);
 
@@ -6500,11 +7697,11 @@ if ($action === 'download_backup') {
             json_response(true, 'Loglar başarıyla temizlendi.');
         }
 
-        // Varsayılan seçim CLI'dir; WEB seçilirse Web Worker zorunlu olarak kullanılır.
+        // Varsayılan seçim CLI'dir; WEB seçilirse Web işçi süreci zorunlu olarak kullanılır.
         if ($action === 'restore_chunk') {
             require_post();
             $file = (string)($_POST['file'] ?? '');
-            if (!validate_backup_filename($file)) {
+            if (!validate_backup_filename($file) || is_emergency_backup_filename($file)) {
                 json_response(false, 'Geçersiz veya güvenli olmayan yedek dosyası.', [], 400);
             }
             $safe_path = validate_path_safe($backup_dir . '/' . $file, $backup_dir);
@@ -6546,7 +7743,11 @@ if ($action === 'download_backup') {
             }
 
             $config['_web_fallback_reason'] = 'Kullanıcı WEB çalışma modunu seçti.';
-            $state = initialize_web_restore_job($pdo, $backup_dir, $config, $job_id, $file);
+            try {
+                $state = initialize_web_restore_job($pdo, $backup_dir, $config, $job_id, $file);
+            } catch (Throwable $e) {
+                json_response(false, $e->getMessage(), ['engine' => 'web', 'job_id' => $job_id], 409);
+            }
             json_response(true, 'Web Worker restore başlatıldı.', [
                 'status' => $state['status'],
                 'percent' => 0,
@@ -6747,6 +7948,25 @@ clear_buffers();
         #live-progress-panel {
             border-left: 4px solid var(--accent-blue);
             display: none;
+        }
+
+        .bg-live-indicator {
+            display: inline-block;
+            margin-left: 8px;
+            opacity: .35;
+            transform: scale(.8);
+            transition: opacity .2s ease, transform .2s ease;
+        }
+        .bg-live-indicator.active {
+            opacity: 1;
+            transform: scale(1);
+            animation: vedoProgressPulse 1s ease-in-out infinite;
+        }
+        .bg-live-indicator.success { opacity: 1; animation: none; }
+        .bg-live-indicator.error { opacity: 1; animation: none; }
+        @keyframes vedoProgressPulse {
+            0%, 100% { opacity: .35; transform: scale(.75); }
+            50% { opacity: 1; transform: scale(1.15); }
         }
 
         .progress-info-grid {
@@ -7750,7 +8970,7 @@ td { font-size: 13px !important; line-height: 1.45 !important; font-weight: 400 
     <header>
         <div class="header-title-row">
             <a href="?page=dashboard" style="text-decoration:none;color:inherit;"><h1>VEDO MYSQL BACKUP</h1></a>
-            <div class="worker-mode-control" title="Yalnızca bir çalışma modu seçilebilir. Sayfa açılışında CLI varsayılandır.">
+            <div class="worker-mode-control" title="Uzun işlemler bağımsız CLI arka plan worker ile yürütülür.">
                 <span class="worker-mode-title">Çalışma Modu</span>
                 <label class="worker-mode-checkbox" for="workerModeCli">
                     <input type="checkbox" id="workerModeCli" aria-label="CLI modunu kullan" checked>
@@ -7946,6 +9166,7 @@ td { font-size: 13px !important; line-height: 1.45 !important; font-weight: 400 
         </div>
         <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
             <span id="bg-status-text">Yedekleme hazırlanıyor...</span>
+            <span id="bg-live-indicator" class="bg-live-indicator" aria-hidden="true">●</span>
             <span id="bg-percent-text" style="">0%</span>
         </div>
         <div class="progress-bar-bg" style="height: 10px;">
@@ -8095,6 +9316,8 @@ td { font-size: 13px !important; line-height: 1.45 !important; font-weight: 400 
     const CSRF_TOKEN = '<?= $_SESSION['csrf_token'] ?>';
     let rawLogLines = [];
     let progressInterval = null;
+    let lightweightProgressInterval = null;
+    let activeProgressEngine = '';
     let cliJobStartedThisPage = false;
     let dbTables = [];
     let dbSelectedTable = '';
@@ -8554,7 +9777,7 @@ td { font-size: 13px !important; line-height: 1.45 !important; font-weight: 400 
         const name = file.name || 'sql-import.sql';
         const size = formatBytes(file.size || 0);
         const confirmed = await showConfirm(
-            `“${name}” (${size}) mevcut veritabanına SQL olarak uygulanacak. Import motoru veritabanını kendisi temizlemez ve mysqlyedek klasöründen dosya okumaz. Ancak SQL dosyasındaki komutlar doğrudan çalıştırılır; dosyanın içinde DROP/DELETE/TRUNCATE gibi komutlar varsa MySQL bunları uygulayabilir. Devam edilsin mi?`,
+            `“${name}” (${size}) güvenli SQL import olarak uygulanacak. Import başlamadan önce mevcut olan tablolar, view'lar, sequence'ler, trigger'lar, procedure/function'lar ve event'ler değiştirilemez veya silinemez. Yeni tablolar oluşturulabilir ve yalnızca import sırasında oluşturulan yeni tablolar üzerinde veri/yapı değişikliği yapılabilir. Mevcut tabloları etkileyen komutlar otomatik olarak engellenir. Devam edilsin mi?`,
             'SQL içeri aktar',
             'Evet, içeri aktar'
         );
@@ -8591,13 +9814,13 @@ td { font-size: 13px !important; line-height: 1.45 !important; font-weight: 400 
             if (!json.success) throw new Error(json.message || 'SQL içeri aktarma başarısız.');
 
             const d = json.data || {};
-            const summary = `${Number(d.queries || 0).toLocaleString()} sorgu işlendi • ${Number(d.success || 0).toLocaleString()} başarılı • ${Number(d.errors || 0).toLocaleString()} hatalı`;
-            if (Number(d.errors || 0) > 0) {
+            const summary = `${Number(d.queries || 0).toLocaleString()} sorgu işlendi • ${Number(d.success || 0).toLocaleString()} başarılı • ${Number(d.errors || 0).toLocaleString()} hatalı • ${Number(d.blocked || 0).toLocaleString()} güvenlik engeli`;
+            if (Number(d.errors || 0) > 0 || Number(d.blocked || 0) > 0) {
                 showToast(`Import tamamlandı fakat bazı sorgular hata verdi: ${summary}`, true);
                 const details = Array.isArray(d.error_details) ? d.error_details : [];
-                if (details.length) {
-                    console.error('SQL import hataları:', details);
-                }
+                const blockedDetails = Array.isArray(d.blocked_details) ? d.blocked_details : [];
+                if (details.length) console.error('SQL import hataları:', details);
+                if (blockedDetails.length) console.warn('SQL import güvenlik engelleri:', blockedDetails);
             } else {
                 showToast(`SQL import tamamlandı: ${summary}`);
             }
@@ -8665,61 +9888,69 @@ td { font-size: 13px !important; line-height: 1.45 !important; font-weight: 400 
         });
     }
 
-    // Sayfa her açıldığında CLI işaretlidir. Kullanıcı isterse WEB'i seçebilir.
-    function getWorkerMode() {
-        const cliCheckbox = document.getElementById('workerModeCli');
-        const webCheckbox = document.getElementById('workerModeWeb');
-        return webCheckbox?.checked ? 'web' : 'cli';
-    }
-    function setWorkerMode(mode) {
-        const cliCheckbox = document.getElementById('workerModeCli');
-        const webCheckbox = document.getElementById('workerModeWeb');
-        if (!cliCheckbox || !webCheckbox) return;
+    // Uzun işlemler için CLI Worker ve Web Worker kullanıcı tarafından seçilebilir.
+    // CLI varsayılandır; WEB seçildiğinde mevcut Web Worker akışı kullanılır.
+    let selectedWorkerMode = 'cli';
 
-        if (mode === 'web') {
-            webCheckbox.checked = true;
-            cliCheckbox.checked = false;
-        } else {
-            cliCheckbox.checked = true;
-            webCheckbox.checked = false;
+    function getWorkerMode() {
+        return selectedWorkerMode === 'web' ? 'web' : 'cli';
+    }
+
+    function setWorkerMode(mode) {
+        const normalized = String(mode || '').toLowerCase() === 'web' ? 'web' : 'cli';
+        selectedWorkerMode = normalized;
+
+        const cliCheckbox = document.getElementById('workerModeCli');
+        const webCheckbox = document.getElementById('workerModeWeb');
+
+        if (cliCheckbox) cliCheckbox.checked = normalized === 'cli';
+        if (webCheckbox) {
+            webCheckbox.checked = normalized === 'web';
+            webCheckbox.disabled = false;
         }
     }
 
-    function updateWorkerModeStatus(modeOverride = '') {
-        const mode = modeOverride || getWorkerMode();
-        setWorkerMode(mode);
+    function updateWorkerModeStatus() {
         const status = document.getElementById('workerModeStatus');
-        if (status) status.textContent = mode === 'web' ? 'Web Worker seçildi' : 'CLI seçildi';
-
-        // CLI modu seçiliyken Cron komutu görünür; WEB modunda kullanıcıyı şaşırtmaması için gizlenir.
         const cronBox = document.getElementById('cliCronBox');
+        const advice = document.getElementById('workerModeAdvice');
+        const mode = getWorkerMode();
+
+        if (status) {
+            status.textContent = mode === 'web' ? 'WEB Worker' : 'CLI arka plan worker';
+        }
+
+        // Cron yalnızca CLI worker ile ilişkilidir.
         if (cronBox) cronBox.style.display = mode === 'web' ? 'none' : '';
 
-        // Çalışma modu tavsiyesini de seçime göre günceller.
-        const advice = document.getElementById('workerModeAdvice');
         if (advice) {
             advice.innerHTML = mode === 'web'
-                ? '<strong>Bilgi:</strong> WEB modu Web Worker ile tablo bazlı backup ve restore işlemlerini yürütür.'
-                : '<strong>Öneri:</strong> CLI modu tam veritabanı backup için önerilir. WEB modu tablo bazlı backup ve restore işlemlerini yürütür.';
+                ? '<strong>WEB Worker:</strong> Backup ve restore işlemleri mevcut Web Worker üzerinden tablo tablo ilerler. Sayfayı açık tutmanız gerekir.'
+                : '<strong>CLI Worker:</strong> Backup ve restore işlemleri HTTP isteğinden bağımsız ayrı bir PHP CLI process içinde çalışır. Tarayıcı kapatılsa bile işlem devam eder.';
         }
     }
 
     document.getElementById('workerModeCli')?.addEventListener('change', function () {
-        updateWorkerModeStatus('cli');
-        void logClientAction('Çalışma modu seçildi', 'mod=CLI');
+        if (this.checked) setWorkerMode('cli');
+        else if (!document.getElementById('workerModeWeb')?.checked) setWorkerMode('cli');
+        updateWorkerModeStatus();
     });
+
     document.getElementById('workerModeWeb')?.addEventListener('change', function () {
-        updateWorkerModeStatus('web');
-        void logClientAction('Çalışma modu seçildi', 'mod=WEB_WORKER');
+        if (this.checked) setWorkerMode('web');
+        else if (!document.getElementById('workerModeCli')?.checked) setWorkerMode('cli');
+        updateWorkerModeStatus();
     });
-    // İlk açılışta CLI varsayılan ve tek seçili moddur.
-    updateWorkerModeStatus('cli');
+
+    setWorkerMode('cli');
+    updateWorkerModeStatus();
 
     // Tam yedekleme.
     let activeCliJobId = '';
 
     async function startFullBackup() {
         const workerMode = getWorkerMode();
+        activeProgressEngine = workerMode;
         logClientAction('Yedekleme başlatıldı', 'mod=' + workerMode.toUpperCase());
         try {
             document.getElementById('live-progress-panel').style.display = 'block';
@@ -8761,6 +9992,78 @@ td { font-size: 13px !important; line-height: 1.45 !important; font-weight: 400 
             : `${m}d ${String(s).padStart(2, '0')}sn`;
     }
 
+    function applyProgressState(d) {
+        if (!d || d.status === 'idle') return;
+        const liveIndicator = document.getElementById('bg-live-indicator');
+        if (liveIndicator) {
+            liveIndicator.className = 'bg-live-indicator';
+            if (d.status === 'failed') liveIndicator.classList.add('error');
+            else if (d.status === 'completed') liveIndicator.classList.add('success');
+            else liveIndicator.classList.add('active');
+        }
+
+        document.getElementById('live-progress-panel').style.display = 'block';
+        const jobType = String(d.type || '').toLowerCase() === 'restore' ? 'restore' : 'backup';
+        const jobLabel = jobType === 'restore' ? 'Restore' : 'Yedekleme';
+        const progressTitle = document.getElementById('bg-progress-title');
+        const progressStatus = document.getElementById('bg-status-text');
+        if (progressTitle) progressTitle.innerText = d.phase === 'emergency_backup' ? 'Emergency Snapshot İlerlemesi' : `Canlı ${jobLabel} İlerlemesi`;
+        if (progressStatus) {
+            if (d.phase === 'emergency_backup') {
+                const current = d.current_table || 'Hazırlanıyor';
+                const idx = Number(d.current_table_index || 0);
+                const total = Number(d.total_tables || 0);
+                const rows = Number(d.processed_rows || 0).toLocaleString();
+                progressStatus.innerText = `Emergency snapshot alınıyor: ${current} | ${total ? Math.min(total, idx + 1) + '/' + total + ' tablo | ' : ''}${rows} satır`;
+            } else if (d.type === 'restore' && d.phase === 'analyze') {
+                const currentAnalyze = d.analyze_in_progress
+                    ? (d.analyze_running_table || d.analyze_current_table || d.current_table || '-')
+                    : (d.analyze_current_table || d.current_table || '-');
+                const analyzeIndex = Number(d.analyze_index || 0);
+                const analyzeTotal = Number(d.analyze_total || 0);
+                const analyzeOk = Number(d.analyze_successful || 0);
+                const analyzeFailed = Number(d.analyze_failed || 0);
+                const analyzeElapsed = Number(d.analyze_elapsed_seconds || 0);
+                const analyzeStep = Number(d.analyze_last_step_seconds || 0);
+                progressStatus.innerText =
+                    `Tablolar analiz ediliyor: ${analyzeIndex}/${analyzeTotal} | Başarılı: ${analyzeOk} | Hatalı: ${analyzeFailed} | Aktif tablo: ${currentAnalyze} | Son adım: ${analyzeStep.toFixed(1)} sn | Toplam: ${formatDuration(analyzeElapsed)}`;
+            } else {
+                progressStatus.innerText =
+                    d.current_table ? `İşleniyor: ${d.current_table}` :
+                    d.status === 'failed' ? (d.error || `${jobLabel} başarısız.`) :
+                    (d.engine === 'web' ? `Web Worker ${jobLabel.toLowerCase()} çalışıyor...` : `${jobLabel} işlemi çalışıyor...`);
+            }
+        }
+        const percent = Math.max(0, Math.min(100, Number(d.percent || 0)));
+        document.getElementById('bg-percent-text').innerText = percent + '%';
+        document.getElementById('bg-progress-bar').style.width = percent + '%';
+
+        const activeTableEl = document.getElementById('bg-active-table');
+        if (activeTableEl) {
+            if (d.status === 'completed') activeTableEl.innerText = 'Tamamlandı';
+            else if (d.phase === 'emergency_backup') activeTableEl.innerText = d.current_table || 'Emergency snapshot';
+            else if (d.type === 'restore' && d.phase === 'analyze') activeTableEl.innerText = 'Tablolar analiz ediliyor';
+            else if (d.current_table && !/\.sql\.gz$/i.test(String(d.current_table))) activeTableEl.innerText = String(d.current_table);
+            else activeTableEl.innerText = '-';
+        }
+        document.getElementById('bg-table-idx').innerText = d.total_tables ? `${d.current_table_index || 0} / ${d.total_tables}` : '-';
+        document.getElementById('bg-processed-rows').innerText = (d.processed_rows || d.rows_count || 0).toLocaleString();
+        document.getElementById('bg-speed').innerText = d.speed_mb_per_second ? `${d.speed_mb_per_second} MB/sn` : `${(d.speed_rows_per_second || 0).toLocaleString()} satır/sn`;
+        document.getElementById('bg-elapsed').innerText = `${d.elapsed_seconds || d.duration_seconds || 0}s`;
+        document.getElementById('bg-eta').innerText = `${d.estimated_remaining_seconds || 0}s`;
+        document.getElementById('bg-written-bytes').innerText = d.formatted_bytes || d.formatted_processed || (d.size ? formatBytes(d.size) : '0 B');
+    }
+
+    async function fetchLightweightProgress() {
+        if (!activeCliJobId) return;
+        try {
+            const res = await apiRequest('read_cli_job_state', { job_id: activeCliJobId });
+            if (res && res.success && res.data) applyProgressState(res.data);
+        } catch (e) {
+            // Hafif progress okuyucusu başarısız olursa ana worker polling devam eder.
+        }
+    }
+
     function startProgressPolling() {
         stopProgressPolling();
         const poll = async () => {
@@ -8769,19 +10072,33 @@ td { font-size: 13px !important; line-height: 1.45 !important; font-weight: 400 
                 return;
             }
             await fetchProgress();
-            if (activeCliJobId) {
-                progressInterval = setTimeout(poll, 700);
-            } else {
-                progressInterval = null;
-            }
+            if (activeCliJobId) progressInterval = setTimeout(poll, 700);
+            else progressInterval = null;
         };
         progressInterval = setTimeout(poll, 0);
+
+        const lightweightPoll = async () => {
+            if (!activeCliJobId) {
+                lightweightProgressInterval = null;
+                return;
+            }
+            if (activeProgressEngine === 'web') await fetchLightweightProgress();
+            if (activeCliJobId) lightweightProgressInterval = setTimeout(lightweightPoll, 500);
+            else lightweightProgressInterval = null;
+        };
+        lightweightProgressInterval = setTimeout(lightweightPoll, 300);
     }
     function stopProgressPolling() {
         if (progressInterval) {
             clearTimeout(progressInterval);
             progressInterval = null;
         }
+        if (lightweightProgressInterval) {
+            clearTimeout(lightweightProgressInterval);
+            lightweightProgressInterval = null;
+        }
+        const liveIndicator = document.getElementById('bg-live-indicator');
+        if (liveIndicator) liveIndicator.className = 'bg-live-indicator';
     }
 
     async function fetchProgress() {
@@ -8794,6 +10111,7 @@ td { font-size: 13px !important; line-height: 1.45 !important; font-weight: 400 
             d = res.data;
 
             if (!d || d.status === 'idle') return;
+            applyProgressState(d);
 
             document.getElementById('live-progress-panel').style.display = 'block';
             const jobType = String(d.type || '').toLowerCase() === 'restore' ? 'restore' : 'backup';
@@ -8979,6 +10297,7 @@ td { font-size: 13px !important; line-height: 1.45 !important; font-weight: 400 
     // RESTORE: seçilen yedekten geri yükleme işlemini başlatır
     async function triggerRestore(file) {
         const workerMode = getWorkerMode();
+        activeProgressEngine = workerMode;
         if (!file || typeof file !== 'string') {
             showToast('Geri yüklenecek yedek dosyası bulunamadı.', true);
             return;
