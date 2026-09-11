@@ -119,7 +119,7 @@ $config = [
 
  // Sunucuda en fazla kaç tane .sql.gz yedek tutulacağını ayarlar.
  // Bu sayıya ulaşılırsa eski yedekler otomatik silinir.
- 'max_backups' => 720,
+ 'max_backups' => 30,
 
  // Zamanlanmış yedek işini başlatan gizli güvenlik anahtarıdır.
  // Var olan zamanlanmış görevin bozulmaması için bu değeri değiştirmeyin.
