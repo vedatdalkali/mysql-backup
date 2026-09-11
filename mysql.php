@@ -207,32 +207,14 @@ foreach ($required_extensions as $ext) {
 // Bazı hostinglerde mbstring olmayabilir.
 // Bu yüzden güvenli UTF-8 yardımcıları da vardır.
 function vedo_utf8_valid(string $value)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: vedo_utf8_valid()
- * Amaç: Bu fonksiyon, programın vedo_utf8_valid adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : bool {
  return preg_match('//u', $value) === 1;
 }
 function vedo_utf8_lower(string $value)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: vedo_utf8_lower()
- * Amaç: Bu fonksiyon, programın vedo_utf8_lower adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : string {
  return function_exists('mb_strtolower') ? mb_strtolower($value, 'UTF-8') : strtolower($value);
 }
 function vedo_utf8_substr(string $value, int $start, ?int $length = null)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: vedo_utf8_substr()
- * Amaç: Bu fonksiyon, programın vedo_utf8_substr adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : string {
  if (function_exists('mb_substr')) {
  return mb_substr($value, $start, $length, 'UTF-8');
@@ -247,12 +229,6 @@ function vedo_utf8_substr(string $value, int $start, ?int $length = null)
  return implode('', $length === null ? array_slice($chars, $start) : array_slice($chars, $start, $length));
 }
 function vedo_utf8_strlen(string $value)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: vedo_utf8_strlen()
- * Amaç: Bu fonksiyon, programın vedo_utf8_strlen adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : int {
  if (function_exists('mb_strlen')) {
  return mb_strlen($value, 'UTF-8');
@@ -301,12 +277,6 @@ define('VEDO_LIVE_METRICS_INTERVAL_MS', 1000); // CPU/RAM/DISK bilgileri 1 saniy
 // =============================================================================
 
 function clear_buffers()
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: clear_buffers()
- * Amaç: Bu fonksiyon, programın clear_buffers adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  if (headers_sent()) return;
  while (ob_get_level() > 0) {
@@ -327,12 +297,6 @@ if (!VEDO_IS_CLI) {
  * Dosyayı birkaç kez yazmayı dener. Yine olmazsa hatayı loga yazar ve başarısız olduğunu bildirir.
  */
 function safe_file_put_contents(string $filepath, string $data, int $flags = 0)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: safe_file_put_contents()
- * Amaç: Bu fonksiyon, programın safe_file_put_contents adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : bool {
  $attempts = 0;
  $max_attempts = 3;
@@ -516,12 +480,6 @@ class Logger {
  * durumuna göre doğru ayarlanabilsin diye.
  */
 function is_request_https()
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: is_request_https()
- * Amaç: Bu fonksiyon, programın is_request_https adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : bool {
  if (!empty($_SERVER['HTTPS']) && strtolower((string)$_SERVER['HTTPS']) !== 'off') {
  return true;
@@ -668,12 +626,6 @@ class SchemaCache {
 // =============================================================================
 
 function validate_backup_filename(string $filename)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: validate_backup_filename()
- * Amaç: Bu fonksiyon, programın validate_backup_filename adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : bool {
  if ($filename === '' || strlen($filename) > 255) {
  return false;
@@ -691,23 +643,11 @@ function validate_backup_filename(string $filename)
 }
 
 function is_emergency_backup_filename(string $filename)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: is_emergency_backup_filename()
- * Amaç: Bu fonksiyon, programın is_emergency_backup_filename adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : bool {
  return str_starts_with($filename, '.vedo_emergency_') && str_ends_with($filename, '.sql.gz');
 }
 
 function cleanup_emergency_backup_artifacts(string $backup_dir, string $file)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: cleanup_emergency_backup_artifacts()
- * Amaç: Bu fonksiyon, programın cleanup_emergency_backup_artifacts adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  if ($file === '' || !validate_backup_filename($file) || !is_emergency_backup_filename($file)) {
  return;
@@ -727,12 +667,6 @@ function cleanup_emergency_backup_artifacts(string $backup_dir, string $file)
  * Dosya yolunun izin verilen klasörün içinde olduğunu kontrol eder. Güvensiz yolları engeller.
  */
 function validate_path_safe(string $filePath, string $baseDir)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: validate_path_safe()
- * Amaç: Bu fonksiyon, programın validate_path_safe adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : string {
  $realBase = realpath($baseDir);
  if (!$realBase) {
@@ -769,23 +703,11 @@ function validate_path_safe(string $filePath, string $baseDir)
  * Harici programların MySQL'e yazmasını tek başına durdurmaz, sadece panelde durum işareti olarak kullanılır.
  */
 function restore_maintenance_marker_path(string $backup_dir)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: restore_maintenance_marker_path()
- * Amaç: Bu fonksiyon, programın restore_maintenance_marker_path adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : string {
  return $backup_dir . '/.vedo_restore_maintenance.json';
 }
 
 function read_restore_maintenance(string $backup_dir)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: read_restore_maintenance()
- * Amaç: Bu fonksiyon, programın read_restore_maintenance adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  $path = restore_maintenance_marker_path($backup_dir);
  if (!is_file($path)) return [];
@@ -823,12 +745,6 @@ function read_restore_maintenance(string $backup_dir)
 }
 
 function find_active_restore_job_for_maintenance(string $backup_dir, string $ignore_job_id = '')
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: find_active_restore_job_for_maintenance()
- * Amaç: Bu fonksiyon, programın find_active_restore_job_for_maintenance adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  $files = glob($backup_dir . '/.cli_job_*.json') ?: [];
  $now = time();
@@ -883,12 +799,6 @@ function find_active_restore_job_for_maintenance(string $backup_dir, string $ign
 }
 
 function restore_maintenance_is_blocking(array $state)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: restore_maintenance_is_blocking()
- * Amaç: Bu fonksiyon, programın restore_maintenance_is_blocking adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : bool {
  if ($state === []) return false;
  if (!empty($state['_invalid'])) return true;
@@ -896,12 +806,6 @@ function restore_maintenance_is_blocking(array $state)
 }
 
 function mark_restore_maintenance_recovery_required(string $backup_dir, string $job_id, string $reason)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: mark_restore_maintenance_recovery_required()
- * Amaç: Bu fonksiyon, programın mark_restore_maintenance_recovery_required adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  if (!preg_match('/^[a-f0-9]{32}$/', $job_id)) {
  throw new Exception('Geçersiz restore bakım job ID.');
@@ -943,12 +847,6 @@ function mark_restore_maintenance_recovery_required(string $backup_dir, string $
 }
 
 function begin_restore_maintenance(string $backup_dir, string $job_id, string $engine)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: begin_restore_maintenance()
- * Amaç: Bu fonksiyon, programın begin_restore_maintenance adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  if (!preg_match('/^[a-f0-9]{32}$/', $job_id)) {
  throw new Exception('Geçersiz restore bakım job ID.');
@@ -991,12 +889,6 @@ function begin_restore_maintenance(string $backup_dir, string $job_id, string $e
 }
 
 function end_restore_maintenance(string $backup_dir, string $job_id = '')
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: end_restore_maintenance()
- * Amaç: Bu fonksiyon, programın end_restore_maintenance adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  $path = restore_maintenance_marker_path($backup_dir);
  if (!is_file($path)) return;
@@ -1023,12 +915,6 @@ function end_restore_maintenance(string $backup_dir, string $job_id = '')
 }
 
 function assert_restore_maintenance_allows_action(string $backup_dir, string $action)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: assert_restore_maintenance_allows_action()
- * Amaç: Bu fonksiyon, programın assert_restore_maintenance_allows_action adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  // Her API kontrolünden önce süresi geçmiş WEB hazırlık durumunu temizle.
  // Böylece süresi dolmuş bir iş yeni işlemleri
@@ -1079,12 +965,6 @@ function assert_restore_maintenance_allows_action(string $backup_dir, string $ac
 }
 
 function assert_restore_maintenance_marker_valid(string $backup_dir, string $ignore_job_id = '')
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: assert_restore_maintenance_marker_valid()
- * Amaç: Bu fonksiyon, programın assert_restore_maintenance_marker_valid adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  // Normal DB işlemleri de süresi geçmiş WEB hazırlık durumunun
  // temizlendiğini görmelidir. Aksi halde süresi dolmuş bir hazırlık işi
@@ -1121,24 +1001,12 @@ function assert_restore_maintenance_marker_valid(string $backup_dir, string $ign
 }
 
 function require_post()
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: require_post()
- * Amaç: Bu fonksiyon, programın require_post adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
  json_response(false, 'Bu işlem için POST isteği gereklidir.', [], 405);
  }
 }
 function require_get()
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: require_get()
- * Amaç: Bu fonksiyon, programın require_get adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'GET') {
  json_response(false, 'Bu işlem için GET isteği gereklidir.', [], 405);
@@ -1149,12 +1017,6 @@ function require_get()
  * Tüm log dosyalarını eskiden yeniye okur ve ekranda gösterir. Saklanan kayıtlar atlanmaz.
  */
 function read_all_log_lines(string $logDir, int $rotateCount = 5)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: read_all_log_lines()
- * Amaç: Bu fonksiyon, programın read_all_log_lines adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  $lines = [];
  $rotateCount = max(0, $rotateCount);
@@ -1187,12 +1049,6 @@ function read_all_log_lines(string $logDir, int $rotateCount = 5)
  * Döndürülmüş loglar eskiden yeniye işlenir; sonuç sırası kronolojiktir.
  */
 function read_recent_log_lines(string $logDir, int $rotateCount = 5, int $maxLines = 500)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: read_recent_log_lines()
- * Amaç: Bu fonksiyon, programın read_recent_log_lines adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  $maxLines = max(1, $maxLines);
  $rotateCount = max(0, $rotateCount);
@@ -1234,12 +1090,6 @@ function read_recent_log_lines(string $logDir, int $rotateCount = 5, int $maxLin
 }
 
 function release_web_session_lock()
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: release_web_session_lock()
- * Amaç: Bu fonksiyon, programın release_web_session_lock adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  if (session_status() === PHP_SESSION_ACTIVE) {
  @session_write_close();
@@ -1247,12 +1097,6 @@ function release_web_session_lock()
 }
 
 function json_response(bool $success, string $message = '', array $data = [], int $httpCode = 200)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: json_response()
- * Amaç: Bu fonksiyon, programın json_response adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  clear_buffers();
  http_response_code($httpCode);
@@ -1279,12 +1123,6 @@ function json_response(bool $success, string $message = '', array $data = [], in
 // =============================================================================
 
 function get_dynamic_system_load()
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: get_dynamic_system_load()
- * Amaç: Bu fonksiyon, programın get_dynamic_system_load adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : int {
  static $level = null;
  static $measuredAt = 0.0;
@@ -1323,12 +1161,6 @@ function get_dynamic_system_load()
  * Sunucunun gerçek kaynak durumunu tek yerde hesaplar. RAM, CPU, disk ve sunucu sınırlarına bakar. Sabit kaynak limiti kullanmaz.
  */
 function get_dynamic_resource_profile(?string $diskDir = null)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: get_dynamic_resource_profile()
- * Amaç: Bu fonksiyon, programın get_dynamic_resource_profile adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  static $cache = [];
  static $cacheAt = [];
@@ -1415,12 +1247,6 @@ function get_dynamic_resource_profile(?string $diskDir = null)
 }
 
 function get_dynamic_insert_batch_size(?string $diskDir = null)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: get_dynamic_insert_batch_size()
- * Amaç: Bu fonksiyon, programın get_dynamic_insert_batch_size adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : int {
  $p = get_dynamic_resource_profile($diskDir);
  $ram = (int)($p['operation_ram_budget_bytes'] ?? 32 * 1024 * 1024);
@@ -1438,12 +1264,6 @@ function get_dynamic_insert_batch_size(?string $diskDir = null)
 }
 
 function get_dynamic_export_buffer_bytes(?string $diskDir = null)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: get_dynamic_export_buffer_bytes()
- * Amaç: Bu fonksiyon, programın get_dynamic_export_buffer_bytes adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : int {
  $p = get_dynamic_resource_profile($diskDir);
  $ram = (int)($p['operation_ram_budget_bytes'] ?? 32 * 1024 * 1024);
@@ -1457,12 +1277,6 @@ function get_dynamic_export_buffer_bytes(?string $diskDir = null)
 }
 
 function get_dynamic_restore_chunk_bytes(?string $diskDir = null)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: get_dynamic_restore_chunk_bytes()
- * Amaç: Bu fonksiyon, programın get_dynamic_restore_chunk_bytes adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : int {
  $p = get_dynamic_resource_profile($diskDir);
  $ram = (int)($p['operation_ram_budget_bytes'] ?? 32 * 1024 * 1024);
@@ -1480,24 +1294,12 @@ function get_dynamic_restore_chunk_bytes(?string $diskDir = null)
 }
 
 function get_dynamic_disk_safety_bytes(string $dir)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: get_dynamic_disk_safety_bytes()
- * Amaç: Bu fonksiyon, programın get_dynamic_disk_safety_bytes adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : int {
  $p = get_dynamic_resource_profile($dir);
  return max(128 * 1024 * 1024, (int)($p['disk_safety_bytes'] ?? 128 * 1024 * 1024));
 }
 
 function get_dynamic_web_step_budget(?string $diskDir = null)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: get_dynamic_web_step_budget()
- * Amaç: Bu fonksiyon, programın get_dynamic_web_step_budget adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  $p = get_dynamic_resource_profile($diskDir);
  $ram = (int)($p['operation_ram_budget_bytes'] ?? 32 * 1024 * 1024);
@@ -1520,12 +1322,6 @@ function get_dynamic_web_step_budget(?string $diskDir = null)
 }
 
 function calculate_adaptive_chunk_size(PDO $pdo, string $db_name, string $table)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: calculate_adaptive_chunk_size()
- * Amaç: Bu fonksiyon, programın calculate_adaptive_chunk_size adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : int {
  if (!is_db_identifier_safe($table)) return max(75, get_dynamic_insert_batch_size());
 
@@ -1565,12 +1361,6 @@ function calculate_adaptive_chunk_size(PDO $pdo, string $db_name, string $table)
 // =============================================================================
 
 function acquire_system_lock(string $backup_dir, string $type = 'general', int $timeout = 60)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: acquire_system_lock()
- * Amaç: Bu fonksiyon, programın acquire_system_lock adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : mixed {
  $lock_file = $backup_dir . '/' . $type . '.lock';
  $fp = @fopen($lock_file, 'c+');
@@ -1632,12 +1422,6 @@ function acquire_system_lock(string $backup_dir, string $type = 'general', int $
  return $fp;
 }
 function update_system_lock_heartbeat(mixed $lock_fp)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: update_system_lock_heartbeat()
- * Amaç: Bu fonksiyon, programın update_system_lock_heartbeat adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  static $last_update_times = [];
  $now = time();
@@ -1679,12 +1463,6 @@ function update_system_lock_heartbeat(mixed $lock_fp)
  $last_update_times[$resourceId] = $now;
 }
 function release_system_lock(mixed $lock_fp)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: release_system_lock()
- * Amaç: Bu fonksiyon, programın release_system_lock adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  if (is_resource($lock_fp)) {
  flock($lock_fp, LOCK_UN);
@@ -1693,12 +1471,6 @@ function release_system_lock(mixed $lock_fp)
 }
 
 function heartbeat_web_worker_locks()
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: heartbeat_web_worker_locks()
- * Amaç: Bu fonksiyon, programın heartbeat_web_worker_locks adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  foreach ([
  'VEDO_WEB_WORKER_JOB_LOCK_HANDLE',
@@ -1710,12 +1482,6 @@ function heartbeat_web_worker_locks()
  }
 }
 function with_database_operation_lock(string $backup_dir, int $timeout, callable $callback)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: with_database_operation_lock()
- * Amaç: Bu fonksiyon, programın with_database_operation_lock adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : mixed {
  $admission_lock = acquire_job_admission_lock($backup_dir);
  if (!$admission_lock) {
@@ -1738,12 +1504,6 @@ function with_database_operation_lock(string $backup_dir, int $timeout, callable
  }
 }
 function require_database_operation_lock(mixed $lock_handle, string $backup_dir)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: require_database_operation_lock()
- * Amaç: Bu fonksiyon, programın require_database_operation_lock adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  if (!is_resource($lock_handle)) {
  throw new Exception('Veritabanı işlemi ortak kilit olmadan çalıştırılamaz.');
@@ -1756,12 +1516,6 @@ function require_database_operation_lock(mixed $lock_handle, string $backup_dir)
  }
 }
 function safe_transaction_rollback(?PDO $pdo)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: safe_transaction_rollback()
- * Amaç: Bu fonksiyon, programın safe_transaction_rollback adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  if ($pdo instanceof PDO && $pdo->inTransaction()) {
  try {
@@ -1772,12 +1526,6 @@ function safe_transaction_rollback(?PDO $pdo)
  }
 }
 function limit_backup_files(string $dir, int $max)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: limit_backup_files()
- * Amaç: Bu fonksiyon, programın limit_backup_files adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  $real_backup_dir = realpath($dir);
  if (!$real_backup_dir) return;
@@ -1833,12 +1581,6 @@ function limit_backup_files(string $dir, int $max)
  }
 }
 function escape_string_safe(mixed $v, ?PDO $pdo = null)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: escape_string_safe()
- * Amaç: Bu fonksiyon, programın escape_string_safe adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : string {
  if ($v === null) return "NULL";
  if (is_bool($v)) return $v ? "1" : "0";
@@ -1910,12 +1652,6 @@ Neden PDO?
  * tek bir bağlantı fonksiyonu kullanmak kodu düzenli tutar.
  */
 function get_pdo(string $h, string $u, string $p, string $d, bool $force_reconnect = false, bool $use_persistent = false)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: get_pdo()
- * Amaç: Bu fonksiyon, programın get_pdo adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : PDO {
  static $instances = [];
  static $last_pings = [];
@@ -1966,12 +1702,6 @@ function get_pdo(string $h, string $u, string $p, string $d, bool $force_reconne
  return $instances[$key];
 }
 function get_database_size_bytes(PDO $pdo, string $db_name)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: get_database_size_bytes()
- * Amaç: Bu fonksiyon, programın get_database_size_bytes adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : ?int {
  try {
  $stmt = $pdo->prepare("SELECT COALESCE(SUM(COALESCE(DATA_LENGTH, 0) + COALESCE(INDEX_LENGTH, 0)), 0) FROM information_schema.TABLES WHERE TABLE_SCHEMA = ?");
@@ -1998,12 +1728,6 @@ function get_database_size_bytes(PDO $pdo, string $db_name)
  }
 }
 function check_sufficient_disk_space(PDO $pdo, string $db_name, string $dir, int $extra_bytes = 0)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: check_sufficient_disk_space()
- * Amaç: Bu fonksiyon, programın check_sufficient_disk_space adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  $free_space = @disk_free_space($dir);
  if ($free_space === false) {
@@ -2032,12 +1756,6 @@ function check_sufficient_disk_space(PDO $pdo, string $db_name, string $dir, int
 /** Linux /proc/meminfo içeriğini tek okumada sayısal KB değerlerine dönüştürür. */
 
 function read_proc_meminfo_kb(int $cacheTtlSeconds = 0)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: read_proc_meminfo_kb()
- * Amaç: Bu fonksiyon, programın read_proc_meminfo_kb adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  static $cache = null;
  static $cacheTime = 0;
@@ -2064,12 +1782,6 @@ function read_proc_meminfo_kb(int $cacheTtlSeconds = 0)
 }
 
 function parse_ini_size_bytes(?string $value)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: parse_ini_size_bytes()
- * Amaç: Bu fonksiyon, programın parse_ini_size_bytes adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : int {
  $value = trim((string)$value);
  if ($value === '' || $value === '-1') return 0;
@@ -2087,12 +1799,6 @@ function parse_ini_size_bytes(?string $value)
 }
 
 function get_available_server_memory_bytes()
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: get_available_server_memory_bytes()
- * Amaç: Bu fonksiyon, programın get_available_server_memory_bytes adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : int {
  // Dinamik PHP memory_limit hesabı için de aynı RAM kaynağını kullan.
  // Önce sunucunun ve varsa containerın kullanılabilir RAM bilgisini alır;
@@ -2142,12 +1848,6 @@ function get_available_server_memory_bytes()
  return $iniBytes > 0 ? $iniBytes : 512 * 1024 * 1024;
 }
 function calculate_dynamic_memory_limit(PDO $pdo, string $db_name)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: calculate_dynamic_memory_limit()
- * Amaç: Bu fonksiyon, programın calculate_dynamic_memory_limit adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : string {
  $currentIni = (string)(ini_get('memory_limit') ?: '');
  $currentBytes = parse_ini_size_bytes($currentIni);
@@ -2166,12 +1866,6 @@ function calculate_dynamic_memory_limit(PDO $pdo, string $db_name)
  return $currentIni !== '' ? $currentIni : 'N/A';
 }
 function init_pdo_with_dynamic_memory(array &$config)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: init_pdo_with_dynamic_memory()
- * Amaç: Bu fonksiyon, programın init_pdo_with_dynamic_memory adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : PDO {
  static $initialized = false;
  $pdo = get_pdo($config['db_host'], $config['db_user'], $config['db_pass'], $config['db_name'], false, $config['use_persistent_pdo']);
@@ -2183,12 +1877,6 @@ function init_pdo_with_dynamic_memory(array &$config)
  return $pdo;
 }
 function get_table_columns(?PDO $pdo, string $db_name, string $table)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: get_table_columns()
- * Amaç: Bu fonksiyon, programın get_table_columns adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : string {
  $cache_key = "cols.{$db_name}.{$table}";
  $cached = SchemaCache::get($cache_key);
@@ -2222,12 +1910,6 @@ function get_table_columns(?PDO $pdo, string $db_name, string $table)
  throw new Exception("Tablo şeması okunamadı [{$table}]. Yedekleme durduruldu!");
 }
 function get_table_cursor_keys(?PDO $pdo, string $db_name, string $table)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: get_table_cursor_keys()
- * Amaç: Bu fonksiyon, programın get_table_cursor_keys adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  $cache_key = "keys.{$db_name}.{$table}";
  $cached = SchemaCache::get($cache_key);
@@ -2359,12 +2041,6 @@ fetch(PDO::FETCH_ASSOC)) {
 }
 
 function format_duration_seconds(float|int $seconds)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: format_duration_seconds()
- * Amaç: Bu fonksiyon, programın format_duration_seconds adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : string {
  $total = max(0, (int)round($seconds));
  $hours = intdiv($total, 3600);
@@ -2379,12 +2055,6 @@ function format_duration_seconds(float|int $seconds)
 }
 
 function format_bytes(int|float $bytes, int $precision = 2)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: format_bytes()
- * Amaç: Bu fonksiyon, programın format_bytes adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : string {
  $units = ['B', 'KB', 'MB', 'GB', 'TB'];
  $bytes = max((float)$bytes, 0);
@@ -2397,12 +2067,6 @@ function format_bytes(int|float $bytes, int $precision = 2)
  * İlerleme ekranında küçük hızları uygun birimle gösterir.
  */
 function format_transfer_speed(float $bytesPerSecond)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: format_transfer_speed()
- * Amaç: Bu fonksiyon, programın format_transfer_speed adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : string {
  $bytesPerSecond = max(0.0, $bytesPerSecond);
  if ($bytesPerSecond >= 1073741824) return round($bytesPerSecond / 1073741824, 2) . ' GB/sn';
@@ -2416,12 +2080,6 @@ function format_transfer_speed(float $bytesPerSecond)
  * İlk tabloda geçmiş veri bulunmadığından ETA null olabilir; arayüz bu durumda "Hesaplanıyor…" gösterir.
  */
 function calculate_web_backup_eta(array $state, int $currentIndexOneBased, int $totalTables, float $elapsedSeconds)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: calculate_web_backup_eta()
- * Amaç: Bu fonksiyon, programın calculate_web_backup_eta adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : ?int {
  if ($totalTables <= 0) return null;
  $currentIndexOneBased = max(1, min($currentIndexOneBased, $totalTables));
@@ -2448,12 +2106,6 @@ function calculate_web_backup_eta(array $state, int $currentIndexOneBased, int $
 }
 
 function safe_gzwrite(mixed $stream, string $data, bool $flush = false)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: safe_gzwrite()
- * Amaç: Bu fonksiyon, programın safe_gzwrite adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  $length = strlen($data);
  if ($length === 0) return;
@@ -2486,12 +2138,6 @@ function safe_gzwrite(mixed $stream, string $data, bool $flush = false)
  * veri tabanı NESNELERİ DIŞA AKTARIMI (GÖRÜNÜM, TETİKLEYİCİ, PROSEDÜR, FONKSİYON, OLAY)
  */
 function order_views_by_dependencies(PDO $pdo, string $db_name, array $views)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: order_views_by_dependencies()
- * Amaç: Bu fonksiyon, programın order_views_by_dependencies adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  $views = array_values(array_map('strval', $views));
  if (count($views) <= 1) return $views;
@@ -2564,12 +2210,6 @@ function order_views_by_dependencies(PDO $pdo, string $db_name, array $views)
 }
 
 function order_routines_by_dependencies(PDO $pdo, string $db_name, array $routines, string $routine_type)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: order_routines_by_dependencies()
- * Amaç: Bu fonksiyon, programın order_routines_by_dependencies adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  $routines = array_values(array_map('strval', $routines));
  if (count($routines) <= 1) return $routines;
@@ -2602,12 +2242,6 @@ function order_routines_by_dependencies(PDO $pdo, string $db_name, array $routin
 }
 
 function export_database_sequences_to_stream(PDO $pdo, string $db_name, mixed $stream)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: export_database_sequences_to_stream()
- * Amaç: Bu fonksiyon, programın export_database_sequences_to_stream adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : int {
  $exported = 0;
  $stmt = $pdo->prepare("
@@ -2647,12 +2281,6 @@ function export_database_sequences_to_stream(PDO $pdo, string $db_name, mixed $s
 
 
 function export_database_objects_to_stream(PDO $pdo, string $db_name, mixed $stream)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: export_database_objects_to_stream()
- * Amaç: Bu fonksiyon, programın export_database_objects_to_stream adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  safe_gzwrite(
  $stream,
@@ -2841,12 +2469,6 @@ function export_database_objects_to_stream(PDO $pdo, string $db_name, mixed $str
  */
 // anahtar ile ilerleme kullanılamayan tablolar için deterministik kolon sırası üretir. Şema önbellek kullanılır.
 function get_table_fallback_order_by(PDO $pdo, string $db_name, string $table)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: get_table_fallback_order_by()
- * Amaç: Bu fonksiyon, programın get_table_fallback_order_by adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : string {
  if (!is_db_identifier_safe($table)) {
  throw new Exception("Geçersiz tablo adı.");
@@ -2886,12 +2508,6 @@ function get_table_fallback_order_by(PDO $pdo, string $db_name, string $table)
  * TEK TABLODAN SADECE OKUYARAK YEDEK ALMA
  */
 function export_single_table_to_stream(PDO $pdo, string $table, mixed $stream, string $db_name, int &$processed_total_rows, ?callable $on_progress = null, int $max_insert_rows = 500)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: export_single_table_to_stream()
- * Amaç: Bu fonksiyon, programın export_single_table_to_stream adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  if (!is_db_identifier_safe($table)) {
  throw new Exception("Geçersiz tablo tanımı tespit edildi.");
@@ -3046,12 +2662,6 @@ function export_single_table_to_stream(PDO $pdo, string $table, mixed $stream, s
  * InnoDB ve diğer motorlara dokunmaz.
  */
 function repair_myisam_tables_before_backup(PDO $pdo, string $db_name)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: repair_myisam_tables_before_backup()
- * Amaç: Bu fonksiyon, programın repair_myisam_tables_before_backup adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  $stmt = $pdo->prepare("SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA = ? AND ENGINE = 'MyISAM' AND TABLE_TYPE = 'BASE TABLE'");
  $stmt->execute([$db_name]);
@@ -3098,12 +2708,6 @@ function repair_myisam_tables_before_backup(PDO $pdo, string $db_name)
  * birbirine karışmaz.
  */
 function acquire_myisam_read_locks(string $h, string $u, string $p, string $d)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: acquire_myisam_read_locks()
- * Amaç: Bu fonksiyon, programın acquire_myisam_read_locks adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  $lockPdo = get_pdo($h, $u, $p, $d, true, false);
  $stmt = $lockPdo->prepare("
@@ -3134,12 +2738,6 @@ function acquire_myisam_read_locks(string $h, string $u, string $p, string $d)
  return ['pdo' => $lockPdo, 'tables' => $quoted];
 }
 function release_myisam_read_locks(?PDO $lockPdo)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: release_myisam_read_locks()
- * Amaç: Bu fonksiyon, programın release_myisam_read_locks adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  if ($lockPdo instanceof PDO) {
  try {
@@ -3188,12 +2786,6 @@ Büyük veritabanlarında bu yaklaşım RAM kullanımını kontrol altında tuta
 // =============================================================================
 
 function perform_backup(PDO $pdo, string $db_name, string $backup_dir, array $config, mixed $lock_handle, ?callable $progress_callback = null, string $filename_prefix = '', bool $apply_retention = true)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: perform_backup()
- * Amaç: Bu fonksiyon, programın perform_backup adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : string {
  require_database_operation_lock($lock_handle, $backup_dir);
  update_system_lock_heartbeat($lock_handle);
@@ -3381,12 +2973,6 @@ function perform_backup(PDO $pdo, string $db_name, string $backup_dir, array $co
 // =============================================================================
 
 function verify_and_checksum_gzip(string $file_path)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: verify_and_checksum_gzip()
- * Amaç: Bu fonksiyon, programın verify_and_checksum_gzip adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : string {
  if (!is_file($file_path)) throw new Exception("Yedek dosyası bulunamadı.");
 
@@ -3417,12 +3003,6 @@ function verify_and_checksum_gzip(string $file_path)
  return $hash;
 }
 function verify_backup_checksum(string $file_path)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: verify_backup_checksum()
- * Amaç: Bu fonksiyon, programın verify_backup_checksum adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : string {
  if (!is_file($file_path)) throw new Exception("Yedek dosyası bulunamadı.");
  if (!validate_backup_filename(basename($file_path))) {
@@ -3497,12 +3077,6 @@ function analyze_tables_after_restore(
  int $max_tables = 0,
  ?PDO $existingPdo = null
 )
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: analyze_tables_after_restore()
- * Amaç: Bu fonksiyon, programın analyze_tables_after_restore adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  $result = [
  'processed' => 0,
@@ -3619,12 +3193,6 @@ function analyze_tables_after_restore(
 }
 
 function verify_database_integrity_after_restore(PDO $pdo, string $db_name, bool $quick = true, bool $analyze = false)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: verify_database_integrity_after_restore()
- * Amaç: Bu fonksiyon, programın verify_database_integrity_after_restore adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  $report = [
  'status' => 'OK',
@@ -3738,12 +3306,6 @@ function verify_database_integrity_after_restore(PDO $pdo, string $db_name, bool
  * Geri yüklemeden önce hedef veri tabanındaki eski nesneleri temizler. Silme sırasını güvenli tutar ve hata olursa neyin silinemediğini bildirir.
  */
 function clear_database_for_restore(PDO $pdo, string $db_name)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: clear_database_for_restore()
- * Amaç: Bu fonksiyon, programın clear_database_for_restore adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  $dropped = [];
  $failed = [];
@@ -3946,12 +3508,6 @@ function clear_database_for_restore(PDO $pdo, string $db_name)
  ];
 }
 function verify_restore_source_integrity(string $file_path)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: verify_restore_source_integrity()
- * Amaç: Bu fonksiyon, programın verify_restore_source_integrity adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : string {
  $hash = verify_backup_checksum($file_path);
  return strtolower($hash);
@@ -3961,12 +3517,6 @@ function verify_restore_source_integrity(string $file_path)
  * GERİ YÜKLEMEDEN ÖNCE SON TEMİZLİK KONTROLÜ. Veri tabanının kendisi silinmez. Eski tablolar ve diğer nesneler kaldırılır ve sonra sayıları kontrol edilir.
  */
 function verify_database_is_empty_for_restore(PDO $pdo, string $db_name)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: verify_database_is_empty_for_restore()
- * Amaç: Bu fonksiyon, programın verify_database_is_empty_for_restore adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  $counts = [
  'tables' => 0,
@@ -4048,12 +3598,6 @@ function restore_parse_buffer(
  string &$lineBuffer = '',
  string &$pendingBoundary = ''
 )
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: restore_parse_buffer()
- * Amaç: Bu fonksiyon, programın restore_parse_buffer adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  $extractedQueries = [];
  $bufLen = strlen($buffer);
@@ -4282,12 +3826,6 @@ function restore_parse_buffer(
 }
 // Dosya sonunda kapanmamış string, yorum veya DELIMITER durumu varsa işlemi reddet.
 function finalize_restore_parser(string &$queryBuffer, bool $inString, string $stringChar, bool $inCommentMulti, bool $inCommentSingle, bool $escaped, string $currentDelimiter, string $delimiterLineBuffer = '', string $pendingBoundary = '')
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: finalize_restore_parser()
- * Amaç: Bu fonksiyon, programın finalize_restore_parser adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : ?string {
  // parça sonunda bekletilen tek tırnak EOF'da kaldıysa bu tırnak gerçek
  // kapanıştır; ikinci aynı tırnak gelecek bir sonraki parça bulunmamaktadır.
@@ -4344,12 +3882,6 @@ function finalize_restore_parser(string &$queryBuffer, bool $inString, string $s
  * çalışarak mevcut veriye dokunabilecek nesneler import sırasında engellenir.
  */
 function normalize_import_identifier_key(string $name)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: normalize_import_identifier_key()
- * Amaç: Bu fonksiyon, programın normalize_import_identifier_key adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : string {
  return vedo_utf8_lower($name);
 }
@@ -4375,12 +3907,6 @@ function normalize_import_identifier_key(string $name)
  * fakat ortaya çıkan SQL'in yine güvenlik kontrolünden geçmesi için.
  */
 function expand_mysql_executable_comments(string $sql)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: expand_mysql_executable_comments()
- * Amaç: Bu fonksiyon, programın expand_mysql_executable_comments adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : string {
  $len = strlen($sql);
  if ($len === 0) return $sql;
@@ -4439,12 +3965,6 @@ function expand_mysql_executable_comments(string $sql)
 }
 
 function strip_sql_comments_stateful(string $sql, bool $reject_executable_comments = false, bool $expand_executable_comments = false)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: strip_sql_comments_stateful()
- * Amaç: Bu fonksiyon, programın strip_sql_comments_stateful adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : string {
  $sql = preg_replace('/^\xEF\xBB\xBF/', '', $sql) ?? $sql;
  if ($expand_executable_comments) {
@@ -4538,23 +4058,11 @@ function strip_sql_comments_stateful(string $sql, bool $reject_executable_commen
 }
 
 function import_strip_sql_comments_and_leading(string $sql)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: import_strip_sql_comments_and_leading()
- * Amaç: Bu fonksiyon, programın import_strip_sql_comments_and_leading adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : string {
  return strip_sql_comments_stateful($sql, false, true);
 }
 
 function parse_import_object_reference(string $reference, string $db_name)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: parse_import_object_reference()
- * Amaç: Bu fonksiyon, programın parse_import_object_reference adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  $reference = trim($reference);
  $pattern = '/^(?:(?:`([^`]+)`)|([\p{L}\p{N}_$]+))(?:\s*\.\s*(?:(?:`([^`]+)`)|([\p{L}\p{N}_$]+)))?$/u';
@@ -4582,12 +4090,6 @@ function parse_import_object_reference(string $reference, string $db_name)
 }
 
 function load_import_existing_schema(PDO $pdo, string $db_name)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: load_import_existing_schema()
- * Amaç: Bu fonksiyon, programın load_import_existing_schema adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  $objects = [
  'tables' => [],
@@ -4655,56 +4157,26 @@ function load_import_existing_schema(PDO $pdo, string $db_name)
 }
 
 function import_target_was_existing(array $existing, string $type, string $name)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: import_target_was_existing()
- * Amaç: Bu fonksiyon, programın import_target_was_existing adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : bool {
  return isset($existing[$type][normalize_import_identifier_key($name)]);
 }
 
 function import_target_was_created(array $created, string $type, string $name)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: import_target_was_created()
- * Amaç: Bu fonksiyon, programın import_target_was_created adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : bool {
  return isset($created[$type][normalize_import_identifier_key($name)]);
 }
 
 function import_register_created(array &$created, string $type, string $name)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: import_register_created()
- * Amaç: Bu fonksiyon, programın import_register_created adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  $created[$type][normalize_import_identifier_key($name)] = $name;
 }
 
 function import_unregister_created(array &$created, string $type, string $name)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: import_unregister_created()
- * Amaç: Bu fonksiyon, programın import_unregister_created adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  unset($created[$type][normalize_import_identifier_key($name)]);
 }
 
 function import_policy_for_sql(string $sql, string $db_name, array $existing, array $created, bool $softMode = false)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: import_policy_for_sql()
- * Amaç: Bu fonksiyon, programın import_policy_for_sql adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  $clean = import_strip_sql_comments_and_leading($sql);
  if ($clean === '') {
@@ -4951,12 +4423,6 @@ function import_policy_for_sql(string $sql, string $db_name, array $existing, ar
  * Yüklenen SQL’i önce kontrol eder. Güvenli bulunan aynı SQL daha sonra çalıştırılır.
  */
 function cleanup_import_created_objects(PDO $pdo, array $created)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: cleanup_import_created_objects()
- * Amaç: Bu fonksiyon, programın cleanup_import_created_objects adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  try { $pdo->exec('SET FOREIGN_KEY_CHECKS=0'); } catch (Throwable $e) {}
  $dropOrder = [
@@ -4985,12 +4451,6 @@ function cleanup_import_created_objects(PDO $pdo, array $created)
  * import öncesi tam geçici snapshot oluşturur. Snapshot mysqlyedek altında tutulmaz.
  */
 function create_soft_import_recovery_snapshot(PDO $pdo, string $db_name, array $config)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: create_soft_import_recovery_snapshot()
- * Amaç: Bu fonksiyon, programın create_soft_import_recovery_snapshot adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  $tempBase = rtrim((string)sys_get_temp_dir(), DIRECTORY_SEPARATOR);
  if ($tempBase === '') {
@@ -5060,12 +4520,6 @@ function create_soft_import_recovery_snapshot(PDO $pdo, string $db_name, array $
 }
 
 function restore_soft_import_recovery_snapshot(PDO &$pdo, array $snapshot, string $db_name, array $config)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: restore_soft_import_recovery_snapshot()
- * Amaç: Bu fonksiyon, programın restore_soft_import_recovery_snapshot adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  $snapshotDir = (string)($snapshot['dir'] ?? '');
  $snapshotFile = (string)($snapshot['file'] ?? '');
@@ -5116,12 +4570,6 @@ function restore_soft_import_recovery_snapshot(PDO &$pdo, array $snapshot, strin
 }
 
 function remove_soft_import_recovery_snapshot(array &$snapshot)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: remove_soft_import_recovery_snapshot()
- * Amaç: Bu fonksiyon, programın remove_soft_import_recovery_snapshot adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  $lock = $snapshot['lock'] ?? null;
  if (is_resource($lock)) {
@@ -5178,12 +4626,6 @@ göreviyle uyumlu SQL komutları dışındaki işlemleri engellemektir.
 // =============================================================================
 
 function import_uploaded_sql_file(PDO $pdo, array $uploadedFile, string $db_name, string $import_mode = 'safe', array &$recoveryReport = [])
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: import_uploaded_sql_file()
- * Amaç: Bu fonksiyon, programın import_uploaded_sql_file adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  @set_time_limit(0);
  $import_mode = in_array($import_mode, ['safe', 'soft'], true) ? $import_mode : 'safe';
@@ -5514,12 +4956,6 @@ function import_uploaded_sql_file(PDO $pdo, array $uploadedFile, string $db_name
  * Tek bir SQL komutunu güvenlik kurallarına göre kontrol eder. Sorun varsa hata verebilir veya başarısız olduğunu bildirir.
  */
 function normalize_restore_identifier(string $identifier)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: normalize_restore_identifier()
- * Amaç: Bu fonksiyon, programın normalize_restore_identifier adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : string {
  $identifier = trim($identifier);
  if (strlen($identifier) >= 2 && $identifier[0] === '`' && $identifier[strlen($identifier) - 1] === '`') {
@@ -5529,12 +4965,6 @@ function normalize_restore_identifier(string $identifier)
  return $identifier;
 }
 function mask_restore_string_literals(string $sql)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: mask_restore_string_literals()
- * Amaç: Bu fonksiyon, programın mask_restore_string_literals adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : string {
  $len = strlen($sql);
  $out = '';
@@ -5583,12 +5013,6 @@ function mask_restore_string_literals(string $sql)
  return $out;
 }
 function validate_restore_target_database(string $sql, string $expectedDb, bool $throw = true)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: validate_restore_target_database()
- * Amaç: Bu fonksiyon, programın validate_restore_target_database adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : bool {
  $expectedDb = normalize_restore_identifier(trim($expectedDb));
  if ($expectedDb === '') return true;
@@ -5688,12 +5112,6 @@ function validate_restore_target_database(string $sql, string $expectedDb, bool 
 }
 
 function validate_restore_sql_statement(string $sql, bool $throw = true, string $expectedDb = '')
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: validate_restore_sql_statement()
- * Amaç: Bu fonksiyon, programın validate_restore_sql_statement adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : bool {
  $allowed_sql_regexes = [
  '/^CREATE\s+(?:OR\s+REPLACE\s+)?(?:TEMPORARY\s+)?TABLE\s+/i',
@@ -5757,12 +5175,6 @@ function validate_restore_sql_statement(string $sql, bool $throw = true, string 
  return $is_allowed;
 }
 function validate_backup_restore_compatibility(string $file_path, bool $verify_checksum = true, string $expectedDb = '')
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: validate_backup_restore_compatibility()
- * Amaç: Bu fonksiyon, programın validate_backup_restore_compatibility adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  if ($verify_checksum) {
  verify_backup_checksum($file_path);
@@ -5801,12 +5213,6 @@ function validate_backup_restore_compatibility(string $file_path, bool $verify_c
  return ['status'=>'OK', 'queries_validated'=>$query_count];
 }
 function extract_restore_table_name(string $sql)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: extract_restore_table_name()
- * Amaç: Bu fonksiyon, programın extract_restore_table_name adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : string {
  $sql = trim($sql);
  $sql = preg_replace('/^\xEF\xBB\xBF/', '', $sql) ?? $sql;
@@ -5834,12 +5240,6 @@ function extract_restore_table_name(string $sql)
  * Yeni PDO açıldığında aynı davranışın devam etmesi için uygulanabilir değişkenleri yeniden kurar.
  */
 function capture_restore_session_state(PDO $pdo)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: capture_restore_session_state()
- * Amaç: Bu fonksiyon, programın capture_restore_session_state adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  try {
  $stmt = $pdo->query("SELECT
@@ -5862,12 +5262,6 @@ function capture_restore_session_state(PDO $pdo)
 }
 
 function apply_restore_session_state(PDO $pdo, array $state)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: apply_restore_session_state()
- * Amaç: Bu fonksiyon, programın apply_restore_session_state adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  $quote = static function (PDO $connection, mixed $value): string {
  return $connection->quote((string)$value);
@@ -5900,12 +5294,6 @@ function apply_restore_session_state(PDO $pdo, array $state)
  * SQL komutlarını sırayla çalıştırır ve ilerlemeyi günceller. Her komuttan önce güvenlik kontrolü yapılır.
  */
 function restore_execute_sql(PDO &$pdo, array $queries, int &$processed_tables_count, int &$processed_rows_count, string $backup_dir, array $config = [], ?string &$current_table = null)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: restore_execute_sql()
- * Amaç: Bu fonksiyon, programın restore_execute_sql adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : int {
  $executed = 0;
  $max_retries = 5;
@@ -5988,12 +5376,6 @@ function restore_execute_sql(PDO &$pdo, array $queries, int &$processed_tables_c
  return $executed;
 }
 function summarize_sql_for_log(string $sql)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: summarize_sql_for_log()
- * Amaç: Bu fonksiyon, programın summarize_sql_for_log adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : string {
  $sql = trim($sql);
  if ($sql === '') {
@@ -6027,12 +5409,6 @@ function summarize_sql_for_log(string $sql)
 }
 
 function restore_calculate_progress(string $sql, int &$processed_tables_count, int &$processed_rows_count)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: restore_calculate_progress()
- * Amaç: Bu fonksiyon, programın restore_calculate_progress adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  $trimmed = ltrim($sql);
  if (strncasecmp($trimmed, 'INSERT INTO', 11) === 0) {
@@ -6108,12 +5484,6 @@ CLI tercih edilmesinin ana nedeni budur.
 // Panelden başlatılan uzun yedek alma/geri yükleme işlemleri ayrı bir komut satırı PHP sürecinde çalıştırılır.
 // Tarayıcı yalnızca iş durumunu izler; uzun işlem doğrudan HTTP isteğine bağlı değildir.
 function write_cli_job_state(string $backup_dir, string $job_id, array $state)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: write_cli_job_state()
- * Amaç: Bu fonksiyon, programın write_cli_job_state adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  if (!preg_match('/^[a-f0-9]{32}$/', $job_id)) {
  throw new Exception('Geçersiz CLI job ID.');
@@ -6179,12 +5549,6 @@ function update_cli_job_state_for_prepare_worker(
  string $workerToken,
  callable $mutator
 )
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: update_cli_job_state_for_prepare_worker()
- * Amaç: Bu fonksiyon, programın update_cli_job_state_for_prepare_worker adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : bool {
  if (!preg_match('/^[a-f0-9]{32}$/', $job_id) || !preg_match('/^[a-f0-9]{32}$/', $workerToken)) {
  return false;
@@ -6241,12 +5605,6 @@ function reserve_cli_job_state(
  string $type,
  string $file = ''
 )
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: reserve_cli_job_state()
- * Amaç: Bu fonksiyon, programın reserve_cli_job_state adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  if (!preg_match('/^[a-f0-9]{32}$/', $job_id)) {
  throw new Exception('Geçersiz CLI job ID.');
@@ -6300,12 +5658,6 @@ function reserve_cli_job_state(
 }
 
 function read_cli_job_state(string $backup_dir, string $job_id)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: read_cli_job_state()
- * Amaç: Bu fonksiyon, programın read_cli_job_state adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  if (!preg_match('/^[a-f0-9]{32}$/', $job_id)) return [];
  $path = $backup_dir . '/.cli_job_' . $job_id . '.json';
@@ -6314,12 +5666,6 @@ function read_cli_job_state(string $backup_dir, string $job_id)
  return is_array($data) ? $data : [];
 }
 function is_recoverable_web_restore_state(array $state)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: is_recoverable_web_restore_state()
- * Amaç: Bu fonksiyon, programın is_recoverable_web_restore_state adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : bool {
  return ($state['engine'] ?? '') === 'web'
  && ($state['type'] ?? '') === 'restore'
@@ -6330,12 +5676,6 @@ function is_recoverable_web_restore_state(array $state)
 }
 
 function is_nonterminal_restore_state_protected(array $state)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: is_nonterminal_restore_state_protected()
- * Amaç: Bu fonksiyon, programın is_nonterminal_restore_state_protected adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : bool {
  if (($state['type'] ?? '') !== 'restore') return false;
  if (!empty($state['recovery_required'])) return true;
@@ -6348,12 +5688,6 @@ function is_nonterminal_restore_state_protected(array $state)
 }
 
 function cleanup_stale_cli_job_states(string $backup_dir, int $max_age = 86400)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: cleanup_stale_cli_job_states()
- * Amaç: Bu fonksiyon, programın cleanup_stale_cli_job_states adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  cleanup_login_rate_limit_lock_files($backup_dir, $max_age);
  $files = glob($backup_dir . '/.cli_job_*.json') ?: [];
@@ -6661,12 +5995,6 @@ function cleanup_stale_cli_job_states(string $backup_dir, int $max_age = 86400)
 
 
 function find_active_cli_job_states(string $backup_dir)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: find_active_cli_job_states()
- * Amaç: Bu fonksiyon, programın find_active_cli_job_states adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  $active = [];
  $files = glob($backup_dir . '/.cli_job_*.json') ?: [];
@@ -6718,34 +6046,16 @@ function find_active_cli_job_states(string $backup_dir)
  return $active;
 }
 function acquire_job_admission_lock(string $backup_dir)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: acquire_job_admission_lock()
- * Amaç: Bu fonksiyon, programın acquire_job_admission_lock adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : mixed {
  return acquire_system_lock($backup_dir, 'job_admission', 30);
 }
 
 function release_job_admission_lock(mixed $lock_handle)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: release_job_admission_lock()
- * Amaç: Bu fonksiyon, programın release_job_admission_lock adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  release_system_lock($lock_handle);
 }
 
 function assert_no_active_database_job(string $backup_dir, string $ignore_job_id = '')
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: assert_no_active_database_job()
- * Amaç: Bu fonksiyon, programın assert_no_active_database_job adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  cleanup_stale_cli_job_states($backup_dir);
  $active = find_active_cli_job_states($backup_dir);
@@ -6766,12 +6076,6 @@ function assert_no_active_database_job(string $backup_dir, string $ignore_job_id
 }
 // PAYLAŞIMLI HOST: CLI/exec/proc_open kullanılamıyorsa Web işçi süreci yedeği kullanılabilir.
 function detect_cli_worker_capability()
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: detect_cli_worker_capability()
- * Amaç: Bu fonksiyon, programın detect_cli_worker_capability adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  $result = [
  'available' => false,
@@ -6877,12 +6181,6 @@ function detect_cli_worker_capability()
 }
 
 function build_web_backup_paths(string $backup_dir, string $db_name, string $job_id = '')
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: build_web_backup_paths()
- * Amaç: Bu fonksiyon, programın build_web_backup_paths adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  if ($job_id !== '' && !preg_match('/^[a-f0-9]{32}$/', $job_id)) {
  throw new Exception('Geçersiz Web Worker job ID.');
@@ -6913,12 +6211,6 @@ function build_web_backup_paths(string $backup_dir, string $db_name, string $job
 }
 
 function get_web_worker_tables(PDO $pdo, string $db_name)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: get_web_worker_tables()
- * Amaç: Bu fonksiyon, programın get_web_worker_tables adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  $stmt = $pdo->prepare("SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA = ? AND TABLE_TYPE = 'BASE TABLE' AND UPPER(COALESCE(ENGINE, '')) <> 'SEQUENCE' ORDER BY TABLE_NAME");
  $stmt->execute([$db_name]);
@@ -6928,12 +6220,6 @@ function get_web_worker_tables(PDO $pdo, string $db_name)
 }
 
 function ensure_web_backup_fragment_dir(string $fragmentDir)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: ensure_web_backup_fragment_dir()
- * Amaç: Bu fonksiyon, programın ensure_web_backup_fragment_dir adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  if ($fragmentDir === '') throw new Exception('Web backup fragment dizini eksik.');
  if (!is_dir($fragmentDir) && !@mkdir($fragmentDir, 0700, true) && !is_dir($fragmentDir)) {
@@ -6941,44 +6227,20 @@ function ensure_web_backup_fragment_dir(string $fragmentDir)
  }
 }
 function web_backup_fragment_path(string $fragmentDir, int $tableIndex, string $kind, int $chunkIndex = 0)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: web_backup_fragment_path()
- * Amaç: Bu fonksiyon, programın web_backup_fragment_path adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : string {
  ensure_web_backup_fragment_dir($fragmentDir);
  $kind = preg_replace('/[^A-Za-z0-9_-]/', '_', $kind) ?: 'part';
  return rtrim($fragmentDir, '/\\') . '/' . sprintf('%06d', $tableIndex) . '_' . $kind . '_' . sprintf('%06d', $chunkIndex) . '.sql.gz';
 }
 function web_backup_static_fragment_path(string $fragmentDir, string $name)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: web_backup_static_fragment_path()
- * Amaç: Bu fonksiyon, programın web_backup_static_fragment_path adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : string {
  ensure_web_backup_fragment_dir($fragmentDir);
  if (!preg_match('/^[A-Za-z0-9_.-]+$/', $name)) throw new Exception('Geçersiz Web backup fragment adı.');
  return rtrim($fragmentDir, '/\\') . '/' . $name . '.sql.gz';
 }
 function web_backup_fragment_meta_path(string $fragmentPath)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: web_backup_fragment_meta_path()
- * Amaç: Bu fonksiyon, programın web_backup_fragment_meta_path adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : string { return $fragmentPath . '.meta.json'; }
 function encode_web_cursor_values(array $values)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: encode_web_cursor_values()
- * Amaç: Bu fonksiyon, programın encode_web_cursor_values adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  $result = [];
  foreach ($values as $value) {
@@ -6991,12 +6253,6 @@ function encode_web_cursor_values(array $values)
  return $result;
 }
 function decode_web_cursor_values(array $encoded)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: decode_web_cursor_values()
- * Amaç: Bu fonksiyon, programın decode_web_cursor_values adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  $result = [];
  foreach ($encoded as $item) {
@@ -7013,12 +6269,6 @@ function decode_web_cursor_values(array $encoded)
  return $result;
 }
 function write_web_backup_gzip_fragment(string $fragmentPath, callable $writer)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: write_web_backup_gzip_fragment()
- * Amaç: Bu fonksiyon, programın write_web_backup_gzip_fragment adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  $tmp = $fragmentPath . '.tmp'; @unlink($tmp);
  $gz = @gzopen($tmp, 'wb3');
@@ -7029,12 +6279,6 @@ function write_web_backup_gzip_fragment(string $fragmentPath, callable $writer)
  if (!@rename($tmp, $fragmentPath)) { @unlink($tmp); throw new Exception('Web backup fragment finalize edilemedi.'); }
 }
 function append_web_backup_fragment_idempotent(string $fragmentPath, string $targetPath)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: append_web_backup_fragment_idempotent()
- * Amaç: Bu fonksiyon, programın append_web_backup_fragment_idempotent adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  if (!is_file($fragmentPath)) throw new Exception('Web backup fragment bulunamadı: ' . basename($fragmentPath));
  $fragmentSize = (int)@filesize($fragmentPath);
@@ -7198,12 +6442,6 @@ function append_web_backup_fragment_idempotent(string $fragmentPath, string $tar
  } finally { if ($locked) @flock($fp, LOCK_UN); @fclose($fp); }
 }
 function remove_web_backup_fragment_dir(string $fragmentDir)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: remove_web_backup_fragment_dir()
- * Amaç: Bu fonksiyon, programın remove_web_backup_fragment_dir adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  if ($fragmentDir === '' || !is_dir($fragmentDir)) return;
  $items = @scandir($fragmentDir);
@@ -7216,12 +6454,6 @@ function remove_web_backup_fragment_dir(string $fragmentDir)
  @rmdir($fragmentDir);
 }
 function web_backup_table_definition(PDO $pdo, string $db_name, string $table)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: web_backup_table_definition()
- * Amaç: Bu fonksiyon, programın web_backup_table_definition adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  if (!is_db_identifier_safe($table)) throw new Exception('Geçersiz tablo tanımı tespit edildi.');
  $stmt = $pdo->prepare("SHOW CREATE TABLE `{$table}`"); $stmt->execute();
@@ -7280,12 +6512,6 @@ function web_backup_step(
  string $state_prefix = 'backup',
  ?array $state_override = null
 )
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: web_backup_step()
- * Amaç: Bu fonksiyon, programın web_backup_step adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  $state = $state_override ?? read_cli_job_state($backup_dir, $job_id);
  if (!$state) throw new Exception('Web Worker durum dosyası bulunamadı.');
@@ -7609,12 +6835,6 @@ function web_backup_step(
  Logger::info(sprintf('WEB BACKUP BAŞARILI | job_id=%s | mode=per_table_read_lock_chunked | file=%s | tables=%d | rows=%d | size=%s | duration=%ss | sha256=%s',$job_id,basename($targetFile),count($tables),$processedRows,format_bytes($size),$duration,$hash));return $state;
 }
 function initialize_web_backup_job(PDO $pdo, string $backup_dir, array $config, string $job_id)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: initialize_web_backup_job()
- * Amaç: Bu fonksiyon, programın initialize_web_backup_job adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  $admissionLock = acquire_job_admission_lock($backup_dir);
  if (!$admissionLock) {
@@ -7686,12 +6906,6 @@ function initialize_web_backup_job(PDO $pdo, string $backup_dir, array $config, 
  }
 }
 function web_emergency_completion_marker_path(string $backup_dir, string $parent_job_id, string $emergency_job_id)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: web_emergency_completion_marker_path()
- * Amaç: Bu fonksiyon, programın web_emergency_completion_marker_path adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : string {
  if (!preg_match('/^[a-f0-9]{32}$/', $parent_job_id) || !preg_match('/^[a-f0-9]{32}$/', $emergency_job_id)) {
  throw new Exception('Geçersiz emergency completion marker job ID.');
@@ -7699,12 +6913,6 @@ function web_emergency_completion_marker_path(string $backup_dir, string $parent
  return $backup_dir . '/.vedo_emergency_complete_' . $parent_job_id . '_' . $emergency_job_id . '.json';
 }
 function write_web_emergency_completion_marker(string $backup_dir, string $parent_job_id, string $emergency_job_id, string $file, int $size, string $sha256)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: write_web_emergency_completion_marker()
- * Amaç: Bu fonksiyon, programın write_web_emergency_completion_marker adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  if (!validate_backup_filename($file) || !is_emergency_backup_filename($file)) throw new Exception('Emergency completion marker için geçersiz dosya adı.');
  $sha256 = strtolower($sha256);
@@ -7727,12 +6935,6 @@ function write_web_emergency_completion_marker(string $backup_dir, string $paren
  }
 }
 function read_web_emergency_completion_marker(string $backup_dir, string $parent_job_id, string $emergency_job_id)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: read_web_emergency_completion_marker()
- * Amaç: Bu fonksiyon, programın read_web_emergency_completion_marker adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  $path = web_emergency_completion_marker_path($backup_dir, $parent_job_id, $emergency_job_id);
  if (!is_file($path)) return [];
@@ -7751,12 +6953,6 @@ function read_web_emergency_completion_marker(string $backup_dir, string $parent
  return $data;
 }
 function delete_web_emergency_completion_marker(string $backup_dir, string $parent_job_id, string $emergency_job_id)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: delete_web_emergency_completion_marker()
- * Amaç: Bu fonksiyon, programın delete_web_emergency_completion_marker adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  try {
  $path = web_emergency_completion_marker_path($backup_dir, $parent_job_id, $emergency_job_id);
@@ -7768,12 +6964,6 @@ function delete_web_emergency_completion_marker(string $backup_dir, string $pare
 }
 
 function initialize_web_emergency_backup_job(PDO $pdo, string $backup_dir, array $config, string $parent_job_id, int $existing_temp_bytes = 0)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: initialize_web_emergency_backup_job()
- * Amaç: Bu fonksiyon, programın initialize_web_emergency_backup_job adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  $emergencyJobId = bin2hex(random_bytes(16));
  check_sufficient_disk_space($pdo, $config['db_name'], $backup_dir, max(0, $existing_temp_bytes));
@@ -7848,12 +7038,6 @@ function initialize_web_emergency_backup_job(PDO $pdo, string $backup_dir, array
 }
 
 function is_emergency_state_completed(array $state)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: is_emergency_state_completed()
- * Amaç: Bu fonksiyon, programın is_emergency_state_completed adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : bool {
  return !empty($state['is_emergency_backup']) && ($state['status'] ?? '') === 'completed' && !empty($state['file']);
 }
@@ -7862,12 +7046,6 @@ function is_emergency_state_completed(array $state)
  * WEB geri yüklemede .sql.gz dosyasını küçük parçalar halinde açar. Her web isteği sınırlı bir iş yapar ve yarıda kalırsa geçici dosyadan kaldığı yere devam eder. Ayrı CLI işlemi kullanılmaz.
  */
 function web_restore_temp_path_is_valid(string $path, string $job_id)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: web_restore_temp_path_is_valid()
- * Amaç: Bu fonksiyon, programın web_restore_temp_path_is_valid adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : bool {
  if (!preg_match('/^[a-f0-9]{32}$/', $job_id)) return false;
  if ($path === '') return false;
@@ -7882,12 +7060,6 @@ function web_restore_temp_path_is_valid(string $path, string $job_id)
 }
 
 function prepare_web_restore_stream_cache(string $sourcePath, string $job_id, string $backup_dir, array &$state)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: prepare_web_restore_stream_cache()
- * Amaç: Bu fonksiyon, programın prepare_web_restore_stream_cache adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : string {
  if (!preg_match('/^[a-f0-9]{32}$/', $job_id)) throw new Exception('Geçersiz Web Worker job ID.');
  if (!is_file($sourcePath) || !is_readable($sourcePath)) throw new Exception('Restore kaynak dosyası okunamıyor.');
@@ -8140,12 +7312,6 @@ function prepare_web_restore_stream_cache(string $sourcePath, string $job_id, st
  return $tmpPath;
 }
 function cleanup_web_restore_stream_cache(array $state)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: cleanup_web_restore_stream_cache()
- * Amaç: Bu fonksiyon, programın cleanup_web_restore_stream_cache adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  $path = (string)($state['restore_stream_path'] ?? '');
  $jobId = (string)($state['job_id'] ?? '');
@@ -8159,12 +7325,6 @@ function cleanup_web_restore_stream_cache(array $state)
 }
 
 function cleanup_orphan_web_restore_temp_files(string $backup_dir, int $max_age = 3600)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: cleanup_orphan_web_restore_temp_files()
- * Amaç: Bu fonksiyon, programın cleanup_orphan_web_restore_temp_files adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  $tmpDir = realpath(sys_get_temp_dir());
  if (!$tmpDir || !is_dir($tmpDir)) return;
@@ -8211,24 +7371,12 @@ function cleanup_orphan_web_restore_temp_files(string $backup_dir, int $max_age 
  * veri tabanı temizliği, SQL aktarımı ve son ANALYZE aşamalarını sırayla yönetir.
  */
 function web_restore_commit_marker_path(string $backup_dir, string $job_id)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: web_restore_commit_marker_path()
- * Amaç: Bu fonksiyon, programın web_restore_commit_marker_path adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : string {
  if (!preg_match('/^[a-f0-9]{32}$/', $job_id)) throw new Exception('Geçersiz Web Worker job ID.');
  return $backup_dir . '/.web_restore_commit_' . $job_id . '.json';
 }
 
 function read_web_restore_commit_marker(string $backup_dir, string $job_id)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: read_web_restore_commit_marker()
- * Amaç: Bu fonksiyon, programın read_web_restore_commit_marker adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  $path = web_restore_commit_marker_path($backup_dir, $job_id);
  if (!is_file($path)) return [];
@@ -8237,12 +7385,6 @@ function read_web_restore_commit_marker(string $backup_dir, string $job_id)
 }
 
 function write_web_restore_commit_marker(string $backup_dir, string $job_id, array $marker)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: write_web_restore_commit_marker()
- * Amaç: Bu fonksiyon, programın write_web_restore_commit_marker adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  $path = web_restore_commit_marker_path($backup_dir, $job_id);
  $tmp = $path . '.tmp';
@@ -8256,12 +7398,6 @@ function write_web_restore_commit_marker(string $backup_dir, string $job_id, arr
 }
 
 function delete_web_restore_commit_marker(string $backup_dir, string $job_id)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: delete_web_restore_commit_marker()
- * Amaç: Bu fonksiyon, programın delete_web_restore_commit_marker adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  try {
  $path = web_restore_commit_marker_path($backup_dir, $job_id);
@@ -8273,12 +7409,6 @@ function delete_web_restore_commit_marker(string $backup_dir, string $job_id)
 }
 
 function web_restore_state_needs_stale_recovery(array $state)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: web_restore_state_needs_stale_recovery()
- * Amaç: Bu fonksiyon, programın web_restore_state_needs_stale_recovery adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : bool {
  if (($state['engine'] ?? '') !== 'web' || ($state['type'] ?? '') !== 'restore') return false;
  if (!empty($state['recovery_mode']) || !empty($state['restore_verified'])) return false;
@@ -8304,12 +7434,6 @@ function web_restore_state_needs_stale_recovery(array $state)
 // =============================================================================
 
 function web_restore_step(PDO $pdo, string $job_id, string $backup_dir, array $config)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: web_restore_step()
- * Amaç: Bu fonksiyon, programın web_restore_step adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  $state = read_cli_job_state($backup_dir, $job_id);
  if (!$state || ($state['engine'] ?? '') !== 'web' || ($state['type'] ?? '') !== 'restore') {
@@ -9501,12 +8625,6 @@ function web_restore_step(PDO $pdo, string $job_id, string $backup_dir, array $c
 }
 
 function initialize_web_restore_job(PDO $pdo, string $backup_dir, array $config, string $job_id, string $file)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: initialize_web_restore_job()
- * Amaç: Bu fonksiyon, programın initialize_web_restore_job adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  $admissionLock = acquire_job_admission_lock($backup_dir);
  if (!$admissionLock) {
@@ -9611,12 +8729,6 @@ function initialize_web_restore_job(PDO $pdo, string $backup_dir, array $config,
  }
 }
 function prepare_web_restore_recovery_state(string $backup_dir, string $job_id, Throwable $error)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: prepare_web_restore_recovery_state()
- * Amaç: Bu fonksiyon, programın prepare_web_restore_recovery_state adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : ?array {
  $state = read_cli_job_state($backup_dir, $job_id);
  if (!$state || ($state['engine'] ?? '') !== 'web' || ($state['type'] ?? '') !== 'restore') {
@@ -9750,12 +8862,6 @@ function prepare_web_restore_recovery_state(string $backup_dir, string $job_id, 
  * WEB işinin sıradaki adımını çalıştırır. Aynı anda iki veri tabanı işi başlamasın diye ortak bir kilit kullanır.
  */
 function run_web_worker_step(PDO $pdo, string $backup_dir, array $config, string $job_id)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: run_web_worker_step()
- * Amaç: Bu fonksiyon, programın run_web_worker_step adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  if (!preg_match('/^[a-f0-9]{32}$/', $job_id)) {
  throw new Exception('Geçersiz Web Worker job ID.');
@@ -9968,12 +9074,6 @@ function run_web_worker_step(PDO $pdo, string $backup_dir, array $config, string
  }
 }
 function reconnect_restore_pdo_for_recovery(PDO &$pdo, array $config)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: reconnect_restore_pdo_for_recovery()
- * Amaç: Bu fonksiyon, programın reconnect_restore_pdo_for_recovery adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  // 2006/2013 gibi bağlantı kopmalarında mevcut PDO nesnesi güvenilmez olabilir.
  // Emergency geri yükleme başlamadan önce bağlantıyı tamamen bırakıp temiz bir PDO aç.
@@ -10008,12 +9108,6 @@ function perform_restore_cli_job(
  string $job_id,
  bool $create_emergency_backup = true
 )
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: perform_restore_cli_job()
- * Amaç: Bu fonksiyon, programın perform_restore_cli_job adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  $safe_path = validate_path_safe($backup_dir . '/' . $file, $backup_dir);
  if (!is_file($safe_path) || !validate_backup_filename($file)) {
@@ -10404,12 +9498,6 @@ function perform_restore_cli_job(
  }
 }
 function resolve_cli_php_binary()
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: resolve_cli_php_binary()
- * Amaç: Bu fonksiyon, programın resolve_cli_php_binary adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : string {
  $candidates = [];
 
@@ -10449,12 +9537,6 @@ function resolve_cli_php_binary()
 }
 // GÜVENLİK: Log dosyasına gerçek cron anahtarı yazılmaz; yalnızca komut yapısı kaydedilir.
 function mask_cli_token_in_command(string $command, string $token)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: mask_cli_token_in_command()
- * Amaç: Bu fonksiyon, programın mask_cli_token_in_command adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : string {
  if ($token === '') return $command;
  return str_replace($token, '***CRON_TOKEN_MASKED***', $command);
@@ -10502,12 +9584,6 @@ function spawn_cli_job(
  string $job_id,
  string $file = ''
 )
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: spawn_cli_job()
- * Amaç: Bu fonksiyon, programın spawn_cli_job adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : bool {
  if (!preg_match('/^[a-f0-9]{32}$/', $job_id)) return false;
  if (!in_array($job_type, ['backup', 'restore', 'integrity'], true)) return false;
@@ -10652,12 +9728,6 @@ function spawn_cli_job(
 
 
 function run_cli_job_from_argv(array $argv, array $config, string $backup_dir)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: run_cli_job_from_argv()
- * Amaç: Bu fonksiyon, programın run_cli_job_from_argv adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  $job_type = '';
  $job_id = '';
@@ -11028,12 +10098,6 @@ if (VEDO_IS_CLI) {
  */
 // İstek sınırı dosya anahtarı için kullanıcı adı ve IP SHA-256 ile özetlenir.
 function get_login_rate_limit_keys(string $ip, string $username)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: get_login_rate_limit_keys()
- * Amaç: Bu fonksiyon, programın get_login_rate_limit_keys adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  $ip = substr($ip, 0, 128);
  $username = strtolower(trim($username));
@@ -11045,12 +10109,6 @@ function get_login_rate_limit_keys(string $ip, string $username)
  ];
 }
 function read_login_rate_limit(string $backup_dir, string $key)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: read_login_rate_limit()
- * Amaç: Bu fonksiyon, programın read_login_rate_limit adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  $path = $backup_dir . '/.login_rate_' . $key . '.json';
  $empty = ['failures' => 0, 'first_failure' => 0, 'locked_until' => 0];
@@ -11072,12 +10130,6 @@ function read_login_rate_limit(string $backup_dir, string $key)
  ];
 }
 function write_login_rate_limit(string $backup_dir, string $key, array $state)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: write_login_rate_limit()
- * Amaç: Bu fonksiyon, programın write_login_rate_limit adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  $path = $backup_dir . '/.login_rate_' . $key . '.json';
  $tmp = $path . '.tmp';
@@ -11094,12 +10146,6 @@ function write_login_rate_limit(string $backup_dir, string $key, array $state)
  }
 }
 function clear_login_rate_limit(string $backup_dir, string $key)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: clear_login_rate_limit()
- * Amaç: Bu fonksiyon, programın clear_login_rate_limit adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  $path = $backup_dir . '/.login_rate_' . $key . '.json';
  if (is_file($path)) {
@@ -11107,24 +10153,12 @@ function clear_login_rate_limit(string $backup_dir, string $key)
  }
 }
 function clear_login_rate_limit_all(string $backup_dir, string $ip, string $username)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: clear_login_rate_limit_all()
- * Amaç: Bu fonksiyon, programın clear_login_rate_limit_all adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  foreach (get_login_rate_limit_keys($ip, $username) as $key) {
  clear_login_rate_limit($backup_dir, $key);
  }
 }
 function cleanup_login_rate_limit_lock_files(string $backup_dir, int $max_age = 86400)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: cleanup_login_rate_limit_lock_files()
- * Amaç: Bu fonksiyon, programın cleanup_login_rate_limit_lock_files adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  $now = time();
  foreach (glob($backup_dir . '/.login_rate_*.lock') ?: [] as $lockPath) {
@@ -11163,12 +10197,6 @@ için kullanılan basit bir savunmadır.
 // =============================================================================
 
 function enforce_login_rate_limit(string $backup_dir, string $ip, string $username, array $config)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: enforce_login_rate_limit()
- * Amaç: Bu fonksiyon, programın enforce_login_rate_limit adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  $keys = get_login_rate_limit_keys($ip, $username);
  $now = time();
@@ -11199,12 +10227,6 @@ function enforce_login_rate_limit(string $backup_dir, string $ip, string $userna
  ];
 }
 function register_login_failure_all(string $backup_dir, string $ip, string $username, array $config)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: register_login_failure_all()
- * Amaç: Bu fonksiyon, programın register_login_failure_all adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  $keys = get_login_rate_limit_keys($ip, $username);
  $limits = [
@@ -11935,12 +10957,6 @@ Asıl giriş doğrulaması PHP tarafındadır.
  * Linux ve varsa container kaynaklarını okur. Böylece kullanılabilecek gerçek kapasiteyi öğrenir.
  */
 function read_first_existing_file(array $paths)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: read_first_existing_file()
- * Amaç: Bu fonksiyon, programın read_first_existing_file adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : ?string {
  foreach ($paths as $path) {
  if (!is_readable($path)) continue;
@@ -11951,12 +10967,6 @@ function read_first_existing_file(array $paths)
 }
 
 function parse_cgroup_cpu_quota_cores()
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: parse_cgroup_cpu_quota_cores()
- * Amaç: Bu fonksiyon, programın parse_cgroup_cpu_quota_cores adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : ?float {
  $v2 = read_first_existing_file([
  '/sys/fs/cgroup/cpu.max',
@@ -11988,12 +10998,6 @@ function parse_cgroup_cpu_quota_cores()
 }
 
 function count_cpu_list(string $list)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: count_cpu_list()
- * Amaç: Bu fonksiyon, programın count_cpu_list adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : int {
  $count = 0;
  foreach (preg_split('/,/', trim($list)) ?: [] as $part) {
@@ -12010,12 +11014,6 @@ function count_cpu_list(string $list)
 }
 
 function get_effective_cpu_capacity()
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: get_effective_cpu_capacity()
- * Amaç: Bu fonksiyon, programın get_effective_cpu_capacity adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  $online = get_cpu_core_count();
  $cpusetRaw = read_first_existing_file([
@@ -12040,12 +11038,6 @@ function get_effective_cpu_capacity()
 }
 
 function read_cgroup_memory_stats()
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: read_cgroup_memory_stats()
- * Amaç: Bu fonksiyon, programın read_cgroup_memory_stats adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : ?array {
  $limitRaw = read_first_existing_file([
  '/sys/fs/cgroup/memory.max',
@@ -12092,12 +11084,6 @@ function read_cgroup_memory_stats()
 }
 
 function get_accurate_ram_metrics()
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: get_accurate_ram_metrics()
- * Amaç: Bu fonksiyon, programın get_accurate_ram_metrics adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  $memInfo = read_proc_meminfo_kb(0);
  $procTotal = (int)($memInfo['MemTotal'] ?? 0) * 1024;
@@ -12145,12 +11131,6 @@ function get_accurate_ram_metrics()
 }
 
 function read_cgroup_cpu_usage_usec()
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: read_cgroup_cpu_usage_usec()
- * Amaç: Bu fonksiyon, programın read_cgroup_cpu_usage_usec adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : ?int {
  $raw = read_first_existing_file(['/sys/fs/cgroup/cpu.stat']);
  if ($raw !== null) {
@@ -12164,12 +11144,6 @@ function read_cgroup_cpu_usage_usec()
 }
 
 function get_cpu_metrics_accurate(int $sampleMs = 120)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: get_cpu_metrics_accurate()
- * Amaç: Bu fonksiyon, programın get_cpu_metrics_accurate adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  $capacity = get_effective_cpu_capacity();
  $usage1 = read_cgroup_cpu_usage_usec();
@@ -12236,12 +11210,6 @@ function get_cpu_metrics_accurate(int $sampleMs = 120)
  * CPU sayaçlarını kısa süre ölçer ve gerçek CPU kullanım yüzdesini hesaplar. %100 tüm kapasitenin dolu olduğunu gösterir.
  */
 function read_cpu_proc_stat()
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: read_cpu_proc_stat()
- * Amaç: Bu fonksiyon, programın read_cpu_proc_stat adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : ?array {
  if (!is_readable('/proc/stat')) {
  return null;
@@ -12292,12 +11260,6 @@ function read_cpu_proc_stat()
 }
 
 function get_cpu_core_count()
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: get_cpu_core_count()
- * Amaç: Bu fonksiyon, programın get_cpu_core_count adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : int {
  static $coreCount = null;
  if ($coreCount !== null) {
@@ -12344,12 +11306,6 @@ function get_cpu_core_count()
 }
 
 function get_instant_cpu_metrics(int $sampleMs = 120)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: get_instant_cpu_metrics()
- * Amaç: Bu fonksiyon, programın get_instant_cpu_metrics adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  $cores = get_cpu_core_count();
  $load1 = 0.0;
@@ -12414,12 +11370,6 @@ function get_instant_cpu_metrics(int $sampleMs = 120)
 // =============================================================================
 
 function get_server_metrics(array $config, string $backup_dir)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: get_server_metrics()
- * Amaç: Bu fonksiyon, programın get_server_metrics adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  // Aynı sistem bilgilerini bu istekte defalarca okumamak için bir kez hesaplanır.
  $hostname = gethostname() ?: 'N/A';
@@ -12655,12 +11605,6 @@ function get_server_metrics(array $config, string $backup_dir)
 
 // 9. veri tabanı GEZGİNİ YARDIMCILARI
 function is_db_identifier_safe(string $name)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: is_db_identifier_safe()
- * Amaç: Bu fonksiyon, programın is_db_identifier_safe adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : bool {
  if ($name === '' || str_contains($name, "\0") || str_contains($name, '`')) {
  return false;
@@ -12675,12 +11619,6 @@ function is_db_identifier_safe(string $name)
 }
 
 function validate_db_identifier(string $name)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: validate_db_identifier()
- * Amaç: Bu fonksiyon, programın validate_db_identifier adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : string {
  if (!is_db_identifier_safe($name)) {
  throw new Exception('Geçersiz veritabanı veya tablo adı.');
@@ -12688,12 +11626,6 @@ function validate_db_identifier(string $name)
  return $name;
 }
 function get_database_tables(PDO $pdo, string $db_name)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: get_database_tables()
- * Amaç: Bu fonksiyon, programın get_database_tables adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  $stmt = $pdo->prepare("SELECT TABLE_NAME, TABLE_TYPE, ENGINE, TABLE_ROWS, DATA_LENGTH, INDEX_LENGTH, CREATE_TIME, UPDATE_TIME FROM information_schema.TABLES WHERE TABLE_SCHEMA = ? ORDER BY TABLE_NAME ASC");
  $stmt->execute([$db_name]);
@@ -12710,12 +11642,6 @@ function get_database_tables(PDO $pdo, string $db_name)
  return $rows;
 }
 function get_table_structure(PDO $pdo, string $db_name, string $table)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: get_table_structure()
- * Amaç: Bu fonksiyon, programın get_table_structure adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  $table = validate_db_identifier($table);
  $stmt = $pdo->prepare("SELECT COLUMN_NAME, COLUMN_TYPE, IS_NULLABLE, COLUMN_KEY, COLUMN_DEFAULT, EXTRA, COLLATION_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? ORDER BY ORDINAL_POSITION");
@@ -12727,12 +11653,6 @@ function get_table_structure(PDO $pdo, string $db_name, string $table)
 
 
 function get_table_preview(PDO $pdo, string $db_name, string $table, int $limit = 100, int $offset = 0)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: get_table_preview()
- * Amaç: Bu fonksiyon, programın get_table_preview adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : array {
  $table = validate_db_identifier($table);
  $limit = max(1, min(100, $limit));
@@ -12755,12 +11675,6 @@ function get_table_preview(PDO $pdo, string $db_name, string $table, int $limit 
 // =============================================================================
 
 function perform_table_maintenance(PDO $pdo, string $db_name, string $table, string $operation)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: perform_table_maintenance()
- * Amaç: Bu fonksiyon, programın perform_table_maintenance adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : string {
  $table = validate_db_identifier($table);
  $operation = strtolower(trim($operation));
@@ -12788,24 +11702,12 @@ function perform_table_maintenance(PDO $pdo, string $db_name, string $table, str
  return implode(' | ', $messages) ?: 'İşlem tamamlandı.';
 }
 function truncate_table(PDO $pdo, string $table)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: truncate_table()
- * Amaç: Bu fonksiyon, programın truncate_table adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  $table = validate_db_identifier($table);
  $pdo->exec("TRUNCATE TABLE `{$table}`");
  Logger::warning("Tablo boşaltıldı: {$table}");
 }
 function drop_table(PDO $pdo, string $table)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: drop_table()
- * Amaç: Bu fonksiyon, programın drop_table adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
 : void {
  $table = validate_db_identifier($table);
  $pdo->exec("DROP TABLE `{$table}`");
@@ -15624,12 +14526,6 @@ html.theme-light #logBoxContainer .log-line-ERROR {
 
  // JAVASCRIPT FONKSİYONU: Log satırlarını tarayıcı tarafında standart bir biçime çevirir ve gereksiz satırları ayıklar.
 function normalizeClientLogLines(lines)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: normalizeClientLogLines()
- * Amaç: Bu fonksiyon, programın normalizeClientLogLines adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
  {
  const normalized = Array.isArray(lines) ? lines.map(String) : [];
  return normalized.length > MAX_CLIENT_LOG_LINES
@@ -15649,12 +14545,6 @@ function normalizeClientLogLines(lines)
  // Toast Bildirimi
  // JAVASCRIPT FONKSİYONU: Kullanıcıya kısa süreli başarı, bilgi veya hata mesajı gösterir.
 function showToast(message, isError = false)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: showToast()
- * Amaç: Bu fonksiyon, programın showToast adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
  {
  const container = document.getElementById('toast-container');
  const toast = document.createElement('div');
@@ -15671,12 +14561,6 @@ function showToast(message, isError = false)
  let vedoConfirmResolver = null;
  // JAVASCRIPT FONKSİYONU: Silme veya veri kaybı oluşturabilecek işlemler için özel onay penceresi açar.
 function showConfirm(message, title = 'İşlemi onayla', confirmText = 'Devam Et')
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: showConfirm()
- * Amaç: Bu fonksiyon, programın showConfirm adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
  {
  return new Promise((resolve) => {
  const overlay = document.getElementById('vedoConfirmOverlay');
@@ -15699,12 +14583,6 @@ function showConfirm(message, title = 'İşlemi onayla', confirmText = 'Devam Et
 
  // JAVASCRIPT FONKSİYONU: Açık olan özel onay penceresini kapatır ve seçilen sonucu döndürür.
 function closeConfirm(result = false)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: closeConfirm()
- * Amaç: Bu fonksiyon, programın closeConfirm adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
  {
  const overlay = document.getElementById('vedoConfirmOverlay');
  if (overlay) {
@@ -15728,12 +14606,6 @@ function closeConfirm(result = false)
  // XSS için HTML kaçış yardımcı fonksiyonu
  // JAVASCRIPT FONKSİYONU: Sunucudan gelen metni HTML olarak yorumlatmadan güvenli biçimde ekrana koyar.
 function escapeHtml(str)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: escapeHtml()
- * Amaç: Bu fonksiyon, programın escapeHtml adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
  {
  return String(str)
  .replace(/&/g, '&amp;')
@@ -15865,12 +14737,6 @@ async function loadDashboard() {
  }
  // JAVASCRIPT FONKSİYONU: Tarayıcıda daha önce seçilmiş yedek dosyalarının listesini okur.
 function getPersistedBackupSelection()
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: getPersistedBackupSelection()
- * Amaç: Bu fonksiyon, programın getPersistedBackupSelection adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
  {
  try {
  const raw = sessionStorage.getItem('vedo_backup_selection');
@@ -15882,12 +14748,6 @@ function getPersistedBackupSelection()
  }
  // JAVASCRIPT FONKSİYONU: Kullanıcının yedek seçimlerini tarayıcının localStorage alanına kaydeder.
 function persistBackupSelection()
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: persistBackupSelection()
- * Amaç: Bu fonksiyon, programın persistBackupSelection adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
  {
  try {
  sessionStorage.setItem('vedo_backup_selection', JSON.stringify(getSelectedBackupFiles()));
@@ -15895,12 +14755,6 @@ function persistBackupSelection()
  }
  // JAVASCRIPT FONKSİYONU: Arayüzde seçili olan yedek dosyalarının adlarını toplar.
 function getSelectedBackupFiles()
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: getSelectedBackupFiles()
- * Amaç: Bu fonksiyon, programın getSelectedBackupFiles adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
  {
  return Array.from(document.querySelectorAll('#backups-list .backup-select:checked'))
  .map(el => el.value || el.closest('tr')?.dataset.file || '')
@@ -15908,12 +14762,6 @@ function getSelectedBackupFiles()
  }
  // JAVASCRIPT FONKSİYONU: Yedek seçim kutularının durumunu ve toplu işlem butonlarını günceller.
 function updateBackupSelectionUI()
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: updateBackupSelectionUI()
- * Amaç: Bu fonksiyon, programın updateBackupSelectionUI adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
  {
  const boxes = Array.from(document.querySelectorAll('#backups-list .backup-select'));
  const selected = boxes.filter(el => el.checked);
@@ -15931,12 +14779,6 @@ function updateBackupSelectionUI()
  }
  // JAVASCRIPT FONKSİYONU: Sayfa yeniden açıldığında daha önce seçilmiş yedekleri tekrar işaretler.
 function restoreBackupSelection()
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: restoreBackupSelection()
- * Amaç: Bu fonksiyon, programın restoreBackupSelection adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
  {
  const saved = getPersistedBackupSelection();
  document.querySelectorAll('#backups-list .backup-select').forEach(cb => {
@@ -16084,12 +14926,6 @@ async function emptyEntireDatabase() {
  }
  // JAVASCRIPT FONKSİYONU: Sunucudan gelen yedek listesini HTML tablo satırlarına dönüştürür.
 function renderBackupTable(files)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: renderBackupTable()
- * Amaç: Bu fonksiyon, programın renderBackupTable adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
  {
  const tbody = document.getElementById('backups-list');
  if (!files || files.length === 0) {
@@ -16124,12 +14960,6 @@ function renderBackupTable(files)
  }
  // Byte değerlerini hem dashboard hem canlı metrikler için tek yardımcıyla biçimlendirir.
  function formatBytes(bytes)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: formatBytes()
- * Amaç: Bu fonksiyon, programın formatBytes adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
  {
  const n = Number(bytes);
  if (!Number.isFinite(n) || n <= 0) return '0 B';
@@ -16313,12 +15143,6 @@ async function dbDestructive(operation) {
  }
  // JAVASCRIPT FONKSİYONU: Cron için oluşturulan sabit PHP komutunu panoya kopyalar.
 function copyCronCommand()
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: copyCronCommand()
- * Amaç: Bu fonksiyon, programın copyCronCommand adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
  {
  const code = document.getElementById('cron-command');
  if (!code) return;
@@ -16351,24 +15175,12 @@ function copyCronCommand()
 
  // JAVASCRIPT FONKSİYONU: Uzun işlerde kullanılacak CLI veya WEB çalışma modunu tarayıcı ayarından okur.
 function getWorkerMode()
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: getWorkerMode()
- * Amaç: Bu fonksiyon, programın getWorkerMode adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
  {
  return selectedWorkerMode === 'web' ? 'web' : 'cli';
  }
 
  // JAVASCRIPT FONKSİYONU: Kullanıcının CLI/WEB çalışma modu tercihini tarayıcıya kaydeder.
 function setWorkerMode(mode)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: setWorkerMode()
- * Amaç: Bu fonksiyon, programın setWorkerMode adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
  {
  const normalized = String(mode || '').toLowerCase() === 'web' ? 'web' : 'cli';
  selectedWorkerMode = normalized;
@@ -16385,12 +15197,6 @@ function setWorkerMode(mode)
 
  // JAVASCRIPT FONKSİYONU: Seçilen çalışma modunun paneldeki açıklamasını günceller.
 function updateWorkerModeStatus()
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: updateWorkerModeStatus()
- * Amaç: Bu fonksiyon, programın updateWorkerModeStatus adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
  {
  const status = document.getElementById('workerModeStatus');
  const cronBox = document.getElementById('cliCronBox');
@@ -16469,12 +15275,6 @@ async function startFullBackup() {
  // durumunda sonsuza kadar kalmaz.
  // JAVASCRIPT FONKSİYONU: Kalan süre tahminini kullanıcıya okunabilir biçimde gösterir.
 function formatEta(seconds, status, percent, elapsedSeconds)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: formatEta()
- * Amaç: Bu fonksiyon, programın formatEta adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
  {
  if (String(status || '').toLowerCase() === 'completed') return '0sn';
 
@@ -16493,12 +15293,6 @@ function formatEta(seconds, status, percent, elapsedSeconds)
 
  // JAVASCRIPT FONKSİYONU: Süreyi saniye yerine saat/dakika/saniye gibi okunabilir biçime çevirir.
 function formatDuration(seconds)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: formatDuration()
- * Amaç: Bu fonksiyon, programın formatDuration adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
  {
  const total = Math.max(0, Math.floor(Number(seconds) || 0));
  const h = Math.floor(total / 3600);
@@ -16518,12 +15312,6 @@ function formatDuration(seconds)
 
  // JAVASCRIPT FONKSİYONU: İlerleme ekranındaki süre sayacını durdurur.
 function stopProgressElapsedTicker()
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: stopProgressElapsedTicker()
- * Amaç: Bu fonksiyon, programın stopProgressElapsedTicker adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
  {
  if (progressElapsedTicker) {
  clearInterval(progressElapsedTicker);
@@ -16537,12 +15325,6 @@ function stopProgressElapsedTicker()
 
  // JAVASCRIPT FONKSİYONU: Sunucunun bildirdiği geçen süre ile tarayıcıdaki sayacı eşitler.
 function syncProgressElapsed(d)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: syncProgressElapsed()
- * Amaç: Bu fonksiyon, programın syncProgressElapsed adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
  {
  const ui = getProgressUiRefs();
  if (!ui.elapsed) return;
@@ -16588,12 +15370,6 @@ function syncProgressElapsed(d)
 
  // JAVASCRIPT FONKSİYONU: İlerleme ekranında kullanılacak DOM elemanlarını toplar.
 function getProgressUiRefs()
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: getProgressUiRefs()
- * Amaç: Bu fonksiyon, programın getProgressUiRefs adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
  {
  if (progressUiRefs) return progressUiRefs;
  progressUiRefs = {
@@ -16617,12 +15393,6 @@ function getProgressUiRefs()
 
  // JAVASCRIPT FONKSİYONU: Sunucudan gelen iş durumunu ilerleme çubuğu, yüzde ve mesajlara uygular.
 function applyProgressState(d)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: applyProgressState()
- * Amaç: Bu fonksiyon, programın applyProgressState adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
  {
  if (!d || d.status === 'idle') return;
  const ui = getProgressUiRefs();
@@ -16688,12 +15458,6 @@ function applyProgressState(d)
 
  // JAVASCRIPT FONKSİYONU: Devam eden yedek/geri yükleme işinin durumunu belirli aralıklarla sunucudan sorar.
 function startProgressPolling()
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: startProgressPolling()
- * Amaç: Bu fonksiyon, programın startProgressPolling adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
  {
  stopProgressPolling();
  // WEB modunda get_cli_job_progress zaten arka plan işlem adımı adımını yürütür;
@@ -16711,12 +15475,6 @@ function startProgressPolling()
  }
  // JAVASCRIPT FONKSİYONU: İlerleme durumu için yapılan periyodik sorgulamayı durdurur.
 function stopProgressPolling()
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: stopProgressPolling()
- * Amaç: Bu fonksiyon, programın stopProgressPolling adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
  {
  if (progressInterval) {
  clearTimeout(progressInterval);
@@ -16954,12 +15712,6 @@ async function triggerRestore(file) {
  // Log sistemi
  // JAVASCRIPT FONKSİYONU: Bir log alanının görünür veya seçili durumda olup olmadığını kontrol eder.
 function hasLogSelection(element)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: hasLogSelection()
- * Amaç: Bu fonksiyon, programın hasLogSelection adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
  {
  if (!element || !window.getSelection) return false;
  const selection = window.getSelection();
@@ -16970,12 +15722,6 @@ function hasLogSelection(element)
  }
  // JAVASCRIPT FONKSİYONU: Sunucudan gelen log içeriğini ilgili log kutularına yerleştirir.
 function renderLogBoxes(html)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: renderLogBoxes()
- * Amaç: Bu fonksiyon, programın renderLogBoxes adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
  {
  const logBox = document.getElementById('logBoxContainer');
  const modalBox = document.getElementById('logModalBox');
@@ -17002,12 +15748,6 @@ function renderLogBoxes(html)
  // Log sistemi
  // JAVASCRIPT FONKSİYONU: Log ekranındaki filtreye göre görünen kayıtları azaltır.
 function filterLogs()
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: filterLogs()
- * Amaç: Bu fonksiyon, programın filterLogs adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
  {
  const search = document.getElementById('logSearch').value.toLowerCase();
  const level = document.getElementById('logLevelFilter').value;
@@ -17047,12 +15787,6 @@ function filterLogs()
 
  // JAVASCRIPT FONKSİYONU: Yeni gelen canlı log satırını ilgili kutunun sonuna ekler.
 function appendRealtimeLogLineToBox(box, line)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: appendRealtimeLogLineToBox()
- * Amaç: Bu fonksiyon, programın appendRealtimeLogLineToBox adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
  {
  if (!box || typeof line !== 'string' || line === '') return;
  const item = document.createElement('div');
@@ -17064,12 +15798,6 @@ function appendRealtimeLogLineToBox(box, line)
 
  // JAVASCRIPT FONKSİYONU: Canlı log kaydını paneldeki log alanlarına dağıtır ve tampon sınırını korur.
 function addRealtimeLogLine(line)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: addRealtimeLogLine()
- * Amaç: Bu fonksiyon, programın addRealtimeLogLine adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
  {
  if (typeof line !== 'string' || line === '') return;
  // Aynı son satırın SSE reconnect sırasında ikinci kez eklenmesini önle.
@@ -17101,12 +15829,6 @@ function addRealtimeLogLine(line)
 
  // JAVASCRIPT FONKSİYONU: SSE bağlantısı açarak sunucudan gelen logları anlık olarak dinler.
 function startRealtimeLogStream()
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: startRealtimeLogStream()
- * Amaç: Bu fonksiyon, programın startRealtimeLogStream adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
  {
  if (!window.EventSource || logEventSource) return;
  // GET yalnızca log okur ve oturum kontrolü sunucu tarafında yapılır.
@@ -17169,12 +15891,6 @@ function startRealtimeLogStream()
 
  // JAVASCRIPT FONKSİYONU: Log satırının seviyesine göre kullanılacak CSS sınıfını belirler.
 function logLineClass(line)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: logLineClass()
- * Amaç: Bu fonksiyon, programın logLineClass adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
  {
  if (line.includes('[SUCCESS]')) return 'log-line-SUCCESS';
  if (line.includes('[INFO]')) return 'log-line-INFO';
@@ -17222,12 +15938,6 @@ async function logClientAction(action, details = '') {
 
  // JAVASCRIPT FONKSİYONU: CPU/RAM/disk gibi ölçümlerin gösterge çubuğunu ve değerini günceller.
 function setServerGauge(id, value, valueId, metaId, metaText)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: setServerGauge()
- * Amaç: Bu fonksiyon, programın setServerGauge adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
  {
  const pct = Math.max(0, Math.min(100, Number(value) || 0));
  const gauge = document.getElementById(id);
@@ -17241,12 +15951,6 @@ function setServerGauge(id, value, valueId, metaId, metaText)
  // JAVASCRIPT FONKSİYONU: Sunucu kaynak bilgilerinden HTML tablo oluşturur.
  // JAVASCRIPT FONKSİYONU: Sunucu metriklerini dashboard kartlarına ve bilgi pencerelerine dağıtır.
 function renderServerInfoTable(id, entries)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: renderServerInfoTable()
- * Amaç: Bu fonksiyon, programın renderServerInfoTable adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
  {
  const el = document.getElementById(id);
  if (!el) return;
@@ -17257,12 +15961,6 @@ function renderServerInfoTable(id, entries)
 
  // JAVASCRIPT FONKSİYONU: Açık olan sunucu bilgi penceresindeki kaynak verilerini yeniler.
 function refreshOpenServerInfoResources()
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: refreshOpenServerInfoResources()
- * Amaç: Bu fonksiyon, programın refreshOpenServerInfoResources adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
  {
  if (!latestServerMetrics) return;
 
@@ -17285,12 +15983,6 @@ function refreshOpenServerInfoResources()
  }
 
  function renderServerInfo(metrics)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: renderServerInfo()
- * Amaç: Bu fonksiyon, programın renderServerInfo adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
  {
  if (!metrics) return;
  latestServerMetrics = metrics;
@@ -17395,12 +16087,6 @@ function refreshOpenServerInfoResources()
 
  // JAVASCRIPT FONKSİYONU: Sunucu kaynak ayrıntılarını gösteren pencereyi açar.
 function openServerInfo()
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: openServerInfo()
- * Amaç: Bu fonksiyon, programın openServerInfo adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
  {
  const overlay = document.getElementById('serverInfoOverlay');
  if (!overlay) return;
@@ -17415,12 +16101,6 @@ function openServerInfo()
 
  // JAVASCRIPT FONKSİYONU: Sunucu kaynak ayrıntı penceresini kapatır.
 function closeServerInfo()
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: closeServerInfo()
- * Amaç: Bu fonksiyon, programın closeServerInfo adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
  {
  const overlay = document.getElementById('serverInfoOverlay');
  if (!overlay) return;
@@ -17430,12 +16110,6 @@ function closeServerInfo()
 
  // JAVASCRIPT FONKSİYONU: PHP çalışma ortamı hakkındaki bilgileri gösteren pencereyi açar.
 function openPhpInfo()
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: openPhpInfo()
- * Amaç: Bu fonksiyon, programın openPhpInfo adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
  {
  const overlay = document.getElementById('phpInfoOverlay');
  const frame = document.getElementById('phpInfoFrame');
@@ -17485,12 +16159,6 @@ function openPhpInfo()
 
  // JAVASCRIPT FONKSİYONU: PHP bilgi penceresini kapatır.
 function closePhpInfo()
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: closePhpInfo()
- * Amaç: Bu fonksiyon, programın closePhpInfo adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
  {
  const overlay = document.getElementById('phpInfoOverlay');
  const frame = document.getElementById('phpInfoFrame');
@@ -17506,12 +16174,6 @@ function closePhpInfo()
  let liveMetricUiRefs = null;
  // JAVASCRIPT FONKSİYONU: Canlı CPU/RAM/disk göstergelerinin DOM elemanlarını toplar.
 function getLiveMetricUiRefs()
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: getLiveMetricUiRefs()
- * Amaç: Bu fonksiyon, programın getLiveMetricUiRefs adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
  {
  if (liveMetricUiRefs) return liveMetricUiRefs;
  liveMetricUiRefs = {
@@ -17599,12 +16261,6 @@ async function refreshLiveMetrics() {
 
  // JAVASCRIPT FONKSİYONU: Canlı kaynak ölçümlerinin düzenli yenilenmesini başlatır.
 function startLiveMetrics(immediate = false)
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: startLiveMetrics()
- * Amaç: Bu fonksiyon, programın startLiveMetrics adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
  {
  clearTimeout(liveMetricsTimer);
  liveMetricsTimer = null;
@@ -17734,12 +16390,6 @@ document.addEventListener('DOMContentLoaded', () => {
  const closeDbExplorerBtn = document.getElementById('btnCloseDbExplorer');
  // JAVASCRIPT FONKSİYONU: Veri tabanı gezgini penceresini açar.
 function openDbExplorer()
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: openDbExplorer()
- * Amaç: Bu fonksiyon, programın openDbExplorer adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
  {
  if (!dbExplorerOverlay) return;
  dbExplorerOverlay.classList.add('open');
@@ -17751,12 +16401,6 @@ function openDbExplorer()
  }
  // JAVASCRIPT FONKSİYONU: Veri tabanı gezgini penceresini kapatır.
 function closeDbExplorer()
-/*
- * ==================== PHP FONKSİYONU ====================
- * Fonksiyon: closeDbExplorer()
- * Amaç: Bu fonksiyon, programın closeDbExplorer adlı iş adımını tek bir yerde toplar.
- * =====================================================================
- */
  {
  if (!dbExplorerOverlay) return;
  dbExplorerOverlay.classList.remove('open');
