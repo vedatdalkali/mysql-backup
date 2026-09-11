@@ -103,19 +103,19 @@ $config = [
  'db_host' => getenv('VEDO_DB_HOST') ?: 'localhost',
 
  // MySQL'e bağlanmak için kullanılacak kullanıcı adı.
- 'db_user' => getenv('VEDO_DB_USER') ?: '??????????',
+ 'db_user' => getenv('VEDO_DB_USER') ?: '???????????',
 
  // MySQL kullanıcısının şifresi.
- 'db_pass' => getenv('VEDO_DB_PASSWORD') ?: '??????????',
+ 'db_pass' => getenv('VEDO_DB_PASSWORD') ?: '???????????',
 
  // Yedek alırken ve geri yüklerken kullanılacak veri tabanının adı.
- 'db_name' => getenv('VEDO_DB_NAME') ?: '??????????',
+ 'db_name' => getenv('VEDO_DB_NAME') ?: '???????????',
 
  // Panele giriş yaparken kullanılacak yönetici kullanıcı adı.
  'auth_user' => getenv('VEDO_ADMIN_USER') ?: 'admin',
 
  // Panele giriş yaparken kullanılacak yönetici şifresi.
- 'auth_pass' => getenv('VEDO_ADMIN_PASSWORD') ?: '??????????',
+ 'auth_pass' => getenv('VEDO_ADMIN_PASSWORD') ?: '???????????',
 
  // Sunucuda en fazla kaç tane .sql.gz yedek tutulacağını ayarlar.
  // Bu sayıya ulaşılırsa eski yedekler otomatik silinir.
@@ -211,9 +211,6 @@ function vedo_utf8_valid(string $value)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: vedo_utf8_valid()
  * Amaç: Bu fonksiyon, programın vedo_utf8_valid adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : bool {
@@ -224,9 +221,6 @@ function vedo_utf8_lower(string $value)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: vedo_utf8_lower()
  * Amaç: Bu fonksiyon, programın vedo_utf8_lower adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : string {
@@ -237,9 +231,6 @@ function vedo_utf8_substr(string $value, int $start, ?int $length = null)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: vedo_utf8_substr()
  * Amaç: Bu fonksiyon, programın vedo_utf8_substr adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : string {
@@ -260,9 +251,6 @@ function vedo_utf8_strlen(string $value)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: vedo_utf8_strlen()
  * Amaç: Bu fonksiyon, programın vedo_utf8_strlen adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : int {
@@ -317,9 +305,6 @@ function clear_buffers()
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: clear_buffers()
  * Amaç: Bu fonksiyon, programın clear_buffers adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -346,9 +331,6 @@ function safe_file_put_contents(string $filepath, string $data, int $flags = 0)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: safe_file_put_contents()
  * Amaç: Bu fonksiyon, programın safe_file_put_contents adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : bool {
@@ -538,9 +520,6 @@ function is_request_https()
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: is_request_https()
  * Amaç: Bu fonksiyon, programın is_request_https adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : bool {
@@ -693,9 +672,6 @@ function validate_backup_filename(string $filename)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: validate_backup_filename()
  * Amaç: Bu fonksiyon, programın validate_backup_filename adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : bool {
@@ -719,9 +695,6 @@ function is_emergency_backup_filename(string $filename)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: is_emergency_backup_filename()
  * Amaç: Bu fonksiyon, programın is_emergency_backup_filename adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : bool {
@@ -733,9 +706,6 @@ function cleanup_emergency_backup_artifacts(string $backup_dir, string $file)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: cleanup_emergency_backup_artifacts()
  * Amaç: Bu fonksiyon, programın cleanup_emergency_backup_artifacts adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -761,9 +731,6 @@ function validate_path_safe(string $filePath, string $baseDir)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: validate_path_safe()
  * Amaç: Bu fonksiyon, programın validate_path_safe adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : string {
@@ -806,9 +773,6 @@ function restore_maintenance_marker_path(string $backup_dir)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: restore_maintenance_marker_path()
  * Amaç: Bu fonksiyon, programın restore_maintenance_marker_path adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : string {
@@ -820,9 +784,6 @@ function read_restore_maintenance(string $backup_dir)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: read_restore_maintenance()
  * Amaç: Bu fonksiyon, programın read_restore_maintenance adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -866,9 +827,6 @@ function find_active_restore_job_for_maintenance(string $backup_dir, string $ign
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: find_active_restore_job_for_maintenance()
  * Amaç: Bu fonksiyon, programın find_active_restore_job_for_maintenance adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -929,9 +887,6 @@ function restore_maintenance_is_blocking(array $state)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: restore_maintenance_is_blocking()
  * Amaç: Bu fonksiyon, programın restore_maintenance_is_blocking adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : bool {
@@ -945,9 +900,6 @@ function mark_restore_maintenance_recovery_required(string $backup_dir, string $
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: mark_restore_maintenance_recovery_required()
  * Amaç: Bu fonksiyon, programın mark_restore_maintenance_recovery_required adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -995,9 +947,6 @@ function begin_restore_maintenance(string $backup_dir, string $job_id, string $e
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: begin_restore_maintenance()
  * Amaç: Bu fonksiyon, programın begin_restore_maintenance adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -1046,9 +995,6 @@ function end_restore_maintenance(string $backup_dir, string $job_id = '')
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: end_restore_maintenance()
  * Amaç: Bu fonksiyon, programın end_restore_maintenance adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -1081,9 +1027,6 @@ function assert_restore_maintenance_allows_action(string $backup_dir, string $ac
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: assert_restore_maintenance_allows_action()
  * Amaç: Bu fonksiyon, programın assert_restore_maintenance_allows_action adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -1140,9 +1083,6 @@ function assert_restore_maintenance_marker_valid(string $backup_dir, string $ign
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: assert_restore_maintenance_marker_valid()
  * Amaç: Bu fonksiyon, programın assert_restore_maintenance_marker_valid adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -1185,9 +1125,6 @@ function require_post()
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: require_post()
  * Amaç: Bu fonksiyon, programın require_post adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -1200,9 +1137,6 @@ function require_get()
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: require_get()
  * Amaç: Bu fonksiyon, programın require_get adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -1219,9 +1153,6 @@ function read_all_log_lines(string $logDir, int $rotateCount = 5)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: read_all_log_lines()
  * Amaç: Bu fonksiyon, programın read_all_log_lines adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -1260,9 +1191,6 @@ function read_recent_log_lines(string $logDir, int $rotateCount = 5, int $maxLin
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: read_recent_log_lines()
  * Amaç: Bu fonksiyon, programın read_recent_log_lines adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -1310,9 +1238,6 @@ function release_web_session_lock()
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: release_web_session_lock()
  * Amaç: Bu fonksiyon, programın release_web_session_lock adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -1326,9 +1251,6 @@ function json_response(bool $success, string $message = '', array $data = [], in
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: json_response()
  * Amaç: Bu fonksiyon, programın json_response adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -1361,9 +1283,6 @@ function get_dynamic_system_load()
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: get_dynamic_system_load()
  * Amaç: Bu fonksiyon, programın get_dynamic_system_load adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : int {
@@ -1408,9 +1327,6 @@ function get_dynamic_resource_profile(?string $diskDir = null)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: get_dynamic_resource_profile()
  * Amaç: Bu fonksiyon, programın get_dynamic_resource_profile adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -1503,9 +1419,6 @@ function get_dynamic_insert_batch_size(?string $diskDir = null)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: get_dynamic_insert_batch_size()
  * Amaç: Bu fonksiyon, programın get_dynamic_insert_batch_size adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : int {
@@ -1529,9 +1442,6 @@ function get_dynamic_export_buffer_bytes(?string $diskDir = null)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: get_dynamic_export_buffer_bytes()
  * Amaç: Bu fonksiyon, programın get_dynamic_export_buffer_bytes adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : int {
@@ -1551,9 +1461,6 @@ function get_dynamic_restore_chunk_bytes(?string $diskDir = null)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: get_dynamic_restore_chunk_bytes()
  * Amaç: Bu fonksiyon, programın get_dynamic_restore_chunk_bytes adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : int {
@@ -1577,9 +1484,6 @@ function get_dynamic_disk_safety_bytes(string $dir)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: get_dynamic_disk_safety_bytes()
  * Amaç: Bu fonksiyon, programın get_dynamic_disk_safety_bytes adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : int {
@@ -1592,9 +1496,6 @@ function get_dynamic_web_step_budget(?string $diskDir = null)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: get_dynamic_web_step_budget()
  * Amaç: Bu fonksiyon, programın get_dynamic_web_step_budget adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -1623,9 +1524,6 @@ function calculate_adaptive_chunk_size(PDO $pdo, string $db_name, string $table)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: calculate_adaptive_chunk_size()
  * Amaç: Bu fonksiyon, programın calculate_adaptive_chunk_size adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : int {
@@ -1671,9 +1569,6 @@ function acquire_system_lock(string $backup_dir, string $type = 'general', int $
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: acquire_system_lock()
  * Amaç: Bu fonksiyon, programın acquire_system_lock adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : mixed {
@@ -1741,9 +1636,6 @@ function update_system_lock_heartbeat(mixed $lock_fp)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: update_system_lock_heartbeat()
  * Amaç: Bu fonksiyon, programın update_system_lock_heartbeat adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -1791,9 +1683,6 @@ function release_system_lock(mixed $lock_fp)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: release_system_lock()
  * Amaç: Bu fonksiyon, programın release_system_lock adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -1808,9 +1697,6 @@ function heartbeat_web_worker_locks()
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: heartbeat_web_worker_locks()
  * Amaç: Bu fonksiyon, programın heartbeat_web_worker_locks adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -1828,9 +1714,6 @@ function with_database_operation_lock(string $backup_dir, int $timeout, callable
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: with_database_operation_lock()
  * Amaç: Bu fonksiyon, programın with_database_operation_lock adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : mixed {
@@ -1859,9 +1742,6 @@ function require_database_operation_lock(mixed $lock_handle, string $backup_dir)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: require_database_operation_lock()
  * Amaç: Bu fonksiyon, programın require_database_operation_lock adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -1880,9 +1760,6 @@ function safe_transaction_rollback(?PDO $pdo)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: safe_transaction_rollback()
  * Amaç: Bu fonksiyon, programın safe_transaction_rollback adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -1899,9 +1776,6 @@ function limit_backup_files(string $dir, int $max)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: limit_backup_files()
  * Amaç: Bu fonksiyon, programın limit_backup_files adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -1963,9 +1837,6 @@ function escape_string_safe(mixed $v, ?PDO $pdo = null)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: escape_string_safe()
  * Amaç: Bu fonksiyon, programın escape_string_safe adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : string {
@@ -2043,9 +1914,6 @@ function get_pdo(string $h, string $u, string $p, string $d, bool $force_reconne
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: get_pdo()
  * Amaç: Bu fonksiyon, programın get_pdo adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : PDO {
@@ -2102,9 +1970,6 @@ function get_database_size_bytes(PDO $pdo, string $db_name)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: get_database_size_bytes()
  * Amaç: Bu fonksiyon, programın get_database_size_bytes adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : ?int {
@@ -2137,9 +2002,6 @@ function check_sufficient_disk_space(PDO $pdo, string $db_name, string $dir, int
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: check_sufficient_disk_space()
  * Amaç: Bu fonksiyon, programın check_sufficient_disk_space adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -2174,9 +2036,6 @@ function read_proc_meminfo_kb(int $cacheTtlSeconds = 0)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: read_proc_meminfo_kb()
  * Amaç: Bu fonksiyon, programın read_proc_meminfo_kb adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -2209,9 +2068,6 @@ function parse_ini_size_bytes(?string $value)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: parse_ini_size_bytes()
  * Amaç: Bu fonksiyon, programın parse_ini_size_bytes adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : int {
@@ -2235,9 +2091,6 @@ function get_available_server_memory_bytes()
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: get_available_server_memory_bytes()
  * Amaç: Bu fonksiyon, programın get_available_server_memory_bytes adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : int {
@@ -2293,9 +2146,6 @@ function calculate_dynamic_memory_limit(PDO $pdo, string $db_name)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: calculate_dynamic_memory_limit()
  * Amaç: Bu fonksiyon, programın calculate_dynamic_memory_limit adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : string {
@@ -2320,9 +2170,6 @@ function init_pdo_with_dynamic_memory(array &$config)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: init_pdo_with_dynamic_memory()
  * Amaç: Bu fonksiyon, programın init_pdo_with_dynamic_memory adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : PDO {
@@ -2340,9 +2187,6 @@ function get_table_columns(?PDO $pdo, string $db_name, string $table)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: get_table_columns()
  * Amaç: Bu fonksiyon, programın get_table_columns adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : string {
@@ -2382,9 +2226,6 @@ function get_table_cursor_keys(?PDO $pdo, string $db_name, string $table)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: get_table_cursor_keys()
  * Amaç: Bu fonksiyon, programın get_table_cursor_keys adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -2522,9 +2363,6 @@ function format_duration_seconds(float|int $seconds)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: format_duration_seconds()
  * Amaç: Bu fonksiyon, programın format_duration_seconds adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : string {
@@ -2545,9 +2383,6 @@ function format_bytes(int|float $bytes, int $precision = 2)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: format_bytes()
  * Amaç: Bu fonksiyon, programın format_bytes adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : string {
@@ -2566,9 +2401,6 @@ function format_transfer_speed(float $bytesPerSecond)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: format_transfer_speed()
  * Amaç: Bu fonksiyon, programın format_transfer_speed adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : string {
@@ -2588,9 +2420,6 @@ function calculate_web_backup_eta(array $state, int $currentIndexOneBased, int $
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: calculate_web_backup_eta()
  * Amaç: Bu fonksiyon, programın calculate_web_backup_eta adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : ?int {
@@ -2623,9 +2452,6 @@ function safe_gzwrite(mixed $stream, string $data, bool $flush = false)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: safe_gzwrite()
  * Amaç: Bu fonksiyon, programın safe_gzwrite adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -2664,9 +2490,6 @@ function order_views_by_dependencies(PDO $pdo, string $db_name, array $views)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: order_views_by_dependencies()
  * Amaç: Bu fonksiyon, programın order_views_by_dependencies adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -2745,9 +2568,6 @@ function order_routines_by_dependencies(PDO $pdo, string $db_name, array $routin
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: order_routines_by_dependencies()
  * Amaç: Bu fonksiyon, programın order_routines_by_dependencies adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -2786,9 +2606,6 @@ function export_database_sequences_to_stream(PDO $pdo, string $db_name, mixed $s
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: export_database_sequences_to_stream()
  * Amaç: Bu fonksiyon, programın export_database_sequences_to_stream adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : int {
@@ -2834,9 +2651,6 @@ function export_database_objects_to_stream(PDO $pdo, string $db_name, mixed $str
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: export_database_objects_to_stream()
  * Amaç: Bu fonksiyon, programın export_database_objects_to_stream adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -3031,9 +2845,6 @@ function get_table_fallback_order_by(PDO $pdo, string $db_name, string $table)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: get_table_fallback_order_by()
  * Amaç: Bu fonksiyon, programın get_table_fallback_order_by adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : string {
@@ -3079,9 +2890,6 @@ function export_single_table_to_stream(PDO $pdo, string $table, mixed $stream, s
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: export_single_table_to_stream()
  * Amaç: Bu fonksiyon, programın export_single_table_to_stream adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -3242,9 +3050,6 @@ function repair_myisam_tables_before_backup(PDO $pdo, string $db_name)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: repair_myisam_tables_before_backup()
  * Amaç: Bu fonksiyon, programın repair_myisam_tables_before_backup adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -3297,9 +3102,6 @@ function acquire_myisam_read_locks(string $h, string $u, string $p, string $d)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: acquire_myisam_read_locks()
  * Amaç: Bu fonksiyon, programın acquire_myisam_read_locks adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -3336,9 +3138,6 @@ function release_myisam_read_locks(?PDO $lockPdo)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: release_myisam_read_locks()
  * Amaç: Bu fonksiyon, programın release_myisam_read_locks adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -3393,9 +3192,6 @@ function perform_backup(PDO $pdo, string $db_name, string $backup_dir, array $co
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: perform_backup()
  * Amaç: Bu fonksiyon, programın perform_backup adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : string {
@@ -3589,9 +3385,6 @@ function verify_and_checksum_gzip(string $file_path)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: verify_and_checksum_gzip()
  * Amaç: Bu fonksiyon, programın verify_and_checksum_gzip adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : string {
@@ -3628,9 +3421,6 @@ function verify_backup_checksum(string $file_path)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: verify_backup_checksum()
  * Amaç: Bu fonksiyon, programın verify_backup_checksum adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : string {
@@ -3711,9 +3501,6 @@ function analyze_tables_after_restore(
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: analyze_tables_after_restore()
  * Amaç: Bu fonksiyon, programın analyze_tables_after_restore adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -3836,9 +3623,6 @@ function verify_database_integrity_after_restore(PDO $pdo, string $db_name, bool
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: verify_database_integrity_after_restore()
  * Amaç: Bu fonksiyon, programın verify_database_integrity_after_restore adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -3958,9 +3742,6 @@ function clear_database_for_restore(PDO $pdo, string $db_name)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: clear_database_for_restore()
  * Amaç: Bu fonksiyon, programın clear_database_for_restore adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -4169,9 +3950,6 @@ function verify_restore_source_integrity(string $file_path)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: verify_restore_source_integrity()
  * Amaç: Bu fonksiyon, programın verify_restore_source_integrity adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : string {
@@ -4187,9 +3965,6 @@ function verify_database_is_empty_for_restore(PDO $pdo, string $db_name)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: verify_database_is_empty_for_restore()
  * Amaç: Bu fonksiyon, programın verify_database_is_empty_for_restore adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -4277,9 +4052,6 @@ function restore_parse_buffer(
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: restore_parse_buffer()
  * Amaç: Bu fonksiyon, programın restore_parse_buffer adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -4514,9 +4286,6 @@ function finalize_restore_parser(string &$queryBuffer, bool $inString, string $s
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: finalize_restore_parser()
  * Amaç: Bu fonksiyon, programın finalize_restore_parser adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : ?string {
@@ -4579,9 +4348,6 @@ function normalize_import_identifier_key(string $name)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: normalize_import_identifier_key()
  * Amaç: Bu fonksiyon, programın normalize_import_identifier_key adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : string {
@@ -4613,9 +4379,6 @@ function expand_mysql_executable_comments(string $sql)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: expand_mysql_executable_comments()
  * Amaç: Bu fonksiyon, programın expand_mysql_executable_comments adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : string {
@@ -4680,9 +4443,6 @@ function strip_sql_comments_stateful(string $sql, bool $reject_executable_commen
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: strip_sql_comments_stateful()
  * Amaç: Bu fonksiyon, programın strip_sql_comments_stateful adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : string {
@@ -4782,9 +4542,6 @@ function import_strip_sql_comments_and_leading(string $sql)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: import_strip_sql_comments_and_leading()
  * Amaç: Bu fonksiyon, programın import_strip_sql_comments_and_leading adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : string {
@@ -4796,9 +4553,6 @@ function parse_import_object_reference(string $reference, string $db_name)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: parse_import_object_reference()
  * Amaç: Bu fonksiyon, programın parse_import_object_reference adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -4832,9 +4586,6 @@ function load_import_existing_schema(PDO $pdo, string $db_name)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: load_import_existing_schema()
  * Amaç: Bu fonksiyon, programın load_import_existing_schema adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -4908,9 +4659,6 @@ function import_target_was_existing(array $existing, string $type, string $name)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: import_target_was_existing()
  * Amaç: Bu fonksiyon, programın import_target_was_existing adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : bool {
@@ -4922,9 +4670,6 @@ function import_target_was_created(array $created, string $type, string $name)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: import_target_was_created()
  * Amaç: Bu fonksiyon, programın import_target_was_created adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : bool {
@@ -4936,9 +4681,6 @@ function import_register_created(array &$created, string $type, string $name)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: import_register_created()
  * Amaç: Bu fonksiyon, programın import_register_created adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -4950,9 +4692,6 @@ function import_unregister_created(array &$created, string $type, string $name)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: import_unregister_created()
  * Amaç: Bu fonksiyon, programın import_unregister_created adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -4964,9 +4703,6 @@ function import_policy_for_sql(string $sql, string $db_name, array $existing, ar
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: import_policy_for_sql()
  * Amaç: Bu fonksiyon, programın import_policy_for_sql adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -5219,9 +4955,6 @@ function cleanup_import_created_objects(PDO $pdo, array $created)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: cleanup_import_created_objects()
  * Amaç: Bu fonksiyon, programın cleanup_import_created_objects adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -5256,9 +4989,6 @@ function create_soft_import_recovery_snapshot(PDO $pdo, string $db_name, array $
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: create_soft_import_recovery_snapshot()
  * Amaç: Bu fonksiyon, programın create_soft_import_recovery_snapshot adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -5334,9 +5064,6 @@ function restore_soft_import_recovery_snapshot(PDO &$pdo, array $snapshot, strin
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: restore_soft_import_recovery_snapshot()
  * Amaç: Bu fonksiyon, programın restore_soft_import_recovery_snapshot adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -5393,9 +5120,6 @@ function remove_soft_import_recovery_snapshot(array &$snapshot)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: remove_soft_import_recovery_snapshot()
  * Amaç: Bu fonksiyon, programın remove_soft_import_recovery_snapshot adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -5458,9 +5182,6 @@ function import_uploaded_sql_file(PDO $pdo, array $uploadedFile, string $db_name
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: import_uploaded_sql_file()
  * Amaç: Bu fonksiyon, programın import_uploaded_sql_file adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -5797,9 +5518,6 @@ function normalize_restore_identifier(string $identifier)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: normalize_restore_identifier()
  * Amaç: Bu fonksiyon, programın normalize_restore_identifier adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : string {
@@ -5815,9 +5533,6 @@ function mask_restore_string_literals(string $sql)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: mask_restore_string_literals()
  * Amaç: Bu fonksiyon, programın mask_restore_string_literals adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : string {
@@ -5872,9 +5587,6 @@ function validate_restore_target_database(string $sql, string $expectedDb, bool 
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: validate_restore_target_database()
  * Amaç: Bu fonksiyon, programın validate_restore_target_database adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : bool {
@@ -5980,9 +5692,6 @@ function validate_restore_sql_statement(string $sql, bool $throw = true, string 
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: validate_restore_sql_statement()
  * Amaç: Bu fonksiyon, programın validate_restore_sql_statement adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : bool {
@@ -6052,9 +5761,6 @@ function validate_backup_restore_compatibility(string $file_path, bool $verify_c
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: validate_backup_restore_compatibility()
  * Amaç: Bu fonksiyon, programın validate_backup_restore_compatibility adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -6099,9 +5805,6 @@ function extract_restore_table_name(string $sql)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: extract_restore_table_name()
  * Amaç: Bu fonksiyon, programın extract_restore_table_name adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : string {
@@ -6135,9 +5838,6 @@ function capture_restore_session_state(PDO $pdo)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: capture_restore_session_state()
  * Amaç: Bu fonksiyon, programın capture_restore_session_state adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -6166,9 +5866,6 @@ function apply_restore_session_state(PDO $pdo, array $state)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: apply_restore_session_state()
  * Amaç: Bu fonksiyon, programın apply_restore_session_state adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -6207,9 +5904,6 @@ function restore_execute_sql(PDO &$pdo, array $queries, int &$processed_tables_c
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: restore_execute_sql()
  * Amaç: Bu fonksiyon, programın restore_execute_sql adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : int {
@@ -6298,9 +5992,6 @@ function summarize_sql_for_log(string $sql)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: summarize_sql_for_log()
  * Amaç: Bu fonksiyon, programın summarize_sql_for_log adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : string {
@@ -6340,9 +6031,6 @@ function restore_calculate_progress(string $sql, int &$processed_tables_count, i
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: restore_calculate_progress()
  * Amaç: Bu fonksiyon, programın restore_calculate_progress adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -6424,9 +6112,6 @@ function write_cli_job_state(string $backup_dir, string $job_id, array $state)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: write_cli_job_state()
  * Amaç: Bu fonksiyon, programın write_cli_job_state adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -6498,9 +6183,6 @@ function update_cli_job_state_for_prepare_worker(
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: update_cli_job_state_for_prepare_worker()
  * Amaç: Bu fonksiyon, programın update_cli_job_state_for_prepare_worker adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : bool {
@@ -6563,9 +6245,6 @@ function reserve_cli_job_state(
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: reserve_cli_job_state()
  * Amaç: Bu fonksiyon, programın reserve_cli_job_state adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -6625,9 +6304,6 @@ function read_cli_job_state(string $backup_dir, string $job_id)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: read_cli_job_state()
  * Amaç: Bu fonksiyon, programın read_cli_job_state adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -6642,9 +6318,6 @@ function is_recoverable_web_restore_state(array $state)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: is_recoverable_web_restore_state()
  * Amaç: Bu fonksiyon, programın is_recoverable_web_restore_state adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : bool {
@@ -6661,9 +6334,6 @@ function is_nonterminal_restore_state_protected(array $state)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: is_nonterminal_restore_state_protected()
  * Amaç: Bu fonksiyon, programın is_nonterminal_restore_state_protected adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : bool {
@@ -6682,9 +6352,6 @@ function cleanup_stale_cli_job_states(string $backup_dir, int $max_age = 86400)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: cleanup_stale_cli_job_states()
  * Amaç: Bu fonksiyon, programın cleanup_stale_cli_job_states adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -6998,9 +6665,6 @@ function find_active_cli_job_states(string $backup_dir)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: find_active_cli_job_states()
  * Amaç: Bu fonksiyon, programın find_active_cli_job_states adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -7058,9 +6722,6 @@ function acquire_job_admission_lock(string $backup_dir)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: acquire_job_admission_lock()
  * Amaç: Bu fonksiyon, programın acquire_job_admission_lock adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : mixed {
@@ -7072,9 +6733,6 @@ function release_job_admission_lock(mixed $lock_handle)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: release_job_admission_lock()
  * Amaç: Bu fonksiyon, programın release_job_admission_lock adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -7086,9 +6744,6 @@ function assert_no_active_database_job(string $backup_dir, string $ignore_job_id
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: assert_no_active_database_job()
  * Amaç: Bu fonksiyon, programın assert_no_active_database_job adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -7115,9 +6770,6 @@ function detect_cli_worker_capability()
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: detect_cli_worker_capability()
  * Amaç: Bu fonksiyon, programın detect_cli_worker_capability adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -7229,9 +6881,6 @@ function build_web_backup_paths(string $backup_dir, string $db_name, string $job
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: build_web_backup_paths()
  * Amaç: Bu fonksiyon, programın build_web_backup_paths adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -7268,9 +6917,6 @@ function get_web_worker_tables(PDO $pdo, string $db_name)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: get_web_worker_tables()
  * Amaç: Bu fonksiyon, programın get_web_worker_tables adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -7286,9 +6932,6 @@ function ensure_web_backup_fragment_dir(string $fragmentDir)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: ensure_web_backup_fragment_dir()
  * Amaç: Bu fonksiyon, programın ensure_web_backup_fragment_dir adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -7302,9 +6945,6 @@ function web_backup_fragment_path(string $fragmentDir, int $tableIndex, string $
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: web_backup_fragment_path()
  * Amaç: Bu fonksiyon, programın web_backup_fragment_path adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : string {
@@ -7317,9 +6957,6 @@ function web_backup_static_fragment_path(string $fragmentDir, string $name)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: web_backup_static_fragment_path()
  * Amaç: Bu fonksiyon, programın web_backup_static_fragment_path adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : string {
@@ -7332,9 +6969,6 @@ function web_backup_fragment_meta_path(string $fragmentPath)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: web_backup_fragment_meta_path()
  * Amaç: Bu fonksiyon, programın web_backup_fragment_meta_path adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : string { return $fragmentPath . '.meta.json'; }
@@ -7343,9 +6977,6 @@ function encode_web_cursor_values(array $values)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: encode_web_cursor_values()
  * Amaç: Bu fonksiyon, programın encode_web_cursor_values adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -7364,9 +6995,6 @@ function decode_web_cursor_values(array $encoded)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: decode_web_cursor_values()
  * Amaç: Bu fonksiyon, programın decode_web_cursor_values adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -7389,9 +7017,6 @@ function write_web_backup_gzip_fragment(string $fragmentPath, callable $writer)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: write_web_backup_gzip_fragment()
  * Amaç: Bu fonksiyon, programın write_web_backup_gzip_fragment adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -7408,9 +7033,6 @@ function append_web_backup_fragment_idempotent(string $fragmentPath, string $tar
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: append_web_backup_fragment_idempotent()
  * Amaç: Bu fonksiyon, programın append_web_backup_fragment_idempotent adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -7580,9 +7202,6 @@ function remove_web_backup_fragment_dir(string $fragmentDir)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: remove_web_backup_fragment_dir()
  * Amaç: Bu fonksiyon, programın remove_web_backup_fragment_dir adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -7601,9 +7220,6 @@ function web_backup_table_definition(PDO $pdo, string $db_name, string $table)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: web_backup_table_definition()
  * Amaç: Bu fonksiyon, programın web_backup_table_definition adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -7668,9 +7284,6 @@ function web_backup_step(
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: web_backup_step()
  * Amaç: Bu fonksiyon, programın web_backup_step adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -8000,9 +7613,6 @@ function initialize_web_backup_job(PDO $pdo, string $backup_dir, array $config, 
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: initialize_web_backup_job()
  * Amaç: Bu fonksiyon, programın initialize_web_backup_job adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -8080,9 +7690,6 @@ function web_emergency_completion_marker_path(string $backup_dir, string $parent
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: web_emergency_completion_marker_path()
  * Amaç: Bu fonksiyon, programın web_emergency_completion_marker_path adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : string {
@@ -8096,9 +7703,6 @@ function write_web_emergency_completion_marker(string $backup_dir, string $paren
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: write_web_emergency_completion_marker()
  * Amaç: Bu fonksiyon, programın write_web_emergency_completion_marker adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -8127,9 +7731,6 @@ function read_web_emergency_completion_marker(string $backup_dir, string $parent
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: read_web_emergency_completion_marker()
  * Amaç: Bu fonksiyon, programın read_web_emergency_completion_marker adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -8154,9 +7755,6 @@ function delete_web_emergency_completion_marker(string $backup_dir, string $pare
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: delete_web_emergency_completion_marker()
  * Amaç: Bu fonksiyon, programın delete_web_emergency_completion_marker adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -8174,9 +7772,6 @@ function initialize_web_emergency_backup_job(PDO $pdo, string $backup_dir, array
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: initialize_web_emergency_backup_job()
  * Amaç: Bu fonksiyon, programın initialize_web_emergency_backup_job adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -8257,9 +7852,6 @@ function is_emergency_state_completed(array $state)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: is_emergency_state_completed()
  * Amaç: Bu fonksiyon, programın is_emergency_state_completed adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : bool {
@@ -8274,9 +7866,6 @@ function web_restore_temp_path_is_valid(string $path, string $job_id)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: web_restore_temp_path_is_valid()
  * Amaç: Bu fonksiyon, programın web_restore_temp_path_is_valid adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : bool {
@@ -8297,9 +7886,6 @@ function prepare_web_restore_stream_cache(string $sourcePath, string $job_id, st
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: prepare_web_restore_stream_cache()
  * Amaç: Bu fonksiyon, programın prepare_web_restore_stream_cache adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : string {
@@ -8558,9 +8144,6 @@ function cleanup_web_restore_stream_cache(array $state)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: cleanup_web_restore_stream_cache()
  * Amaç: Bu fonksiyon, programın cleanup_web_restore_stream_cache adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -8580,9 +8163,6 @@ function cleanup_orphan_web_restore_temp_files(string $backup_dir, int $max_age 
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: cleanup_orphan_web_restore_temp_files()
  * Amaç: Bu fonksiyon, programın cleanup_orphan_web_restore_temp_files adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -8635,9 +8215,6 @@ function web_restore_commit_marker_path(string $backup_dir, string $job_id)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: web_restore_commit_marker_path()
  * Amaç: Bu fonksiyon, programın web_restore_commit_marker_path adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : string {
@@ -8650,9 +8227,6 @@ function read_web_restore_commit_marker(string $backup_dir, string $job_id)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: read_web_restore_commit_marker()
  * Amaç: Bu fonksiyon, programın read_web_restore_commit_marker adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -8667,9 +8241,6 @@ function write_web_restore_commit_marker(string $backup_dir, string $job_id, arr
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: write_web_restore_commit_marker()
  * Amaç: Bu fonksiyon, programın write_web_restore_commit_marker adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -8689,9 +8260,6 @@ function delete_web_restore_commit_marker(string $backup_dir, string $job_id)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: delete_web_restore_commit_marker()
  * Amaç: Bu fonksiyon, programın delete_web_restore_commit_marker adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -8709,9 +8277,6 @@ function web_restore_state_needs_stale_recovery(array $state)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: web_restore_state_needs_stale_recovery()
  * Amaç: Bu fonksiyon, programın web_restore_state_needs_stale_recovery adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : bool {
@@ -8743,9 +8308,6 @@ function web_restore_step(PDO $pdo, string $job_id, string $backup_dir, array $c
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: web_restore_step()
  * Amaç: Bu fonksiyon, programın web_restore_step adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -9943,9 +9505,6 @@ function initialize_web_restore_job(PDO $pdo, string $backup_dir, array $config,
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: initialize_web_restore_job()
  * Amaç: Bu fonksiyon, programın initialize_web_restore_job adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -10056,9 +9615,6 @@ function prepare_web_restore_recovery_state(string $backup_dir, string $job_id, 
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: prepare_web_restore_recovery_state()
  * Amaç: Bu fonksiyon, programın prepare_web_restore_recovery_state adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : ?array {
@@ -10198,9 +9754,6 @@ function run_web_worker_step(PDO $pdo, string $backup_dir, array $config, string
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: run_web_worker_step()
  * Amaç: Bu fonksiyon, programın run_web_worker_step adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -10419,9 +9972,6 @@ function reconnect_restore_pdo_for_recovery(PDO &$pdo, array $config)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: reconnect_restore_pdo_for_recovery()
  * Amaç: Bu fonksiyon, programın reconnect_restore_pdo_for_recovery adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -10462,9 +10012,6 @@ function perform_restore_cli_job(
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: perform_restore_cli_job()
  * Amaç: Bu fonksiyon, programın perform_restore_cli_job adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -10861,9 +10408,6 @@ function resolve_cli_php_binary()
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: resolve_cli_php_binary()
  * Amaç: Bu fonksiyon, programın resolve_cli_php_binary adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : string {
@@ -10909,9 +10453,6 @@ function mask_cli_token_in_command(string $command, string $token)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: mask_cli_token_in_command()
  * Amaç: Bu fonksiyon, programın mask_cli_token_in_command adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : string {
@@ -10965,9 +10506,6 @@ function spawn_cli_job(
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: spawn_cli_job()
  * Amaç: Bu fonksiyon, programın spawn_cli_job adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : bool {
@@ -11118,9 +10656,6 @@ function run_cli_job_from_argv(array $argv, array $config, string $backup_dir)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: run_cli_job_from_argv()
  * Amaç: Bu fonksiyon, programın run_cli_job_from_argv adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -11497,9 +11032,6 @@ function get_login_rate_limit_keys(string $ip, string $username)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: get_login_rate_limit_keys()
  * Amaç: Bu fonksiyon, programın get_login_rate_limit_keys adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -11517,9 +11049,6 @@ function read_login_rate_limit(string $backup_dir, string $key)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: read_login_rate_limit()
  * Amaç: Bu fonksiyon, programın read_login_rate_limit adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -11547,9 +11076,6 @@ function write_login_rate_limit(string $backup_dir, string $key, array $state)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: write_login_rate_limit()
  * Amaç: Bu fonksiyon, programın write_login_rate_limit adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -11572,9 +11098,6 @@ function clear_login_rate_limit(string $backup_dir, string $key)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: clear_login_rate_limit()
  * Amaç: Bu fonksiyon, programın clear_login_rate_limit adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -11588,9 +11111,6 @@ function clear_login_rate_limit_all(string $backup_dir, string $ip, string $user
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: clear_login_rate_limit_all()
  * Amaç: Bu fonksiyon, programın clear_login_rate_limit_all adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -11603,9 +11123,6 @@ function cleanup_login_rate_limit_lock_files(string $backup_dir, int $max_age = 
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: cleanup_login_rate_limit_lock_files()
  * Amaç: Bu fonksiyon, programın cleanup_login_rate_limit_lock_files adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -11650,9 +11167,6 @@ function enforce_login_rate_limit(string $backup_dir, string $ip, string $userna
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: enforce_login_rate_limit()
  * Amaç: Bu fonksiyon, programın enforce_login_rate_limit adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -11689,9 +11203,6 @@ function register_login_failure_all(string $backup_dir, string $ip, string $user
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: register_login_failure_all()
  * Amaç: Bu fonksiyon, programın register_login_failure_all adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -12428,9 +11939,6 @@ function read_first_existing_file(array $paths)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: read_first_existing_file()
  * Amaç: Bu fonksiyon, programın read_first_existing_file adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : ?string {
@@ -12447,9 +11955,6 @@ function parse_cgroup_cpu_quota_cores()
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: parse_cgroup_cpu_quota_cores()
  * Amaç: Bu fonksiyon, programın parse_cgroup_cpu_quota_cores adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : ?float {
@@ -12487,9 +11992,6 @@ function count_cpu_list(string $list)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: count_cpu_list()
  * Amaç: Bu fonksiyon, programın count_cpu_list adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : int {
@@ -12512,9 +12014,6 @@ function get_effective_cpu_capacity()
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: get_effective_cpu_capacity()
  * Amaç: Bu fonksiyon, programın get_effective_cpu_capacity adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -12545,9 +12044,6 @@ function read_cgroup_memory_stats()
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: read_cgroup_memory_stats()
  * Amaç: Bu fonksiyon, programın read_cgroup_memory_stats adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : ?array {
@@ -12600,9 +12096,6 @@ function get_accurate_ram_metrics()
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: get_accurate_ram_metrics()
  * Amaç: Bu fonksiyon, programın get_accurate_ram_metrics adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -12656,9 +12149,6 @@ function read_cgroup_cpu_usage_usec()
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: read_cgroup_cpu_usage_usec()
  * Amaç: Bu fonksiyon, programın read_cgroup_cpu_usage_usec adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : ?int {
@@ -12678,9 +12168,6 @@ function get_cpu_metrics_accurate(int $sampleMs = 120)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: get_cpu_metrics_accurate()
  * Amaç: Bu fonksiyon, programın get_cpu_metrics_accurate adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -12753,9 +12240,6 @@ function read_cpu_proc_stat()
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: read_cpu_proc_stat()
  * Amaç: Bu fonksiyon, programın read_cpu_proc_stat adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : ?array {
@@ -12812,9 +12296,6 @@ function get_cpu_core_count()
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: get_cpu_core_count()
  * Amaç: Bu fonksiyon, programın get_cpu_core_count adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : int {
@@ -12867,9 +12348,6 @@ function get_instant_cpu_metrics(int $sampleMs = 120)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: get_instant_cpu_metrics()
  * Amaç: Bu fonksiyon, programın get_instant_cpu_metrics adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -12940,9 +12418,6 @@ function get_server_metrics(array $config, string $backup_dir)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: get_server_metrics()
  * Amaç: Bu fonksiyon, programın get_server_metrics adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -13184,9 +12659,6 @@ function is_db_identifier_safe(string $name)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: is_db_identifier_safe()
  * Amaç: Bu fonksiyon, programın is_db_identifier_safe adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : bool {
@@ -13207,9 +12679,6 @@ function validate_db_identifier(string $name)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: validate_db_identifier()
  * Amaç: Bu fonksiyon, programın validate_db_identifier adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : string {
@@ -13223,9 +12692,6 @@ function get_database_tables(PDO $pdo, string $db_name)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: get_database_tables()
  * Amaç: Bu fonksiyon, programın get_database_tables adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -13248,9 +12714,6 @@ function get_table_structure(PDO $pdo, string $db_name, string $table)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: get_table_structure()
  * Amaç: Bu fonksiyon, programın get_table_structure adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -13268,9 +12731,6 @@ function get_table_preview(PDO $pdo, string $db_name, string $table, int $limit 
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: get_table_preview()
  * Amaç: Bu fonksiyon, programın get_table_preview adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : array {
@@ -13299,9 +12759,6 @@ function perform_table_maintenance(PDO $pdo, string $db_name, string $table, str
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: perform_table_maintenance()
  * Amaç: Bu fonksiyon, programın perform_table_maintenance adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : string {
@@ -13335,9 +12792,6 @@ function truncate_table(PDO $pdo, string $table)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: truncate_table()
  * Amaç: Bu fonksiyon, programın truncate_table adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -13350,9 +12804,6 @@ function drop_table(PDO $pdo, string $table)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: drop_table()
  * Amaç: Bu fonksiyon, programın drop_table adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
 : void {
@@ -16177,9 +15628,6 @@ function normalizeClientLogLines(lines)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: normalizeClientLogLines()
  * Amaç: Bu fonksiyon, programın normalizeClientLogLines adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
  {
@@ -16205,9 +15653,6 @@ function showToast(message, isError = false)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: showToast()
  * Amaç: Bu fonksiyon, programın showToast adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
  {
@@ -16230,9 +15675,6 @@ function showConfirm(message, title = 'İşlemi onayla', confirmText = 'Devam Et
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: showConfirm()
  * Amaç: Bu fonksiyon, programın showConfirm adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
  {
@@ -16261,9 +15703,6 @@ function closeConfirm(result = false)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: closeConfirm()
  * Amaç: Bu fonksiyon, programın closeConfirm adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
  {
@@ -16293,9 +15732,6 @@ function escapeHtml(str)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: escapeHtml()
  * Amaç: Bu fonksiyon, programın escapeHtml adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
  {
@@ -16433,9 +15869,6 @@ function getPersistedBackupSelection()
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: getPersistedBackupSelection()
  * Amaç: Bu fonksiyon, programın getPersistedBackupSelection adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
  {
@@ -16453,9 +15886,6 @@ function persistBackupSelection()
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: persistBackupSelection()
  * Amaç: Bu fonksiyon, programın persistBackupSelection adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
  {
@@ -16469,9 +15899,6 @@ function getSelectedBackupFiles()
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: getSelectedBackupFiles()
  * Amaç: Bu fonksiyon, programın getSelectedBackupFiles adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
  {
@@ -16485,9 +15912,6 @@ function updateBackupSelectionUI()
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: updateBackupSelectionUI()
  * Amaç: Bu fonksiyon, programın updateBackupSelectionUI adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
  {
@@ -16511,9 +15935,6 @@ function restoreBackupSelection()
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: restoreBackupSelection()
  * Amaç: Bu fonksiyon, programın restoreBackupSelection adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
  {
@@ -16667,9 +16088,6 @@ function renderBackupTable(files)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: renderBackupTable()
  * Amaç: Bu fonksiyon, programın renderBackupTable adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
  {
@@ -16710,9 +16128,6 @@ function renderBackupTable(files)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: formatBytes()
  * Amaç: Bu fonksiyon, programın formatBytes adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
  {
@@ -16902,9 +16317,6 @@ function copyCronCommand()
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: copyCronCommand()
  * Amaç: Bu fonksiyon, programın copyCronCommand adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
  {
@@ -16943,9 +16355,6 @@ function getWorkerMode()
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: getWorkerMode()
  * Amaç: Bu fonksiyon, programın getWorkerMode adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
  {
@@ -16958,9 +16367,6 @@ function setWorkerMode(mode)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: setWorkerMode()
  * Amaç: Bu fonksiyon, programın setWorkerMode adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
  {
@@ -16983,9 +16389,6 @@ function updateWorkerModeStatus()
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: updateWorkerModeStatus()
  * Amaç: Bu fonksiyon, programın updateWorkerModeStatus adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
  {
@@ -17070,9 +16473,6 @@ function formatEta(seconds, status, percent, elapsedSeconds)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: formatEta()
  * Amaç: Bu fonksiyon, programın formatEta adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
  {
@@ -17097,9 +16497,6 @@ function formatDuration(seconds)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: formatDuration()
  * Amaç: Bu fonksiyon, programın formatDuration adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
  {
@@ -17125,9 +16522,6 @@ function stopProgressElapsedTicker()
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: stopProgressElapsedTicker()
  * Amaç: Bu fonksiyon, programın stopProgressElapsedTicker adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
  {
@@ -17147,9 +16541,6 @@ function syncProgressElapsed(d)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: syncProgressElapsed()
  * Amaç: Bu fonksiyon, programın syncProgressElapsed adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
  {
@@ -17201,9 +16592,6 @@ function getProgressUiRefs()
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: getProgressUiRefs()
  * Amaç: Bu fonksiyon, programın getProgressUiRefs adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
  {
@@ -17233,9 +16621,6 @@ function applyProgressState(d)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: applyProgressState()
  * Amaç: Bu fonksiyon, programın applyProgressState adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
  {
@@ -17307,9 +16692,6 @@ function startProgressPolling()
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: startProgressPolling()
  * Amaç: Bu fonksiyon, programın startProgressPolling adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
  {
@@ -17333,9 +16715,6 @@ function stopProgressPolling()
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: stopProgressPolling()
  * Amaç: Bu fonksiyon, programın stopProgressPolling adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
  {
@@ -17579,9 +16958,6 @@ function hasLogSelection(element)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: hasLogSelection()
  * Amaç: Bu fonksiyon, programın hasLogSelection adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
  {
@@ -17598,9 +16974,6 @@ function renderLogBoxes(html)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: renderLogBoxes()
  * Amaç: Bu fonksiyon, programın renderLogBoxes adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
  {
@@ -17633,9 +17006,6 @@ function filterLogs()
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: filterLogs()
  * Amaç: Bu fonksiyon, programın filterLogs adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
  {
@@ -17681,9 +17051,6 @@ function appendRealtimeLogLineToBox(box, line)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: appendRealtimeLogLineToBox()
  * Amaç: Bu fonksiyon, programın appendRealtimeLogLineToBox adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
  {
@@ -17701,9 +17068,6 @@ function addRealtimeLogLine(line)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: addRealtimeLogLine()
  * Amaç: Bu fonksiyon, programın addRealtimeLogLine adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
  {
@@ -17741,9 +17105,6 @@ function startRealtimeLogStream()
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: startRealtimeLogStream()
  * Amaç: Bu fonksiyon, programın startRealtimeLogStream adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
  {
@@ -17812,9 +17173,6 @@ function logLineClass(line)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: logLineClass()
  * Amaç: Bu fonksiyon, programın logLineClass adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
  {
@@ -17868,9 +17226,6 @@ function setServerGauge(id, value, valueId, metaId, metaText)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: setServerGauge()
  * Amaç: Bu fonksiyon, programın setServerGauge adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
  {
@@ -17890,9 +17245,6 @@ function renderServerInfoTable(id, entries)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: renderServerInfoTable()
  * Amaç: Bu fonksiyon, programın renderServerInfoTable adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
  {
@@ -17909,9 +17261,6 @@ function refreshOpenServerInfoResources()
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: refreshOpenServerInfoResources()
  * Amaç: Bu fonksiyon, programın refreshOpenServerInfoResources adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
  {
@@ -17940,9 +17289,6 @@ function refreshOpenServerInfoResources()
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: renderServerInfo()
  * Amaç: Bu fonksiyon, programın renderServerInfo adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
  {
@@ -18053,9 +17399,6 @@ function openServerInfo()
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: openServerInfo()
  * Amaç: Bu fonksiyon, programın openServerInfo adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
  {
@@ -18076,9 +17419,6 @@ function closeServerInfo()
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: closeServerInfo()
  * Amaç: Bu fonksiyon, programın closeServerInfo adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
  {
@@ -18094,9 +17434,6 @@ function openPhpInfo()
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: openPhpInfo()
  * Amaç: Bu fonksiyon, programın openPhpInfo adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
  {
@@ -18152,9 +17489,6 @@ function closePhpInfo()
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: closePhpInfo()
  * Amaç: Bu fonksiyon, programın closePhpInfo adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
  {
@@ -18176,9 +17510,6 @@ function getLiveMetricUiRefs()
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: getLiveMetricUiRefs()
  * Amaç: Bu fonksiyon, programın getLiveMetricUiRefs adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
  {
@@ -18272,9 +17603,6 @@ function startLiveMetrics(immediate = false)
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: startLiveMetrics()
  * Amaç: Bu fonksiyon, programın startLiveMetrics adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
  {
@@ -18410,9 +17738,6 @@ function openDbExplorer()
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: openDbExplorer()
  * Amaç: Bu fonksiyon, programın openDbExplorer adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
  {
@@ -18430,9 +17755,6 @@ function closeDbExplorer()
  * ==================== PHP FONKSİYONU ====================
  * Fonksiyon: closeDbExplorer()
  * Amaç: Bu fonksiyon, programın closeDbExplorer adlı iş adımını tek bir yerde toplar.
- * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
- * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
- * çağıran koda geri verir veya işlemi gerçekleştirir.
  * =====================================================================
  */
  {
