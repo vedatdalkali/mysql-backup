@@ -103,23 +103,23 @@ $config = [
  'db_host' => getenv('VEDO_DB_HOST') ?: 'localhost',
 
  // MySQL'e bağlanmak için kullanılacak kullanıcı adı.
- 'db_user' => getenv('VEDO_DB_USER') ?: '???????????',
+ 'db_user' => getenv('VEDO_DB_USER') ?: '??????????',
 
  // MySQL kullanıcısının şifresi.
- 'db_pass' => getenv('VEDO_DB_PASSWORD') ?: '???????????',
+ 'db_pass' => getenv('VEDO_DB_PASSWORD') ?: '??????????',
 
  // Yedek alırken ve geri yüklerken kullanılacak veri tabanının adı.
- 'db_name' => getenv('VEDO_DB_NAME') ?: '???????????',
+ 'db_name' => getenv('VEDO_DB_NAME') ?: '??????????',
 
  // Panele giriş yaparken kullanılacak yönetici kullanıcı adı.
  'auth_user' => getenv('VEDO_ADMIN_USER') ?: 'admin',
 
  // Panele giriş yaparken kullanılacak yönetici şifresi.
- 'auth_pass' => getenv('VEDO_ADMIN_PASSWORD') ?: '???????????',
+ 'auth_pass' => getenv('VEDO_ADMIN_PASSWORD') ?: '??????????',
 
  // Sunucuda en fazla kaç tane .sql.gz yedek tutulacağını ayarlar.
  // Bu sayıya ulaşılırsa eski yedekler otomatik silinir.
- 'max_backups' => 30,
+ 'max_backups' => 720,
 
  // Zamanlanmış yedek işini başlatan gizli güvenlik anahtarıdır.
  // Var olan zamanlanmış görevin bozulmaması için bu değeri değiştirmeyin.
@@ -214,8 +214,6 @@ function vedo_utf8_valid(string $value)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : bool {
@@ -229,8 +227,6 @@ function vedo_utf8_lower(string $value)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : string {
@@ -244,8 +240,6 @@ function vedo_utf8_substr(string $value, int $start, ?int $length = null)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : string {
@@ -269,8 +263,6 @@ function vedo_utf8_strlen(string $value)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : int {
@@ -328,8 +320,6 @@ function clear_buffers()
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -359,8 +349,6 @@ function safe_file_put_contents(string $filepath, string $data, int $flags = 0)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : bool {
@@ -553,8 +541,6 @@ function is_request_https()
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : bool {
@@ -710,8 +696,6 @@ function validate_backup_filename(string $filename)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : bool {
@@ -738,8 +722,6 @@ function is_emergency_backup_filename(string $filename)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : bool {
@@ -754,8 +736,6 @@ function cleanup_emergency_backup_artifacts(string $backup_dir, string $file)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -784,8 +764,6 @@ function validate_path_safe(string $filePath, string $baseDir)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : string {
@@ -831,8 +809,6 @@ function restore_maintenance_marker_path(string $backup_dir)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : string {
@@ -847,8 +823,6 @@ function read_restore_maintenance(string $backup_dir)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -895,8 +869,6 @@ function find_active_restore_job_for_maintenance(string $backup_dir, string $ign
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -960,8 +932,6 @@ function restore_maintenance_is_blocking(array $state)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : bool {
@@ -978,8 +948,6 @@ function mark_restore_maintenance_recovery_required(string $backup_dir, string $
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -1030,8 +998,6 @@ function begin_restore_maintenance(string $backup_dir, string $job_id, string $e
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -1083,8 +1049,6 @@ function end_restore_maintenance(string $backup_dir, string $job_id = '')
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -1120,8 +1084,6 @@ function assert_restore_maintenance_allows_action(string $backup_dir, string $ac
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -1181,8 +1143,6 @@ function assert_restore_maintenance_marker_valid(string $backup_dir, string $ign
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -1228,8 +1188,6 @@ function require_post()
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -1245,8 +1203,6 @@ function require_get()
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -1266,8 +1222,6 @@ function read_all_log_lines(string $logDir, int $rotateCount = 5)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -1309,8 +1263,6 @@ function read_recent_log_lines(string $logDir, int $rotateCount = 5, int $maxLin
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -1361,8 +1313,6 @@ function release_web_session_lock()
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -1379,8 +1329,6 @@ function json_response(bool $success, string $message = '', array $data = [], in
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -1416,8 +1364,6 @@ function get_dynamic_system_load()
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : int {
@@ -1465,8 +1411,6 @@ function get_dynamic_resource_profile(?string $diskDir = null)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -1562,8 +1506,6 @@ function get_dynamic_insert_batch_size(?string $diskDir = null)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : int {
@@ -1590,8 +1532,6 @@ function get_dynamic_export_buffer_bytes(?string $diskDir = null)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : int {
@@ -1614,8 +1554,6 @@ function get_dynamic_restore_chunk_bytes(?string $diskDir = null)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : int {
@@ -1642,8 +1580,6 @@ function get_dynamic_disk_safety_bytes(string $dir)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : int {
@@ -1659,8 +1595,6 @@ function get_dynamic_web_step_budget(?string $diskDir = null)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -1692,8 +1626,6 @@ function calculate_adaptive_chunk_size(PDO $pdo, string $db_name, string $table)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : int {
@@ -1742,8 +1674,6 @@ function acquire_system_lock(string $backup_dir, string $type = 'general', int $
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : mixed {
@@ -1814,8 +1744,6 @@ function update_system_lock_heartbeat(mixed $lock_fp)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -1866,8 +1794,6 @@ function release_system_lock(mixed $lock_fp)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -1885,8 +1811,6 @@ function heartbeat_web_worker_locks()
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -1907,8 +1831,6 @@ function with_database_operation_lock(string $backup_dir, int $timeout, callable
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : mixed {
@@ -1940,8 +1862,6 @@ function require_database_operation_lock(mixed $lock_handle, string $backup_dir)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -1963,8 +1883,6 @@ function safe_transaction_rollback(?PDO $pdo)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -1984,8 +1902,6 @@ function limit_backup_files(string $dir, int $max)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -2050,8 +1966,6 @@ function escape_string_safe(mixed $v, ?PDO $pdo = null)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : string {
@@ -2132,8 +2046,6 @@ function get_pdo(string $h, string $u, string $p, string $d, bool $force_reconne
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : PDO {
@@ -2193,8 +2105,6 @@ function get_database_size_bytes(PDO $pdo, string $db_name)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : ?int {
@@ -2230,8 +2140,6 @@ function check_sufficient_disk_space(PDO $pdo, string $db_name, string $dir, int
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -2269,8 +2177,6 @@ function read_proc_meminfo_kb(int $cacheTtlSeconds = 0)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -2306,8 +2212,6 @@ function parse_ini_size_bytes(?string $value)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : int {
@@ -2334,8 +2238,6 @@ function get_available_server_memory_bytes()
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : int {
@@ -2394,8 +2296,6 @@ function calculate_dynamic_memory_limit(PDO $pdo, string $db_name)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : string {
@@ -2423,8 +2323,6 @@ function init_pdo_with_dynamic_memory(array &$config)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : PDO {
@@ -2445,8 +2343,6 @@ function get_table_columns(?PDO $pdo, string $db_name, string $table)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : string {
@@ -2489,8 +2385,6 @@ function get_table_cursor_keys(?PDO $pdo, string $db_name, string $table)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -2631,8 +2525,6 @@ function format_duration_seconds(float|int $seconds)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : string {
@@ -2656,8 +2548,6 @@ function format_bytes(int|float $bytes, int $precision = 2)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : string {
@@ -2679,8 +2569,6 @@ function format_transfer_speed(float $bytesPerSecond)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : string {
@@ -2703,8 +2591,6 @@ function calculate_web_backup_eta(array $state, int $currentIndexOneBased, int $
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : ?int {
@@ -2740,8 +2626,6 @@ function safe_gzwrite(mixed $stream, string $data, bool $flush = false)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -2783,8 +2667,6 @@ function order_views_by_dependencies(PDO $pdo, string $db_name, array $views)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -2866,8 +2748,6 @@ function order_routines_by_dependencies(PDO $pdo, string $db_name, array $routin
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -2909,8 +2789,6 @@ function export_database_sequences_to_stream(PDO $pdo, string $db_name, mixed $s
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : int {
@@ -2959,8 +2837,6 @@ function export_database_objects_to_stream(PDO $pdo, string $db_name, mixed $str
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -3158,8 +3034,6 @@ function get_table_fallback_order_by(PDO $pdo, string $db_name, string $table)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : string {
@@ -3208,8 +3082,6 @@ function export_single_table_to_stream(PDO $pdo, string $table, mixed $stream, s
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -3373,8 +3245,6 @@ function repair_myisam_tables_before_backup(PDO $pdo, string $db_name)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -3430,8 +3300,6 @@ function acquire_myisam_read_locks(string $h, string $u, string $p, string $d)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -3471,8 +3339,6 @@ function release_myisam_read_locks(?PDO $lockPdo)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -3530,8 +3396,6 @@ function perform_backup(PDO $pdo, string $db_name, string $backup_dir, array $co
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : string {
@@ -3728,8 +3592,6 @@ function verify_and_checksum_gzip(string $file_path)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : string {
@@ -3769,8 +3631,6 @@ function verify_backup_checksum(string $file_path)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : string {
@@ -3854,8 +3714,6 @@ function analyze_tables_after_restore(
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -3981,8 +3839,6 @@ function verify_database_integrity_after_restore(PDO $pdo, string $db_name, bool
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -4105,8 +3961,6 @@ function clear_database_for_restore(PDO $pdo, string $db_name)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -4318,8 +4172,6 @@ function verify_restore_source_integrity(string $file_path)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : string {
@@ -4338,8 +4190,6 @@ function verify_database_is_empty_for_restore(PDO $pdo, string $db_name)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -4430,8 +4280,6 @@ function restore_parse_buffer(
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -4669,8 +4517,6 @@ function finalize_restore_parser(string &$queryBuffer, bool $inString, string $s
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : ?string {
@@ -4736,8 +4582,6 @@ function normalize_import_identifier_key(string $name)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : string {
@@ -4772,8 +4616,6 @@ function expand_mysql_executable_comments(string $sql)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : string {
@@ -4841,8 +4683,6 @@ function strip_sql_comments_stateful(string $sql, bool $reject_executable_commen
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : string {
@@ -4945,8 +4785,6 @@ function import_strip_sql_comments_and_leading(string $sql)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : string {
@@ -4961,8 +4799,6 @@ function parse_import_object_reference(string $reference, string $db_name)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -4999,8 +4835,6 @@ function load_import_existing_schema(PDO $pdo, string $db_name)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -5077,8 +4911,6 @@ function import_target_was_existing(array $existing, string $type, string $name)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : bool {
@@ -5093,8 +4925,6 @@ function import_target_was_created(array $created, string $type, string $name)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : bool {
@@ -5109,8 +4939,6 @@ function import_register_created(array &$created, string $type, string $name)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -5125,8 +4953,6 @@ function import_unregister_created(array &$created, string $type, string $name)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -5141,8 +4967,6 @@ function import_policy_for_sql(string $sql, string $db_name, array $existing, ar
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -5398,8 +5222,6 @@ function cleanup_import_created_objects(PDO $pdo, array $created)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -5437,8 +5259,6 @@ function create_soft_import_recovery_snapshot(PDO $pdo, string $db_name, array $
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -5517,8 +5337,6 @@ function restore_soft_import_recovery_snapshot(PDO &$pdo, array $snapshot, strin
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -5578,8 +5396,6 @@ function remove_soft_import_recovery_snapshot(array &$snapshot)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -5645,8 +5461,6 @@ function import_uploaded_sql_file(PDO $pdo, array $uploadedFile, string $db_name
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -5986,8 +5800,6 @@ function normalize_restore_identifier(string $identifier)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : string {
@@ -6006,8 +5818,6 @@ function mask_restore_string_literals(string $sql)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : string {
@@ -6065,8 +5875,6 @@ function validate_restore_target_database(string $sql, string $expectedDb, bool 
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : bool {
@@ -6175,8 +5983,6 @@ function validate_restore_sql_statement(string $sql, bool $throw = true, string 
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : bool {
@@ -6249,8 +6055,6 @@ function validate_backup_restore_compatibility(string $file_path, bool $verify_c
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -6298,8 +6102,6 @@ function extract_restore_table_name(string $sql)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : string {
@@ -6336,8 +6138,6 @@ function capture_restore_session_state(PDO $pdo)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -6369,8 +6169,6 @@ function apply_restore_session_state(PDO $pdo, array $state)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -6412,8 +6210,6 @@ function restore_execute_sql(PDO &$pdo, array $queries, int &$processed_tables_c
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : int {
@@ -6505,8 +6301,6 @@ function summarize_sql_for_log(string $sql)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : string {
@@ -6549,8 +6343,6 @@ function restore_calculate_progress(string $sql, int &$processed_tables_count, i
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -6635,8 +6427,6 @@ function write_cli_job_state(string $backup_dir, string $job_id, array $state)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -6711,8 +6501,6 @@ function update_cli_job_state_for_prepare_worker(
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : bool {
@@ -6778,8 +6566,6 @@ function reserve_cli_job_state(
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -6842,8 +6628,6 @@ function read_cli_job_state(string $backup_dir, string $job_id)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -6861,8 +6645,6 @@ function is_recoverable_web_restore_state(array $state)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : bool {
@@ -6882,8 +6664,6 @@ function is_nonterminal_restore_state_protected(array $state)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : bool {
@@ -6905,8 +6685,6 @@ function cleanup_stale_cli_job_states(string $backup_dir, int $max_age = 86400)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -7223,8 +7001,6 @@ function find_active_cli_job_states(string $backup_dir)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -7285,8 +7061,6 @@ function acquire_job_admission_lock(string $backup_dir)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : mixed {
@@ -7301,8 +7075,6 @@ function release_job_admission_lock(mixed $lock_handle)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -7317,8 +7089,6 @@ function assert_no_active_database_job(string $backup_dir, string $ignore_job_id
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -7348,8 +7118,6 @@ function detect_cli_worker_capability()
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -7464,8 +7232,6 @@ function build_web_backup_paths(string $backup_dir, string $db_name, string $job
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -7505,8 +7271,6 @@ function get_web_worker_tables(PDO $pdo, string $db_name)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -7525,8 +7289,6 @@ function ensure_web_backup_fragment_dir(string $fragmentDir)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -7543,8 +7305,6 @@ function web_backup_fragment_path(string $fragmentDir, int $tableIndex, string $
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : string {
@@ -7560,8 +7320,6 @@ function web_backup_static_fragment_path(string $fragmentDir, string $name)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : string {
@@ -7577,8 +7335,6 @@ function web_backup_fragment_meta_path(string $fragmentPath)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : string { return $fragmentPath . '.meta.json'; }
@@ -7590,8 +7346,6 @@ function encode_web_cursor_values(array $values)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -7613,8 +7367,6 @@ function decode_web_cursor_values(array $encoded)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -7640,8 +7392,6 @@ function write_web_backup_gzip_fragment(string $fragmentPath, callable $writer)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -7661,8 +7411,6 @@ function append_web_backup_fragment_idempotent(string $fragmentPath, string $tar
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -7835,8 +7583,6 @@ function remove_web_backup_fragment_dir(string $fragmentDir)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -7858,8 +7604,6 @@ function web_backup_table_definition(PDO $pdo, string $db_name, string $table)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -7927,8 +7671,6 @@ function web_backup_step(
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -8261,8 +8003,6 @@ function initialize_web_backup_job(PDO $pdo, string $backup_dir, array $config, 
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -8343,8 +8083,6 @@ function web_emergency_completion_marker_path(string $backup_dir, string $parent
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : string {
@@ -8361,8 +8099,6 @@ function write_web_emergency_completion_marker(string $backup_dir, string $paren
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -8394,8 +8130,6 @@ function read_web_emergency_completion_marker(string $backup_dir, string $parent
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -8423,8 +8157,6 @@ function delete_web_emergency_completion_marker(string $backup_dir, string $pare
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -8445,8 +8177,6 @@ function initialize_web_emergency_backup_job(PDO $pdo, string $backup_dir, array
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -8530,8 +8260,6 @@ function is_emergency_state_completed(array $state)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : bool {
@@ -8549,8 +8277,6 @@ function web_restore_temp_path_is_valid(string $path, string $job_id)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : bool {
@@ -8574,8 +8300,6 @@ function prepare_web_restore_stream_cache(string $sourcePath, string $job_id, st
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : string {
@@ -8837,8 +8561,6 @@ function cleanup_web_restore_stream_cache(array $state)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -8861,8 +8583,6 @@ function cleanup_orphan_web_restore_temp_files(string $backup_dir, int $max_age 
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -8918,8 +8638,6 @@ function web_restore_commit_marker_path(string $backup_dir, string $job_id)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : string {
@@ -8935,8 +8653,6 @@ function read_web_restore_commit_marker(string $backup_dir, string $job_id)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -8954,8 +8670,6 @@ function write_web_restore_commit_marker(string $backup_dir, string $job_id, arr
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -8978,8 +8692,6 @@ function delete_web_restore_commit_marker(string $backup_dir, string $job_id)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -9000,8 +8712,6 @@ function web_restore_state_needs_stale_recovery(array $state)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : bool {
@@ -9036,8 +8746,6 @@ function web_restore_step(PDO $pdo, string $job_id, string $backup_dir, array $c
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -10238,8 +9946,6 @@ function initialize_web_restore_job(PDO $pdo, string $backup_dir, array $config,
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -10353,8 +10059,6 @@ function prepare_web_restore_recovery_state(string $backup_dir, string $job_id, 
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : ?array {
@@ -10497,8 +10201,6 @@ function run_web_worker_step(PDO $pdo, string $backup_dir, array $config, string
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -10720,8 +10422,6 @@ function reconnect_restore_pdo_for_recovery(PDO &$pdo, array $config)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -10765,8 +10465,6 @@ function perform_restore_cli_job(
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -11166,8 +10864,6 @@ function resolve_cli_php_binary()
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : string {
@@ -11216,8 +10912,6 @@ function mask_cli_token_in_command(string $command, string $token)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : string {
@@ -11274,8 +10968,6 @@ function spawn_cli_job(
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : bool {
@@ -11429,8 +11121,6 @@ function run_cli_job_from_argv(array $argv, array $config, string $backup_dir)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -11810,8 +11500,6 @@ function get_login_rate_limit_keys(string $ip, string $username)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -11832,8 +11520,6 @@ function read_login_rate_limit(string $backup_dir, string $key)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -11864,8 +11550,6 @@ function write_login_rate_limit(string $backup_dir, string $key, array $state)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -11891,8 +11575,6 @@ function clear_login_rate_limit(string $backup_dir, string $key)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -11909,8 +11591,6 @@ function clear_login_rate_limit_all(string $backup_dir, string $ip, string $user
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -11926,8 +11606,6 @@ function cleanup_login_rate_limit_lock_files(string $backup_dir, int $max_age = 
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -11975,8 +11653,6 @@ function enforce_login_rate_limit(string $backup_dir, string $ip, string $userna
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -12016,8 +11692,6 @@ function register_login_failure_all(string $backup_dir, string $ip, string $user
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -12757,8 +12431,6 @@ function read_first_existing_file(array $paths)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : ?string {
@@ -12778,8 +12450,6 @@ function parse_cgroup_cpu_quota_cores()
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : ?float {
@@ -12820,8 +12490,6 @@ function count_cpu_list(string $list)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : int {
@@ -12847,8 +12515,6 @@ function get_effective_cpu_capacity()
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -12882,8 +12548,6 @@ function read_cgroup_memory_stats()
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : ?array {
@@ -12939,8 +12603,6 @@ function get_accurate_ram_metrics()
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -12997,8 +12659,6 @@ function read_cgroup_cpu_usage_usec()
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : ?int {
@@ -13021,8 +12681,6 @@ function get_cpu_metrics_accurate(int $sampleMs = 120)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -13098,8 +12756,6 @@ function read_cpu_proc_stat()
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : ?array {
@@ -13159,8 +12815,6 @@ function get_cpu_core_count()
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : int {
@@ -13216,8 +12870,6 @@ function get_instant_cpu_metrics(int $sampleMs = 120)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -13291,8 +12943,6 @@ function get_server_metrics(array $config, string $backup_dir)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -13537,8 +13187,6 @@ function is_db_identifier_safe(string $name)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : bool {
@@ -13562,8 +13210,6 @@ function validate_db_identifier(string $name)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : string {
@@ -13580,8 +13226,6 @@ function get_database_tables(PDO $pdo, string $db_name)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -13607,8 +13251,6 @@ function get_table_structure(PDO $pdo, string $db_name, string $table)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -13629,8 +13271,6 @@ function get_table_preview(PDO $pdo, string $db_name, string $table, int $limit 
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : array {
@@ -13662,8 +13302,6 @@ function perform_table_maintenance(PDO $pdo, string $db_name, string $table, str
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : string {
@@ -13700,8 +13338,6 @@ function truncate_table(PDO $pdo, string $table)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -13717,8 +13353,6 @@ function drop_table(PDO $pdo, string $table)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
 : void {
@@ -16546,8 +16180,6 @@ function normalizeClientLogLines(lines)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
  {
@@ -16576,8 +16208,6 @@ function showToast(message, isError = false)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
  {
@@ -16603,8 +16233,6 @@ function showConfirm(message, title = 'İşlemi onayla', confirmText = 'Devam Et
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
  {
@@ -16636,8 +16264,6 @@ function closeConfirm(result = false)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
  {
@@ -16670,8 +16296,6 @@ function escapeHtml(str)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
  {
@@ -16812,8 +16436,6 @@ function getPersistedBackupSelection()
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
  {
@@ -16834,8 +16456,6 @@ function persistBackupSelection()
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
  {
@@ -16852,8 +16472,6 @@ function getSelectedBackupFiles()
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
  {
@@ -16870,8 +16488,6 @@ function updateBackupSelectionUI()
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
  {
@@ -16898,8 +16514,6 @@ function restoreBackupSelection()
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
  {
@@ -17056,8 +16670,6 @@ function renderBackupTable(files)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
  {
@@ -17101,8 +16713,6 @@ function renderBackupTable(files)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
  {
@@ -17295,8 +16905,6 @@ function copyCronCommand()
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
  {
@@ -17338,8 +16946,6 @@ function getWorkerMode()
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
  {
@@ -17355,8 +16961,6 @@ function setWorkerMode(mode)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
  {
@@ -17382,8 +16986,6 @@ function updateWorkerModeStatus()
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
  {
@@ -17471,8 +17073,6 @@ function formatEta(seconds, status, percent, elapsedSeconds)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
  {
@@ -17500,8 +17100,6 @@ function formatDuration(seconds)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
  {
@@ -17530,8 +17128,6 @@ function stopProgressElapsedTicker()
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
  {
@@ -17554,8 +17150,6 @@ function syncProgressElapsed(d)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
  {
@@ -17610,8 +17204,6 @@ function getProgressUiRefs()
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
  {
@@ -17644,8 +17236,6 @@ function applyProgressState(d)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
  {
@@ -17720,8 +17310,6 @@ function startProgressPolling()
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
  {
@@ -17748,8 +17336,6 @@ function stopProgressPolling()
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
  {
@@ -17996,8 +17582,6 @@ function hasLogSelection(element)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
  {
@@ -18017,8 +17601,6 @@ function renderLogBoxes(html)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
  {
@@ -18054,8 +17636,6 @@ function filterLogs()
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
  {
@@ -18104,8 +17684,6 @@ function appendRealtimeLogLineToBox(box, line)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
  {
@@ -18126,8 +17704,6 @@ function addRealtimeLogLine(line)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
  {
@@ -18168,8 +17744,6 @@ function startRealtimeLogStream()
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
  {
@@ -18241,8 +17815,6 @@ function logLineClass(line)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
  {
@@ -18299,8 +17871,6 @@ function setServerGauge(id, value, valueId, metaId, metaText)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
  {
@@ -18323,8 +17893,6 @@ function renderServerInfoTable(id, entries)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
  {
@@ -18344,8 +17912,6 @@ function refreshOpenServerInfoResources()
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
  {
@@ -18377,8 +17943,6 @@ function refreshOpenServerInfoResources()
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
  {
@@ -18492,8 +18056,6 @@ function openServerInfo()
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
  {
@@ -18517,8 +18079,6 @@ function closeServerInfo()
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
  {
@@ -18537,8 +18097,6 @@ function openPhpInfo()
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
  {
@@ -18597,8 +18155,6 @@ function closePhpInfo()
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
  {
@@ -18623,8 +18179,6 @@ function getLiveMetricUiRefs()
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
  {
@@ -18721,8 +18275,6 @@ function startLiveMetrics(immediate = false)
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
  {
@@ -18861,8 +18413,6 @@ function openDbExplorer()
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
  {
@@ -18883,8 +18433,6 @@ function closeDbExplorer()
  * Kısa açıklama: Fonksiyonlar, tekrar eden veya ayrı bir sorumluluğu olan kodu
  * isimlendirip düzenlememizi sağlar. Parametreleri alır ve sonucu
  * çağıran koda geri verir veya işlemi gerçekleştirir.
- * Not: Aşağıdaki gerçek kod, programın çalışma mantığını belirler; bu açıklama
- * yalnızca kodu okuyan kişiye yol göstermek için eklenmiştir.
  * =====================================================================
  */
  {
